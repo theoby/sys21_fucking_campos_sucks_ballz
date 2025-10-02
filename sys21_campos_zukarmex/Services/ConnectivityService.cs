@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace sys21_campos_zukarmex.Services;
 
 /// <summary>
-/// Servicio global para monitorear la conectividad de red en toda la aplicación
+/// Servicio global para monitorear la conectividad de red en toda la aplicaciï¿½n
 /// </summary>
 public partial class ConnectivityService : ObservableObject, INotifyPropertyChanged
 {
@@ -13,7 +13,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     private bool _isMonitoring = false;
     private bool _hasShownOfflineMessage = false;
     private bool _hasShownOnlineMessage = false;
-
+    private bool _isInitialCheckCompleted = false;
     public ConnectivityService(SessionService sessionService)
     {
         _sessionService = sessionService;
@@ -50,7 +50,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     private bool canSyncManually = false;
 
     /// <summary>
-    /// Indica si la aplicación debe usar APIs (true) o base de datos local (false)
+    /// Indica si la aplicaciï¿½n debe usar APIs (true) o base de datos local (false)
     /// </summary>
     [ObservableProperty]
     private bool useApiServices = false;
@@ -75,10 +75,10 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
         _isMonitoring = true;
         System.Diagnostics.Debug.WriteLine("?? Iniciando monitoreo de conectividad...");
         
-        // Verificación inicial inmediata
+        // Verificaciï¿½n inicial inmediata
         _ = CheckConnectivityAsync();
         
-        // Configurar timer para verificaciones periódicas cada 15 segundos
+        // Configurar timer para verificaciones periï¿½dicas cada 15 segundos
         _connectivityTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(15));
     }
 
@@ -100,7 +100,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     /// </summary>
     public async Task<bool> CheckConnectivityAsync()
     {
-        if (IsTestingConnectivity) return IsConnected; // Evitar múltiples pruebas simultáneas
+        if (IsTestingConnectivity) return IsConnected; // Evitar mï¿½ltiples pruebas simultï¿½neas
 
         try
         {
@@ -127,19 +127,19 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
                 System.Diagnostics.Debug.WriteLine($"?? Sin acceso a red - Network Access: {networkAccess}");
             }
 
-            // Verificar si hay token válido en configuración (solo si hay internet)
+            // Verificar si hay token vï¿½lido en configuraciï¿½n (solo si hay internet)
             if (hasInternet)
             {
                 hasValidToken = await _sessionService.HasValidTokenInConfigurationAsync();
-                System.Diagnostics.Debug.WriteLine($"?? Token válido: {hasValidToken}");
+                System.Diagnostics.Debug.WriteLine($"?? Token vÃ¡lido: {hasValidToken}");
             }
 
-            // Verificar si la sesión permite modo online
+            // Verificar si la sesiï¿½n permite modo online
             var currentSession = await _sessionService.GetCurrentSessionAsync();
             sessionAllowsOnline = currentSession?.IsOnline ?? true;
 
             // Determinar estado de conectividad
-            // Solo requiere internet + token válido + sesión que permita online
+            // Solo requiere internet + token vï¿½lido + sesiï¿½n que permita online
             var newIsConnected = hasInternet && hasValidToken && sessionAllowsOnline;
             
             // Actualizar propiedades
@@ -147,8 +147,8 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
             IsOnlineMode = newIsConnected;
             UseApiServices = newIsConnected;
 
-            // Actualizar estado de conexión
-            ConnectionStatus = IsConnected ? "Conectado - Modo Online" : "Sin conexión - Modo Offline";
+            // Actualizar estado de conexiï¿½n
+            ConnectionStatus = IsConnected ? "Conectado - Modo Online" : "Sin conexiÃ³n - Modo Offline";
 
             // Actualizar timestamps
             if (IsConnected)
@@ -171,7 +171,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
             }
 
             System.Diagnostics.Debug.WriteLine($"?? Estado final - Conectado: {IsConnected} | Modo Online: {IsOnlineMode} | Usar APIs: {UseApiServices}");
-            System.Diagnostics.Debug.WriteLine($"?? Detalles - Internet: {hasInternet} | Token: {hasValidToken} | Sesión Online: {sessionAllowsOnline}");
+            System.Diagnostics.Debug.WriteLine($"?? Detalles - Internet: {hasInternet} | Token: {hasValidToken} | SesiÃ³n Online: {sessionAllowsOnline}");
 
             return IsConnected;
         }
@@ -204,7 +204,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
             using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromSeconds(10);
 
-            // Intentar conectar con el servidor de la aplicación si hay URL configurada
+            // Intentar conectar con el servidor de la aplicaciï¿½n si hay URL configurada
             var appApiUrl = AppConfigService.ApiBaseUrl;
             if (!string.IsNullOrWhiteSpace(appApiUrl))
             {
@@ -221,12 +221,12 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine($"?? Servidor de la app respondió con código: {response.StatusCode}");
+                        System.Diagnostics.Debug.WriteLine($"?? Servidor de la app respondiÃ³ con cï¿½digo: {response.StatusCode}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"? Falló conexión con servidor de la app: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"? FallÃ³ conexiÃ³n con servidor de la app: {ex.Message}");
                 }
             }
             else
@@ -255,7 +255,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"? Falló conexión con {url}: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"? FallÃ³ conexiÃ³n con {url}: {ex.Message}");
                     continue; // Intentar con el siguiente URL
                 }
             }
@@ -294,28 +294,28 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     }
 
     /// <summary>
-    /// Fuerza una verificación inmediata de conectividad
+    /// Fuerza una verificaciï¿½n inmediata de conectividad
     /// </summary>
     public async Task<bool> ForceConnectivityCheckAsync()
     {
-        System.Diagnostics.Debug.WriteLine("?? Forzando verificación de conectividad...");
+        System.Diagnostics.Debug.WriteLine("?? Forzando verificaciÃ³n de conectividad...");
         return await CheckConnectivityAsync();
     }
 
     /// <summary>
-    /// Fuerza la actualización del estado de las funcionalidades
+    /// Fuerza la actualizaciï¿½n del estado de las funcionalidades
     /// </summary>
     public void UpdateFeatureAvailability()
     {
-        // Autorización e Historial requieren internet y modo online
+        // Autorizaciï¿½n e Historial requieren internet y modo online
         IsAutorizacionEnabled = IsConnected && UseApiServices;
         IsHistorialEnabled = IsConnected && UseApiServices;
         
-        // Sincronización manual disponible cuando hay datos locales y no hay conexión
+        // Sincronizaciï¿½n manual disponible cuando hay datos locales y no hay conexiï¿½n
         CanSyncManually = !IsConnected || !UseApiServices;
 
         System.Diagnostics.Debug.WriteLine($"?? Estados actualizados:");
-        System.Diagnostics.Debug.WriteLine($"   - Autorización: {IsAutorizacionEnabled}");
+        System.Diagnostics.Debug.WriteLine($"   - AutorizaciÃ³n: {IsAutorizacionEnabled}");
         System.Diagnostics.Debug.WriteLine($"   - Historial: {IsHistorialEnabled}");
         System.Diagnostics.Debug.WriteLine($"   - Sync Manual: {CanSyncManually}");
         System.Diagnostics.Debug.WriteLine($"   - Usar APIs: {UseApiServices}");
@@ -328,11 +328,11 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     {
         if (IsConnected && UseApiServices)
         {
-            return "Conexión activa - Todas las funciones disponibles (Modo Online)";
+            return "ConexiÃ³n activa - Todas las funciones disponibles (Modo Online)";
         }
         else if (!IsConnected)
         {
-            return "Sin conexión a internet - Funcionando con datos locales (Modo Offline)";
+            return "Sin conexiÃ³n a internet - Funcionando con datos locales (Modo Offline)";
         }
         else
         {
@@ -341,7 +341,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     }
 
     /// <summary>
-    /// Obtiene información detallada del estado de conectividad
+    /// Obtiene informaciï¿½n detallada del estado de conectividad
     /// </summary>
     public ConnectivityInfo GetDetailedConnectivityInfo()
     {
@@ -373,7 +373,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? Error en verificación periódica de conectividad: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"? Error en verificaciÃ³n periÃ³dica de conectividad: {ex.Message}");
         }
     }
 
@@ -381,7 +381,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     {
         System.Diagnostics.Debug.WriteLine($"?? Evento de cambio de conectividad detectado: {e.NetworkAccess}");
         
-        // Delay pequeño para evitar múltiples verificaciones rápidas
+        // Delay pequeï¿½o para evitar mï¿½ltiples verificaciones rï¿½pidas
         await Task.Delay(1000);
         await CheckConnectivityAsync();
     }
@@ -394,8 +394,15 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
             {
                 if (!wasConnected && isNowConnected)
                 {
-                    // Se recuperó la conexión - cambio a modo online
-                    System.Diagnostics.Debug.WriteLine("? Conexión recuperada - Cambiando a modo online");
+
+                    if (!_isInitialCheckCompleted)
+                    {
+                        _isInitialCheckCompleted = true; // Marcamos que la verificaciÃ³n inicial ya pasÃ³.
+                        return; // Salimos para no mostrar el mensaje de "restablecida".
+                    }
+
+                    // Se recuperï¿½ la conexiï¿½n - cambio a modo online
+                    System.Diagnostics.Debug.WriteLine("? ConexiÃ³n recuperada - Cambiando a modo online");
                     _hasShownOfflineMessage = false;
                     
                     if (!_hasShownOnlineMessage)
@@ -406,8 +413,8 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
                 }
                 else if (wasConnected && !isNowConnected)
                 {
-                    // Se perdió la conexión - cambio a modo offline
-                    System.Diagnostics.Debug.WriteLine("? Conexión perdida - Cambiando a modo offline");
+                    // Se perdiï¿½ la conexiï¿½n - cambio a modo offline
+                    System.Diagnostics.Debug.WriteLine("? ConexiÃ³n perdida - Cambiando a modo offline");
                     _hasShownOnlineMessage = false;
                     
                     if (!_hasShownOfflineMessage)
@@ -432,7 +439,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
             {
                 await Shell.Current.DisplayAlert(
                     "Modo Offline Activado",
-                    "Sin conexión a internet detectada. La aplicación funcionará en modo offline usando datos locales. Solo podrás crear vales y sincronizarlos más tarde.",
+                    "Sin conexiÃ³n a internet detectada. La aplicaciÃ³n funcionarÃ¡ en modo offline usando datos locales. Solo podrÃ¡s crear vales y sincronizarlos mÃ¡s tarde.",
                     "Entendido"
                 );
             }
@@ -450,10 +457,10 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
             if (Shell.Current != null)
             {
                 var result = await Shell.Current.DisplayAlert(
-                    "Conexión Reestablecida - Modo Online",
-                    "Se detectó conexión a internet. La aplicación ahora funciona en modo online con acceso completo a todas las funcionalidades. ¿Deseas sincronizar los datos locales?",
+                    "ConexiÃ³n Reestablecida - Modo Online",
+                    "Se detectÃ³ conexiï¿½n a internet. La aplicaciï¿½n ahora funciona en modo online con acceso completo a todas las funcionalidades. Â¿Deseas sincronizar los datos locales?",
                     "Sincronizar Ahora",
-                    "Más Tarde"
+                    "MÃ¡s Tarde"
                 );
 
                 if (result)
@@ -464,7 +471,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? Error mostrando mensaje de conexión restaurada: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"? Error mostrando mensaje de conexiï¿½n restaurada: {ex.Message}");
         }
     }
 
@@ -472,7 +479,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? Disparando solicitud de sincronización...");
+            System.Diagnostics.Debug.WriteLine("?? Disparando solicitud de sincronizaciÃ³n...");
             
             // Dispara un evento para que otras partes de la app puedan reaccionar
             SyncRequested?.Invoke();
@@ -498,12 +505,12 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
     public event EventHandler<bool>? ConnectivityChanged;
 
     /// <summary>
-    /// Evento que se dispara cuando el usuario solicita sincronización
+    /// Evento que se dispara cuando el usuario solicita sincronizaciï¿½n
     /// </summary>
     public event Action? SyncRequested;
 
     /// <summary>
-    /// Evento que se dispara cuando cambia el estado de conectividad con información detallada
+    /// Evento que se dispara cuando cambia el estado de conectividad con informaciï¿½n detallada
     /// </summary>
     public event Action<bool, bool>? OnConnectivityStateChanged; // (isConnected, useApiServices)
 
@@ -536,7 +543,7 @@ public partial class ConnectivityService : ObservableObject, INotifyPropertyChan
 }
 
 /// <summary>
-/// Información detallada del estado de conectividad
+/// Informaciï¿½n detallada del estado de conectividad
 /// </summary>
 public class ConnectivityInfo
 {
