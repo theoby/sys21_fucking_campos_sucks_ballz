@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ScrollablePage x:Class="sys21_campos_zukarmex.Views.HomePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:views="clr-namespace:sys21_campos_zukarmex.Views.Base"
+             x:DataType="viewmodels:HomeViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource Gray100}">
+
+    <ScrollView Orientation="Vertical" 
+                VerticalScrollBarVisibility="Default"
+                HorizontalScrollBarVisibility="Never"
+                InputTransparent="False">
+        <StackLayout Padding="20" Spacing="20">
+
+            <!-- Welcome Header -->
+            <Frame BackgroundColor="{DynamicResource Primary}" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="10">
+                    <Label Text="Bienvenido al Sistema" 
+                           FontSize="22" 
+                           FontAttributes="Bold"
+                           TextColor="White" />
+                    <Label Text="Administracion de Tareas en Campos Zucarmex" 
+                           FontSize="16" 
+                           TextColor="White"
+                           Opacity="0.9" />
+                    
+                    <!-- Navigation Help -->
+                    <StackLayout Orientation="Horizontal" Spacing="8" Margin="0,10,0,0">
+                        <Label Text="Toca el menu o desliza desde el borde izquierdo." 
+                               FontSize="12" 
+                               TextColor="White"
+                               Opacity="0.8" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <!-- Quick Actions -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="Acciones Rapidas" 
+                           FontSize="20" 
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource Primary}" />
+
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="15" RowSpacing="15">
+                        
+                        <Button Grid.Row="0" Grid.Column="0"
+                                Text="Nuevo Vale"
+                                BackgroundColor="{DynamicResource Primary}"
+                                TextColor="White"
+                                CornerRadius="10"
+                                Clicked="OnNewValeClicked" />
+
+                        <Button Grid.Row="0" Grid.Column="1"
+                                Text="Ver Estado"
+                                BackgroundColor="{DynamicResource Secondary}"
+                                TextColor="White"
+                                CornerRadius="10"
+                                Clicked="OnStatusClicked" />
+
+                        <Button Grid.Row="1" Grid.Column="0"
+                                Text="Maquinaria"
+                                BackgroundColor="Green"
+                                TextColor="White"
+                                CornerRadius="10"
+                                Clicked="OnMaquinariaClicked" />
+
+                        <Button Grid.Row="1" Grid.Column="1"
+                                Text="Configuracion"
+                                BackgroundColor="Purple"
+                                TextColor="White"
+                                CornerRadius="10"
+                                Clicked="OnConfigClicked" />
+
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- Debug Information Section -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="Informacion de Debug" 
+                           FontSize="20" 
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource Primary}" />
+
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="15" RowSpacing="15">
+                        
+                        <Button Grid.Row="0" Grid.Column="0"
+                                Text="Info Configuracion"
+                                BackgroundColor="Orange"
+                                TextColor="White"
+                                CornerRadius="10"
+                                FontSize="14"
+                                Command="{Binding ShowConfiguracionInfoCommand}" />
+
+                        <Button Grid.Row="0" Grid.Column="1"
+                                Text="Info Session"
+                                BackgroundColor="DarkBlue"
+                                TextColor="White"
+                                CornerRadius="10"
+                                FontSize="14"
+                                Command="{Binding ShowSessionInfoCommand}" />
+
+                        <Button Grid.Row="1" Grid.Column="0"
+                                Text="🧭 Diagnóstico Navegación"
+                                BackgroundColor="Purple"
+                                TextColor="White"
+                                CornerRadius="10"
+                                FontSize="12"
+                                Command="{Binding ShowNavigationDiagnosticCommand}" />
+
+                        <Button Grid.Row="1" Grid.Column="1"
+                                Text="🚨 Test Navegación"
+                                BackgroundColor="Red"
+                                TextColor="White"
+                                CornerRadius="10"
+                                FontSize="12"
+                                Command="{Binding TestNavigationCommand}" />
+
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- Information Section -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="Acerca del Sistema" 
+                           FontSize="20" 
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource Primary}" />
+                    
+                    <Label FontSize="16" TextColor="{DynamicResource Gray700}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Sistema integral para la gestion de campos y recursos agricolas. " />
+                                <Span Text="Permite crear, autorizar y dar seguimiento a todos los vales de manera eficiente." />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <BoxView HeightRequest="1" BackgroundColor="{DynamicResource Gray300}" />
+
+                    <StackLayout Spacing="10">
+                        <Label Text="Funciones principales:" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Gray700}" />
+                        
+                        <StackLayout Spacing="8">
+                            <Label Text="- Gestion de maquinaria agricola" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="- Control pluvial y riego" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="- Trampeo de plagas" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="- Aplicacion de rodenticidas" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="- Muestreo de danos" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        </StackLayout>
+                    </StackLayout>
+
+                    <!-- Additional content to test scrolling -->
+                    <BoxView HeightRequest="1" BackgroundColor="{DynamicResource Gray300}" Margin="0,20,0,10" />
+                    
+                    <StackLayout Spacing="10">
+                        <Label Text="Estado del Sistema:" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Gray700}" />
+                        
+                        <StackLayout Spacing="8">
+                            <Label Text="✅ Sistema operativo" FontSize="14" TextColor="Green" />
+                            <Label Text="✅ Base de datos sincronizada" FontSize="14" TextColor="Green" />
+                            <Label Text="✅ Conectividad estable" FontSize="14" TextColor="Green" />
+                            <Label Text="✅ Usuarios activos" FontSize="14" TextColor="Green" />
+                        </StackLayout>
+                    </StackLayout>
+
+                    <!-- More test content -->
+                    <BoxView HeightRequest="1" BackgroundColor="{DynamicResource Gray300}" Margin="0,20,0,10" />
+                    
+                    <StackLayout Spacing="10">
+                        <Label Text="Actualizaciones Recientes:" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Gray700}" />
+                        
+                        <StackLayout Spacing="8">
+                            <Label Text="• Mejoras en el sistema de conectividad" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="• Optimización de sincronización" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="• Nuevas funciones de reporte" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="• Interfaz mejorada" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="• Mayor estabilidad del sistema" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        </StackLayout>
+                    </StackLayout>
+
+                    <!-- Contact and Support Section -->
+                    <BoxView HeightRequest="1" BackgroundColor="{DynamicResource Gray300}" Margin="0,20,0,10" />
+                    
+                    <StackLayout Spacing="10">
+                        <Label Text="Soporte Técnico:" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Gray700}" />
+                        
+                        <StackLayout Spacing="8">
+                            <Label Text="📧 soporte@zucarmex.com" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="📞 +52 (555) 123-4567" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="🌐 www.zucarmex.com/soporte" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Label Text="⏰ Lun-Vie 8:00 AM - 6:00 PM" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        </StackLayout>
+                    </StackLayout>
+
+                    <!-- Version Info -->
+                    <BoxView HeightRequest="1" BackgroundColor="{DynamicResource Gray300}" Margin="0,20,0,10" />
+                    
+                    <StackLayout Spacing="8">
+                        <Label Text="Información de Versión:" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Gray700}" />
+                        <Label Text="Versión de la App: 1.0.0" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        <Label Text="Compilación: 2024.12.14" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        <Label Text="Framework: .NET MAUI 9.0" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                    </StackLayout>
+
+                    <!-- Final spacing for better scroll experience -->
+                    <BoxView HeightRequest="30" BackgroundColor="Transparent" />
+
+                </StackLayout>
+            </Frame>
+
+            <!-- Bottom spacing -->
+            <BoxView HeightRequest="80" BackgroundColor="Transparent" />
+
+        </StackLayout>
+    </ScrollView>
+
+</views:ScrollablePage>

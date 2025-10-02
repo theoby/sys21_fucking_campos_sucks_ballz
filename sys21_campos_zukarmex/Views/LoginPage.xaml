@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="sys21_campos_zukarmex.Views.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             x:DataType="viewmodels:LoginViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <Image Source="login_wp.png"
+               Aspect="AspectFill">
+        </Image>
+
+        <ScrollView>
+        <Grid RowDefinitions="*,Auto,*" Padding="20">
+
+            <!-- Logo/Title Section -->
+            <StackLayout Grid.Row="0" VerticalOptions="End" HorizontalOptions="Center">
+                <Label Text="Modulos de Campo" 
+                       FontSize="32" 
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center" />
+                <Label Text="Sistema de Administracion de Modulos de Campo" 
+                       FontSize="16" 
+                       TextColor="White"
+                       Opacity="0.8"
+                       HorizontalOptions="Center" />
+            </StackLayout>
+
+            <!-- Login Form -->
+            <Frame Grid.Row="1" 
+                   BackgroundColor="White" 
+                   CornerRadius="20" 
+                   Padding="30" 
+                   Margin="0,20"
+                   HasShadow="True">
+
+                <StackLayout Spacing="20">
+
+                    <!-- Usuario -->
+                    <StackLayout>
+                        <Label Text="Usuario" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry Text="{Binding Usuario}" 
+                                   Placeholder="Ingrese su usuario"
+                                   FontSize="16"
+                                   BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Contraseña -->
+                    <StackLayout>
+                        <Label Text="Contrasena" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry Text="{Binding Password}" 
+                                   Placeholder="Ingrese su contrasena"
+                                   IsPassword="True"
+                                   FontSize="16"
+                                   BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Empresa (visible solo si es requerida) -->
+                    <StackLayout IsVisible="{Binding IsEmpresaRequired}">
+                        <Label Text="Empresa" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Picker ItemsSource="{Binding Empresas}"
+                                    SelectedItem="{Binding SelectedEmpresa}"
+                                    ItemDisplayBinding="{Binding Nombre}"
+                                    Title="Seleccione una empresa"
+                                    FontSize="16"
+                                    BackgroundColor="Transparent" />
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Aviso de configuración URL (debajo del picker de empresas) -->
+                    <Frame BackgroundColor="{DynamicResource Warning}" 
+                           Padding="15" 
+                           CornerRadius="8"
+                           IsVisible="{Binding ShowUrlConfigWarning}"
+                           Margin="0,5">
+                        <StackLayout>
+                            <Label Text="⚠️ Configuración Requerida" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="White" 
+                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding UrlConfigMessage}" 
+                                   FontSize="14" 
+                                   TextColor="White" 
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   Margin="0,5,0,10" />
+                            
+                            <!-- Botón para entrar a configuración -->
+                            <Button Text="🔧 Entrar Configuración" 
+                                    Command="{Binding EntrarConfiguracionCommand}"
+                                    BackgroundColor="White"
+                                    TextColor="{DynamicResource Warning}"
+                                    BorderColor="{DynamicResource Warning}"
+                                    BorderWidth="2"
+                                    CornerRadius="8"
+                                    HeightRequest="45"
+                                    FontSize="15"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Center"
+                                    WidthRequest="220"
+                                    Margin="0,5,0,0"
+                                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+                            
+                            <!-- Indicador de loading para el botón -->
+                            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                                               IsVisible="{Binding IsBusy}"
+                                               Color="White"
+                                               WidthRequest="25"
+                                               HeightRequest="25"
+                                               HorizontalOptions="Center"
+                                               Margin="0,5,0,0" />
+                        </StackLayout>
+                    </Frame>
+
+                    <!-- Mensaje de Admin (cuando se detecte usuario admin) -->
+                    <Frame BackgroundColor="{DynamicResource Warning}" 
+                           Padding="10" 
+                           CornerRadius="8"
+                           IsVisible="{Binding IsEmpresaRequired, Converter={StaticResource InvertedBoolConverter}}">
+                        <Label Text="Modo Administrador del Sistema" 
+                               FontSize="14" 
+                               FontAttributes="Bold"
+                               TextColor="White" 
+                               HorizontalOptions="Center" />
+                    </Frame>
+
+                    <!-- Error Message -->
+                    <Label Text="{Binding ErrorMessage}" 
+                           TextColor="Red" 
+                           FontSize="14"
+                           IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}" />
+
+                    <!-- Debug/Development Buttons Section -->
+                    <StackLayout Spacing="10" Margin="0,15,0,0">
+                        
+                        <!-- Botón para mostrar información de la última sesión -->
+                        <Button Text="📱 Ver Información de Sesión" 
+                                Command="{Binding ShowLastSessionInfoCommand}"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Info}"
+                                BorderColor="{DynamicResource Info}"
+                                BorderWidth="1.5"
+                                CornerRadius="8"
+                                HeightRequest="42"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+                        
+                    </StackLayout>
+
+                    <!-- Login Button -->
+                    <Button Text="Iniciar Sesion" 
+                            Command="{Binding LoginCommand}"
+                            BackgroundColor="{DynamicResource Success}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="50"
+                            FontSize="16"
+                            FontAttributes="Bold" />
+
+                    <!-- Loading Indicator -->
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                                       IsVisible="{Binding IsBusy}"
+                                       Color="{DynamicResource Primary}" />
+
+                </StackLayout>
+            </Frame>
+
+            <!-- Footer -->
+            <StackLayout Grid.Row="2" VerticalOptions="End" HorizontalOptions="Center">
+                <Label Text="© 2025 Administracion de Modulos de Campo - SYS21 " 
+                       FontSize="12" 
+                       TextColor="White"
+                       Opacity="0.7"
+                       HorizontalOptions="Center" />
+            </StackLayout>
+        </Grid>
+    </ScrollView>
+    </Grid>
+</ContentPage>

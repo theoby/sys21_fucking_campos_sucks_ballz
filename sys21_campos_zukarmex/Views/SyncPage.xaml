@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="sys21_campos_zukarmex.Views.SyncPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:sync="clr-namespace:sys21_campos_zukarmex.Models.DTOs.Sync"
+             x:DataType="viewmodels:SyncViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource Gray100}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="20">
+        
+        <!-- Header -->
+        <StackLayout Grid.Row="0" Spacing="10" Margin="0,20,0,30">
+            <Label Text="Sincronizacion de Catalogos" 
+                   FontSize="24" 
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource Primary}"
+                   HorizontalOptions="Center" />
+            <Label Text="{Binding SyncMessage}" 
+                   FontSize="16" 
+                   TextColor="{DynamicResource Gray600}"
+                   HorizontalOptions="Center" />
+        </StackLayout>
+
+        <!-- Overall Progress -->
+        <Frame Grid.Row="1" BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                <StackLayout Spacing="10">
+                    <Label Text="Progreso General" FontSize="18" FontAttributes="Bold" />
+                    <ProgressBar Progress="{Binding OverallProgress, Converter={StaticResource PercentToProgressConverter}}" 
+                                 ProgressColor="{DynamicResource Primary}" 
+                                 HeightRequest="10" />
+                    <Label Text="{Binding OverallProgress, StringFormat='{0}%'}" 
+                           FontSize="14" 
+                           HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Sync Status List -->
+
+        <Frame Grid.Row="2" BackgroundColor="White" CornerRadius="15" Margin="0,10,0,0" Padding="0" HasShadow="True">
+            <CollectionView ItemsSource="{Binding SyncStatuses}" 
+                               BackgroundColor="Transparent">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="sync:SyncStatus">
+                        <Grid ColumnDefinitions="*,Auto" Padding="20,15">
+
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="{Binding CatalogName}" FontSize="16" FontAttributes="Bold" />
+                                <Label Text="{Binding Status}" FontSize="12" TextColor="{DynamicResource Gray600}" />
+                            </StackLayout>
+
+                            <ActivityIndicator Grid.Column="1" IsRunning="True"
+                           IsVisible="{Binding IsCompleted, Converter={StaticResource InvertedBoolConverter}}"
+                           Color="{DynamicResource Primary}" VerticalOptions="Center" />
+
+                            <Label Grid.Column="1" Text="✓" IsVisible="{Binding IsSuccess}"
+                                FontSize="35" TextColor="Green" FontAttributes="Bold" VerticalOptions="Center" />
+
+                            <Label Grid.Column="1" Text="✗" IsVisible="{Binding IsError}"
+                                FontSize="35" TextColor="Red" FontAttributes="Bold" VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Frame>
+
+        <!-- Action Buttons -->
+        <StackLayout Grid.Row="3" Spacing="15" Margin="0,20,0,0">
+            
+            <Button Text="Reintentar Sincronizacion" 
+                    Command="{Binding StartSyncCommand}"
+                    BackgroundColor="{DynamicResource Secondary}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    FontSize="16"
+                    IsVisible="{Binding IsSyncCompleted, Converter={StaticResource InvertedBoolConverter}}" />
+
+            <Button Text="Continuar a la Aplicacion" 
+                    Command="{Binding ContinueToAppCommand}"
+                    BackgroundColor="{DynamicResource Primary}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    IsVisible="{Binding IsSyncCompleted}" />
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                               IsVisible="{Binding IsBusy}"
+                               Color="{DynamicResource Primary}"
+                               HeightRequest="30" />
+
+        </StackLayout>
+
+    </Grid>
+
+</ContentPage>
+

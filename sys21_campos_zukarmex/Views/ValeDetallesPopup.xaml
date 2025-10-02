@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:dtos="clr-namespace:sys21_campos_zukarmex.Models.DTOs.Api"
+               x:Class="sys21_campos_zukarmex.Views.ValeDetallesPopup"
+               Color="Transparent">
+
+    <Frame CornerRadius="15" 
+           BackgroundColor="White"
+           BorderColor="{DynamicResource Primary}"
+           Padding="20"
+           Margin="25"
+           HasShadow="True"
+           VerticalOptions="Center">
+
+        <VerticalStackLayout Spacing="15" MaximumHeightRequest="500">
+
+            <Label Text="Detalles del Vale"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource Primary}"
+                   HorizontalTextAlignment="Center" />
+
+            <ScrollView>
+                <CollectionView ItemsSource="{Binding Detalles}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="dtos:ValeDetalleItemDto">
+                            <Frame BorderColor="{DynamicResource Gray200}" 
+                                   CornerRadius="8" 
+                                   Padding="10" 
+                                   Margin="0,5">
+                                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto,Auto">
+                                    <Label Grid.Row="0" Grid.Column="0" 
+                                           Text="{Binding Articulo}" 
+                                           FontAttributes="Bold" />
+
+                                    <Label Grid.Row="1" Grid.Column="0" 
+                                           Text="{Binding Concepto}" 
+                                           FontSize="12" 
+                                           TextColor="{DynamicResource Gray600}" />
+
+                                    <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+                                           VerticalTextAlignment="Center"
+                                           HorizontalTextAlignment="End">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Cantidad, StringFormat='{0:N2}'}" FontAttributes="Bold" FontSize="16" />
+                                                <Span Text=" " />
+                                                <Span Text="{Binding Unidad}" FontSize="12" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+
+            <Button Text="Cerrar"
+                    BackgroundColor="{DynamicResource Gray500}"
+                    TextColor="White"
+                    CornerRadius="8"
+                    Margin="0,10,0,0"
+                    Clicked="OnCloseButtonClicked" />
+
+        </VerticalStackLayout>
+    </Frame>
+
+</toolkit:Popup>

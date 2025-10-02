@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="sys21_campos_zukarmex.Views.LoadingPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             x:DataType="viewmodels:LoadingViewModel"
+             BackgroundColor="{DynamicResource Primary}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <Image Source="login_wp.png"
+        Aspect="AspectFill">
+        </Image>
+
+        <ScrollView>
+            <Grid RowDefinitions="*,Auto,Auto,Auto,*" Padding="40">
+                <!-- Logo/Icon Section -->
+                <Grid Grid.Row="1"
+                      HeightRequest="120"
+                      WidthRequest="250"  HorizontalOptions="Center"
+                      VerticalOptions="End">
+
+                    <BoxView Color="Black"
+                             HeightRequest="50"
+                             VerticalOptions="Center"
+                             CornerRadius="25"
+                             Opacity="0.3"
+                            />
+
+                    <Label Text="Afer Green"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
+                </Grid>
+
+                <!-- App Title -->
+                <StackLayout Grid.Row="2" Spacing="10" Margin="0,30,0,0">
+                    <Label Text="Vales Almacen" 
+                       FontSize="32" 
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center" />
+                    <Label Text="Sistema de Gestion de Vales de Salida" 
+                       FontSize="16" 
+                       TextColor="White"
+                       Opacity="0.9"
+                       HorizontalOptions="Center" />
+                </StackLayout>
+
+                <!-- Loading Section -->
+                <StackLayout Grid.Row="3" Spacing="20" Margin="0,50,0,0">
+
+                    <!-- Progress Bar -->
+                    <ProgressBar Progress="{Binding Progress}" 
+                             ProgressColor="White" 
+                             BackgroundColor="#FFFFFF33"
+                             HeightRequest="4" />
+
+                    <!-- Loading Message -->
+                    <Label Text="{Binding LoadingMessage}" 
+                       FontSize="16" 
+                       TextColor="White"
+                       Opacity="0.9"
+                       HorizontalOptions="Center" />
+
+                    <!-- Activity Indicator -->
+                    <ActivityIndicator IsRunning="True" 
+                                   Color="White"
+                                   HeightRequest="30" />
+
+                </StackLayout>
+
+                <!-- Footer -->
+                <StackLayout Grid.Row="4" VerticalOptions="End" HorizontalOptions="Center">
+                    <Label Text="2025 Vales Almacen v1.0 - SYS21 Mexico" 
+                       FontSize="12" 
+                       TextColor="White"
+                       Opacity="0.7" />
+                </StackLayout>
+
+            </Grid>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="sys21_campos_zukarmex.Views.AdminConfigPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             x:DataType="viewmodels:AdminConfigViewModel"
+             Title="Configuracion del Sistema"
+             xmlns:models="clr-namespace:sys21_campos_zukarmex.Models"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <ScrollView>
+        <StackLayout Spacing="20" Padding="20">
+
+            <!-- Header -->
+            <Frame BackgroundColor="{DynamicResource Primary}" 
+                   Padding="20" 
+                   CornerRadius="10">
+                <StackLayout>
+                    <Label Text="Configuracion del Sistema" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           TextColor="White" 
+                           HorizontalOptions="Center" />
+                    <Label Text="Panel de administracion para configurar la aplicacion" 
+                           FontSize="14" 
+                           TextColor="White" 
+                           HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Formulario de Configuracion -->
+            <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                   Padding="20" 
+                   CornerRadius="10">
+                <StackLayout Spacing="15">
+                    <Label Text="Nueva Configuracion" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{DynamicResource Primary}" />
+
+                    <!-- Campo Ruta -->
+                    <StackLayout>
+                        <Label Text="URL Base de la API *" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="{DynamicResource TextColor}" />
+                        <Entry x:Name="RutaEntry"
+                               Text="{Binding Ruta}" 
+                               Placeholder="https://api.ejemplo.com/"
+                               PlaceholderColor="{DynamicResource Gray400}"
+                               TextColor="{DynamicResource TextColor}"
+                               BackgroundColor="{DynamicResource EntryBackgroundColor}"
+                               FontSize="16" />
+                        <Label Text="Ejemplo: https://miapi.com/api/" 
+                               FontSize="12" 
+                               TextColor="{DynamicResource Gray600}" />
+                    </StackLayout>
+
+                    <!-- Campo Dispositivo (ahora editable) -->
+                    <StackLayout>
+                        <Label Text="Dispositivo *" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="{DynamicResource TextColor}" />
+                        <Entry x:Name="DispositivoEntry"
+                               Text="{Binding Dispositivo}" 
+                               Placeholder="Nombre del dispositivo"
+                               PlaceholderColor="{DynamicResource Gray400}"
+                               TextColor="{DynamicResource TextColor}"
+                               BackgroundColor="{DynamicResource EntryBackgroundColor}"
+                               FontSize="16" 
+                               IsReadOnly="True"/>
+                        <Label Text="Ejemplo: Tablet-Almacen-01, iPhone-Manager, etc." 
+                               FontSize="12" 
+                               TextColor="{DynamicResource Gray600}" />
+                    </StackLayout>
+
+                    <!-- Boton Guardar -->
+                    <Button Text="Guardar Configuracion"
+                            Command="{Binding GuardarConfiguracionCommand}"
+                            BackgroundColor="{DynamicResource Success}"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            Padding="15" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Configuraciones Existentes -->
+            <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                   Padding="20" 
+                   CornerRadius="10"
+                   IsVisible="{Binding HasExistingConfig}">
+                <StackLayout Spacing="10">
+                    <Label Text="Configuraciones Guardadas" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{DynamicResource Primary}" />
+
+                    <CollectionView ItemsSource="{Binding Configuraciones}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Configuracion">
+                                <Frame BackgroundColor="{DynamicResource Gray100}" 
+                                       Padding="10" 
+                                       Margin="0,2"
+                                       CornerRadius="5">
+                                    <StackLayout>
+                                        <Label Text="{Binding Ruta}" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource TextColor}" />
+                                        <Label Text="{Binding FechaDisplay}" 
+                                               FontSize="12" 
+                                               TextColor="{DynamicResource Gray600}" />
+                                        <Label Text="{Binding Dispositivo, StringFormat='Dispositivo: {0}'}" 
+                                               FontSize="12" 
+                                               TextColor="{DynamicResource Gray600}" />
+                                    </StackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+
+            <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                   Padding="20" 
+                   CornerRadius="10">
+                <StackLayout Spacing="15">
+                    <Label Text="Limpiar Memoria" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{DynamicResource Primary}" />
+
+                    <Button Text="Limpiar Memoria"
+                            Command="{Binding LimpiarMemoriaCommand}"
+                            BackgroundColor="{DynamicResource Error}"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            Padding="15" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Navegacion -->
+            <Frame BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                   Padding="20" 
+                   CornerRadius="10">
+                <StackLayout Spacing="15">
+                    <Label Text="Navegacion" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{DynamicResource Primary}" />
+
+                    <Button Text="Volver al Login"
+                            Command="{Binding VolverAlLoginCommand}"
+                            BackgroundColor="{DynamicResource Secondary}"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            Padding="15" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Estado -->
+            <Frame BackgroundColor="{DynamicResource Warning}" 
+                   Padding="15" 
+                   CornerRadius="8"
+                   IsVisible="{Binding MensajeEstado, Converter={StaticResource StringToBoolConverter}}">
+                <Label Text="{Binding MensajeEstado}" 
+                       FontSize="14" 
+                       TextColor="White" 
+                       HorizontalOptions="Center" />
+            </Frame>
+
+            <!-- Indicador de carga -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="{DynamicResource Primary}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

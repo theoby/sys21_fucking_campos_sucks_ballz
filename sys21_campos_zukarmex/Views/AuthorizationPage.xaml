@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="sys21_campos_zukarmex.Views.AuthorizationPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:apiresponse="clr-namespace:sys21_campos_zukarmex.Models.DTOs.Api"
+             x:DataType="viewmodels:AuthorizationViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource Gray100}">
+
+    <Grid RowDefinitions="Auto,*">
+        
+        <!-- Header -->
+        <Frame Grid.Row="0" BackgroundColor="White" CornerRadius="0" Padding="20" HasShadow="True" Margin="0,0,0,10">
+            <StackLayout Spacing="15">
+                
+                <Label Text="Autorizacion de Vales" 
+                       FontSize="22" 
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource Primary}"
+                       HorizontalOptions="Center" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                    
+                    <!-- Pending Authorization Count -->
+                    <StackLayout Grid.Column="0" HorizontalOptions="Center">
+                        <Label Text="{Binding TotalPendingAuth}" 
+                               FontSize="28" 
+                               FontAttributes="Bold"
+                               TextColor="Orange"
+                               HorizontalOptions="Center" />
+                        <Label Text="Pendientes de Autorizacion" 
+                               FontSize="14" 
+                               TextColor="{DynamicResource Gray600}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+
+                    <!-- User Role -->
+                    <StackLayout Grid.Column="1" HorizontalOptions="Center">
+                        <Label Text="{Binding UserRole}" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Rol del Usuario" 
+                               FontSize="14" 
+                               TextColor="{DynamicResource Gray600}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+
+                </Grid>
+
+                <!-- Access Denied Message -->
+                <Frame BackgroundColor="Orange" CornerRadius="10" Padding="15" HasShadow="False"
+                       IsVisible="{Binding CanAuthorize, Converter={StaticResource InvertedBoolConverter}}">
+                    <Label Text="No tiene permisos para autorizar vales" 
+                           TextColor="White" 
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center" />
+                </Frame>
+
+                <!-- Refresh Button -->
+                <Button Text="Actualizar Lista"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="{DynamicResource Secondary}"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        FontSize="14"
+                        IsVisible="{Binding CanAuthorize}" />
+
+            </StackLayout>
+        </Frame>
+
+        <!-- Authorization List -->
+        <RefreshView Grid.Row="1" 
+                     IsRefreshing="{Binding IsRefreshing}" 
+                     Command="{Binding LoadValesForAuthorizationCommand}"
+                     IsVisible="{Binding CanAuthorize}">
+            <CollectionView ItemsSource="{Binding ValesForAuthorization}" 
+                           BackgroundColor="Transparent"
+                           Margin="10,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="apiresponse:ValePendienteApiResponse">
+                        <Frame BackgroundColor="White" 
+                               CornerRadius="10" 
+                               Padding="15" 
+                               Margin="10,5"
+                               HasShadow="True">
+                            <StackLayout Spacing="15">
+                                
+                                <!-- Vale Header -->
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackLayout Grid.Column="0">
+                                        <Label Text="{Binding Id, StringFormat='Vale #{0}'}" 
+                                               FontSize="20" 
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource Primary}" />
+                                        <Label Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
+                                               FontSize="14" 
+                                               TextColor="{DynamicResource Gray600}" />
+                                    </StackLayout>
+                                    
+                                    <Button Grid.Column="1"
+                                            Text="Ver Detalles"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AuthorizationViewModel}}, Path=ViewValeDetailsCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="{DynamicResource Gray500}"
+                                            TextColor="White"
+                                            CornerRadius="8"
+                                            FontSize="12"
+                                            WidthRequest="80"
+                                            HeightRequest="30" />
+                                </Grid>
+
+                                <!-- Vale Details -->
+                                <StackLayout Spacing="8">
+                                    <Label Text="{Binding Concepto}" 
+                                           FontSize="16" 
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource Gray700}" />
+                                    
+                                    <Label Text="{Binding Usuario, StringFormat='Solicitado por: {0}'}" 
+                                           FontSize="14" 
+                                           TextColor="{DynamicResource Gray600}" />
+
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                        <Label Grid.Column="0" Text="Campo:" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                                        <Label Grid.Column="1" Text="{Binding Predio}" FontSize="14" TextColor="{DynamicResource Gray700}" />
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                        <Label Grid.Column="0" Text="Almacen:" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                                        <Label Grid.Column="1" Text="{Binding Almacen}" FontSize="14" TextColor="{DynamicResource Gray700}" />
+                                    </Grid>
+                                </StackLayout>
+
+                                <!-- Authorization Buttons -->
+                                <Grid ColumnDefinitions="*,10,*" ColumnSpacing="0">
+                                    
+                                    <Button Grid.Column="0"
+                                            Text="X Rechazar"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AuthorizationViewModel}}, Path=RejectValeCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Red"
+                                            TextColor="White"
+                                            CornerRadius="10"
+                                            HeightRequest="45"
+                                            FontSize="16"
+                                            FontAttributes="Bold" />
+
+                                    <Button Grid.Column="2"
+                                            Text="OK Autorizar"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AuthorizationViewModel}}, Path=AuthorizeValeCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Green"
+                                            TextColor="White"
+                                            CornerRadius="10"
+                                            HeightRequest="45"
+                                            FontSize="16"
+                                            FontAttributes="Bold" />
+
+                                </Grid>
+
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="50">
+                        <Label Text="OK" 
+                               FontSize="48" 
+                               FontAttributes="Bold"
+                               TextColor="Green"
+                               HorizontalOptions="Center" />
+                        <Label Text="No hay vales pendientes de autorizacion" 
+                               FontSize="18" 
+                               TextColor="{DynamicResource Gray600}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Todos los vales han sido procesados" 
+                               FontSize="14" 
+                               TextColor="{DynamicResource Gray500}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- No Access Message -->
+        <StackLayout Grid.Row="1" 
+                     HorizontalOptions="Center" 
+                     VerticalOptions="Center" 
+                     Padding="50"
+                     IsVisible="{Binding CanAuthorize, Converter={StaticResource InvertedBoolConverter}}">
+            <Label Text="X" 
+                   FontSize="64" 
+                   FontAttributes="Bold"
+                   TextColor="Red"
+                   HorizontalOptions="Center" />
+            <Label Text="Acceso Restringido" 
+                   FontSize="24" 
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource Gray600}"
+                   HorizontalOptions="Center" />
+            <Label Text="Contacte al administrador para obtener permisos de autorizacion" 
+                   FontSize="16" 
+                   TextColor="{DynamicResource Gray500}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center" />
+        </StackLayout>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="1"
+                          IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}"
+                          Color="{DynamicResource Primary}"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="sys21_campos_zukarmex.Views.HistorialPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:models="clr-namespace:sys21_campos_zukarmex.Models.DTOs.Api"
+             x:DataType="viewmodels:HistorialViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        
+        <!-- Header -->
+        <Frame Grid.Row="0" 
+               BackgroundColor="White" 
+               CornerRadius="10" 
+               Padding="20" 
+               Margin="10">
+            <StackLayout Spacing="15">
+
+                <Label Text="Historial de Vales de Salida" 
+                       FontSize="22" 
+                       FontAttributes="Bold"
+                       TextColor="Blue"
+                       HorizontalOptions="Center" />
+
+                <Grid ColumnDefinitions="*,*,*">
+                    <StackLayout Grid.Column="0" HorizontalOptions="Center">
+                        <Label Text="{Binding TotalRegistros}" 
+                               FontSize="24" 
+                               FontAttributes="Bold"
+                               TextColor="Blue" />
+                        <Label Text="Total" 
+                               FontSize="12" />
+                    </StackLayout>
+
+                    <StackLayout Grid.Column="1" HorizontalOptions="Center">
+                        <Label Text="{Binding ValesHistorial.Count}" 
+                               FontSize="24" 
+                               FontAttributes="Bold"
+                               TextColor="Green" />
+                        <Label Text="Mostrando" 
+                               FontSize="12" />
+                    </StackLayout>
+
+                    <StackLayout Grid.Column="2" HorizontalOptions="Center">
+                        <Label Text="{Binding LastUpdateTime}" 
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="Orange" />
+                        <Label Text="Actualizado" 
+                               FontSize="12" />
+                    </StackLayout>
+                </Grid>
+
+                <Button Text="Actualizar Historial"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="Blue"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40" />
+
+                <!-- Botón de diagnóstico para depuración -->
+                <Button Text="Información de Diagnóstico"
+                        Command="{Binding DiagnosticInfoCommand}"
+                        BackgroundColor="Orange"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        Margin="0,5,0,0" />
+
+            </StackLayout>
+        </Frame>
+
+        <!-- Search -->
+        <Frame Grid.Row="1" 
+               BackgroundColor="White" 
+               CornerRadius="10" 
+               Padding="10" 
+               Margin="10,0,10,10">
+            <SearchBar Placeholder="Buscar..."
+                       Text="{Binding SearchText}"
+                       BackgroundColor="Transparent" />
+        </Frame>
+
+        <!-- List -->
+        <RefreshView Grid.Row="2" 
+                     IsRefreshing="{Binding IsRefreshing}" 
+                     Command="{Binding LoadHistorialCommand}">
+            <CollectionView ItemsSource="{Binding ValesHistorial}" 
+                           BackgroundColor="Transparent"
+                           Margin="10,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:HistorialValeItem">
+                        <Frame BackgroundColor="White" 
+                               CornerRadius="15" 
+                               Padding="15" 
+                               Margin="5"
+                               HasShadow="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HistorialViewModel}}, Path=ViewValeDetailsCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                            
+                            <StackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                    <StackLayout Grid.Column="0">
+                                        <Label Text="{Binding Id, StringFormat='Vale #{0}'}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="Blue" />
+                                        <Label Text="{Binding FechaFormateada}"
+                                               FontSize="14"
+                                               TextColor="Gray" />
+                                    </StackLayout>
+                                    
+                                    <!-- Frame para Estatus -->
+                                    <Frame Grid.Column="1" 
+                                           BackgroundColor="{Binding EstatusColor}"
+                                           CornerRadius="12"
+                                           Padding="8,4"
+                                           Margin="0,0,5,0"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Start">
+                                        <Label Text="{Binding EstatusTexto}"
+                                               FontSize="10"
+                                               TextColor="White"
+                                               FontAttributes="Bold" />
+                                    </Frame>
+
+                                    <!-- Frame para Autorización -->
+                                    <Frame Grid.Column="2" 
+                                           BackgroundColor="{Binding AutorizadoColor}"
+                                           CornerRadius="12"
+                                           Padding="8,4"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Start">
+                                        <Label Text="{Binding AutorizadoTexto}"
+                                               FontSize="10"
+                                               TextColor="White"
+                                               FontAttributes="Bold" />
+                                    </Frame>
+                                </Grid>
+
+                                <Label Text="{Binding Concepto}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="Black" />
+
+                                <StackLayout Spacing="2">
+                                    <Label Text="{Binding Predio, StringFormat='Predio: {0}'}"
+                                           FontSize="12"
+                                           TextColor="Gray" />
+                                    <Label Text="{Binding Usuario, StringFormat='Usuario: {0}'}"
+                                           FontSize="12"
+                                           TextColor="Gray" />
+                                </StackLayout>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center" 
+                                VerticalOptions="Center" 
+                                Padding="50">
+                        <Label Text="No hay registros" 
+                               FontSize="18" 
+                               FontAttributes="Bold"
+                               TextColor="Gray"
+                               HorizontalOptions="Center" />
+                        <Label Text="Toque Actualizar para cargar datos" 
+                               FontSize="14" 
+                               TextColor="Gray"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Loading -->
+        <ActivityIndicator Grid.Row="2"
+                          IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}"
+                          Color="Blue"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>

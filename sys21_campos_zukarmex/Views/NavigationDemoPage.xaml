@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BasePage x:Class="sys21_campos_zukarmex.Views.NavigationDemoPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:sys21_campos_zukarmex.Views.Base"
+             Title="Guia de Navegacion"
+             BackgroundColor="{DynamicResource Gray100}">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+
+            <!-- Header -->
+            <Frame BackgroundColor="{DynamicResource Primary}" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="10">
+                    <Label Text="Guia de Navegacion" 
+                           FontSize="24" 
+                           FontAttributes="Bold"
+                           TextColor="White" 
+                           HorizontalOptions="Center" />
+                    <Label Text="Aprende a usar el nuevo menu vertical" 
+                           FontSize="16" 
+                           TextColor="White"
+                           Opacity="0.9"
+                           HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Metodo 1: Boton Hamburguesa -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="15">
+                    <StackLayout Orientation="Horizontal" Spacing="10">
+                        <Label Text="[MENU]" FontSize="20" TextColor="{DynamicResource Primary}" VerticalOptions="Center" />
+                        <Label Text="Metodo 1: Boton de Menu" 
+                               FontSize="20" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}"
+                               VerticalOptions="Center" />
+                    </StackLayout>
+                    
+                    <Label Text="1. Busca el icono de tres lineas en la parte superior izquierda" 
+                           FontSize="16" 
+                           TextColor="{DynamicResource Gray700}" />
+                    
+                    <Label Text="2. Tocalo para abrir el menu vertical" 
+                           FontSize="16" 
+                           TextColor="{DynamicResource Gray700}" />
+                    
+                    <Label Text="3. Selecciona la opcion que desees" 
+                           FontSize="16" 
+                           TextColor="{DynamicResource Gray700}" />
+
+                    <!-- Demo Button -->
+                    <Button Text="Prueba: Abrir Menu"
+                            BackgroundColor="{DynamicResource Primary}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            Clicked="OnToggleMenuClicked" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Metodo 2: Gesto de Deslizar -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="15">
+                    <StackLayout Orientation="Horizontal" Spacing="10">
+                        <Label Text="[SWIPE]" FontSize="20" TextColor="{DynamicResource Secondary}" VerticalOptions="Center" />
+                        <Label Text="Metodo 2: Deslizar con el Dedo" 
+                               FontSize="20" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Secondary}"
+                               VerticalOptions="Center" />
+                    </StackLayout>
+                    
+                    <Label Text="1. Coloca tu dedo en el borde izquierdo de la pantalla" 
+                           FontSize="16" 
+                           TextColor="{DynamicResource Gray700}" />
+                    
+                    <Label Text="2. Desliza hacia la derecha (como pasar pagina)" 
+                           FontSize="16" 
+                           TextColor="{DynamicResource Gray700}" />
+                    
+                    <Label Text="3. El menu aparecera automaticamente" 
+                           FontSize="16" 
+                           TextColor="{DynamicResource Gray700}" />
+
+                    <!-- Visual indicator -->
+                    <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="15">
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <BoxView Color="{DynamicResource Secondary}" 
+                                     WidthRequest="5" 
+                                     HeightRequest="40" 
+                                     VerticalOptions="Center" />
+                            <Label Text="&lt;--" FontSize="30" TextColor="{DynamicResource Secondary}" VerticalOptions="Center" />
+                            <Label Text="Desliza desde este borde" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource Gray600}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+            </Frame>
+
+            <!-- Opciones de Menu -->
+            <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="Opciones del Menu" 
+                           FontSize="20" 
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource Primary}" />
+                    
+                    <StackLayout Spacing="10">
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="[HOME]" FontSize="14" VerticalOptions="Center" />
+                            <Label Text="Inicio - Pagina principal del sistema" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource Gray600}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="[MACH]" FontSize="14" VerticalOptions="Center" />
+                            <Label Text="Maquinaria - Gestion de equipo agricola" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource Gray600}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="[RAIN]" FontSize="14" VerticalOptions="Center" />
+                            <Label Text="Pluvial - Control de lluvia y riego" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource Gray600}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="[TRAP]" FontSize="14" VerticalOptions="Center" />
+                            <Label Text="Trampeo - Control de plagas" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource Gray600}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="[PEST]" FontSize="14" VerticalOptions="Center" />
+                            <Label Text="Rodenticida - Aplicacion de quimicos" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource Gray600}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="[SAMP]" FontSize="14" VerticalOptions="Center" />
+                            <Label Text="Muestra Dano - Evaluacion de cultivos" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource Gray600}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="[IRRI]" FontSize="14" VerticalOptions="Center" />
+                            <Label Text="Riego - Sistema de irrigacion" 
+                                   FontSize="14" 
+                                   TextColor="{DynamicResource Gray600}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <!-- Tips -->
+            <Frame BackgroundColor="{DynamicResource Info}" CornerRadius="15" Padding="25" HasShadow="True">
+                <StackLayout Spacing="10">
+                    <Label Text="Consejos" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="White" />
+                    
+                    <Label Text="- El menu se cierra automaticamente despues de seleccionar una opcion" 
+                           FontSize="14" 
+                           TextColor="White"
+                           Opacity="0.9" />
+                    
+                    <Label Text="- Puedes deslizar hacia la izquierda sobre el menu para cerrarlo" 
+                           FontSize="14" 
+                           TextColor="White"
+                           Opacity="0.9" />
+                    
+                    <Label Text="- El gesto de deslizar funciona desde cualquier pagina" 
+                           FontSize="14" 
+                           TextColor="White"
+                           Opacity="0.9" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Back Button -->
+            <Button Text="Volver al Inicio"
+                    BackgroundColor="{DynamicResource Primary}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    FontSize="16"
+                    Clicked="OnGoBackClicked" />
+
+        </StackLayout>
+    </ScrollView>
+
+</views:BasePage>

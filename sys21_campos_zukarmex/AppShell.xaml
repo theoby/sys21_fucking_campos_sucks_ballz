@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="sys21_campos_zukarmex.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:sys21_campos_zukarmex.Views"
+    xmlns:controls="clr-namespace:sys21_campos_zukarmex.Controls"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.FlyoutWidth="300"
+    Shell.NavBarIsVisible="True"
+    Shell.FlyoutIcon="hamburger_menu.png">
+
+    <!-- Custom Flyout Header -->
+    <Shell.FlyoutHeader>
+        <controls:CustomFlyoutHeader />
+    </Shell.FlyoutHeader>
+
+    <!-- Flyout Footer -->
+    <Shell.FlyoutFooter>
+        <Grid BackgroundColor="{DynamicResource Gray100}" 
+              Padding="20,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <StackLayout Grid.Column="0" Orientation="Vertical">
+                <Label Text="Version 1.0.0" 
+                       FontSize="15" 
+                       TextColor="{DynamicResource Gray600}" />
+                <Label Text="(c) 2024 Zucarmex" 
+                       FontSize="15" 
+                       TextColor="{DynamicResource Gray500}" />
+            </StackLayout>
+            
+            <Button Grid.Column="1"
+                    Text="Cerrar Sesion"
+                    FontSize="15"
+                    BackgroundColor="Transparent"
+                    TextColor="{DynamicResource Error}"
+                    Clicked="OnLogoutClicked" />
+        </Grid>
+    </Shell.FlyoutFooter>
+
+    <!-- Loading Flow -->
+    <ShellContent
+        Route="loading"
+        ContentTemplate="{DataTemplate local:LoadingPage}"
+        Shell.FlyoutBehavior="Disabled" />
+
+    <!-- Login Flow -->
+    <ShellContent
+        Route="login"
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Shell.FlyoutBehavior="Disabled" />
+
+    <!-- Admin Config Flow -->
+    <ShellContent
+        Route="adminconfig"
+        ContentTemplate="{DataTemplate local:AdminConfigPage}"
+        Shell.FlyoutBehavior="Disabled" />
+
+    <!-- Sync Flow -->
+    <ShellContent
+        Route="sync"
+        ContentTemplate="{DataTemplate local:SyncPage}"
+        Shell.FlyoutBehavior="Disabled" />
+
+    <!-- Navigation Demo -->
+    <ShellContent
+        Route="navigationdemo"
+        ContentTemplate="{DataTemplate local:NavigationDemoPage}"
+        Shell.FlyoutBehavior="Disabled" />
+
+    <!-- Main App Navigation with Vertical Menu -->
+    <!-- Make the first FlyoutItem the default but hide it initially -->
+    <FlyoutItem Title="Inicio" 
+                Icon="{OnPlatform Android=home_icon.png, iOS=house.fill, WinUI=Assets/home_icon.png}"
+                Route="home"
+                IsVisible="True">
+        <ShellContent Route="homepage" ContentTemplate="{DataTemplate local:HomePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Maquinaria" 
+                Icon="{OnPlatform Android=vale_icon.png, iOS=doc.text, WinUI=Assets/vale_icon.png}"
+                Route="vale">
+        <ShellContent ContentTemplate="{DataTemplate local:ValePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Pluvial" 
+                Icon="{OnPlatform Android=auth_icon.png, iOS=person.badge.key, WinUI=Assets/auth_icon.png}"
+                Route="autorizacion">
+        <ShellContent ContentTemplate="{DataTemplate local:AuthorizationPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Trampeo" 
+                Icon="{OnPlatform Android=pendientes.png, iOS=checkmark.circle, WinUI=Assets/status_icon.png}"
+                Route="status">
+        <ShellContent ContentTemplate="{DataTemplate local:StatusPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Rodenticida" 
+                Icon="{OnPlatform Android=historial.png, iOS=clock.fill, WinUI=Assets/status_icon.png}"
+                Route="historial1">
+        <ShellContent ContentTemplate="{DataTemplate local:HistorialPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Muestra Dano" 
+                Icon="{OnPlatform Android=historial.png, iOS=clock.fill, WinUI=Assets/status_icon.png}"
+                Route="historial2">
+        <ShellContent ContentTemplate="{DataTemplate local:HistorialPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Riego" 
+                Icon="{OnPlatform Android=historial.png, iOS=clock.fill, WinUI=Assets/status_icon.png}"
+                Route="historial3">
+        <ShellContent ContentTemplate="{DataTemplate local:HistorialPage}" />
+    </FlyoutItem>
+
+    <!-- Menu Item Separator -->
+    <MenuItem Text="Guia de Navegacion" 
+              IconImageSource="{OnPlatform Android=help_icon.png, iOS=questionmark.circle, WinUI=Assets/help_icon.png}"
+              Clicked="OnSettingsClicked" />
+
+    <!-- Shell Styles -->
+    <Shell.Resources>
+        <Style TargetType="Shell">
+            <Setter Property="Shell.BackgroundColor" Value="{DynamicResource White}" />
+            <Setter Property="Shell.ForegroundColor" Value="{DynamicResource Primary}" />
+            <Setter Property="Shell.TitleColor" Value="White" />
+            <Setter Property="Shell.DisabledColor" Value="{DynamicResource Gray200}" />
+            <Setter Property="Shell.UnselectedColor" Value="{DynamicResource Gray400}" />
+        </Style>
+
+        <!-- Flyout Styles -->
+        <Style TargetType="FlyoutItem">
+            <Setter Property="Shell.BackgroundColor" Value="{DynamicResource White}" />
+            <Setter Property="Shell.ForegroundColor" Value="{DynamicResource Gray900}" />
+            <Setter Property="Shell.TitleColor" Value="{DynamicResource Gray900}" />
+        </Style>
+
+        <!-- Selected Item Style -->
+        <Style TargetType="ShellContent">
+            <Setter Property="Shell.BackgroundColor" Value="{DynamicResource Primary}" />
+            <Setter Property="Shell.ForegroundColor" Value="White" />
+            <Setter Property="Shell.TitleColor" Value="White" />
+        </Style>
+
+        <!-- Flyout Item Template -->
+        <DataTemplate x:Key="FlyoutItemTemplate">
+            <Grid HeightRequest="50" 
+                  Padding="20,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <Image Grid.Column="0"
+                       Source="{Binding Icon}"
+                       WidthRequest="24"
+                       HeightRequest="24"
+                       VerticalOptions="Center" />
+                       
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="16"
+                       VerticalOptions="Center"
+                       Margin="20,0,0,0" />
+            </Grid>
+        </DataTemplate>
+    </Shell.Resources>
+
+</Shell>
+

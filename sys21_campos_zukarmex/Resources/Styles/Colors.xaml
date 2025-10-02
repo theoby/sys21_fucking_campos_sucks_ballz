@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Material Design Color Palette -->
+    <Color x:Key="Primary">#2196F3</Color>
+    <Color x:Key="PrimaryDark">#1976D2</Color>
+    <Color x:Key="PrimaryLight">#BBDEFB</Color>
+    <Color x:Key="Secondary">#FF9800</Color>
+    <Color x:Key="SecondaryDark">#F57C00</Color>
+    <Color x:Key="SecondaryLight">#FFE0B2</Color>
+    
+    <!-- Accent Colors -->
+    <Color x:Key="Accent">#4CAF50</Color>
+    <Color x:Key="Success">#4CAF50</Color>
+    <Color x:Key="Warning">#FF9800</Color>
+    <Color x:Key="Error">#F44336</Color>
+    <Color x:Key="Info">#2196F3</Color>
+    
+    <!-- Gray Scale -->
+    <Color x:Key="White">#FFFFFF</Color>
+    <Color x:Key="Black">#000000</Color>
+    <Color x:Key="Gray900">#212121</Color>
+    <Color x:Key="Gray800">#424242</Color>
+    <Color x:Key="Gray700">#616161</Color>
+    <Color x:Key="Gray600">#757575</Color>
+    <Color x:Key="Gray500">#9E9E9E</Color>
+    <Color x:Key="Gray400">#BDBDBD</Color>
+    <Color x:Key="Gray300">#E0E0E0</Color>
+    <Color x:Key="Gray200">#EEEEEE</Color>
+    <Color x:Key="Gray100">#F5F5F5</Color>
+    <Color x:Key="Gray50">#FAFAFA</Color>
+    
+    <!-- Background Colors -->
+    <Color x:Key="PageBackgroundColor">#F5F5F5</Color>
+    <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
+    <Color x:Key="SurfaceColor">#FFFFFF</Color>
+    
+    <!-- Text Colors -->
+    <Color x:Key="TextPrimary">#212121</Color>
+    <Color x:Key="TextSecondary">#757575</Color>
+    <Color x:Key="TextHint">#9E9E9E</Color>
+    <Color x:Key="TextOnPrimary">#FFFFFF</Color>
+    <Color x:Key="TextOnSecondary">#FFFFFF</Color>
+    
+    <!-- Border Colors -->
+    <Color x:Key="BorderColor">#E0E0E0</Color>
+    <Color x:Key="DividerColor">#E0E0E0</Color>
+    
+    <!-- Status Colors -->
+    <Color x:Key="StatusPending">#FF9800</Color>
+    <Color x:Key="StatusCompleted">#4CAF50</Color>
+    <Color x:Key="StatusError">#F44336</Color>
+    <Color x:Key="StatusInfo">#2196F3</Color>
+
+</ResourceDictionary>

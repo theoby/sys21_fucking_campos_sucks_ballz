@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="sys21_campos_zukarmex.Views.AgregarArticuloPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:behaviors="clr-namespace:sys21_campos_zukarmex.Behaviors"
+             x:DataType="viewmodels:AgregarArticuloViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource Gray100}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <ScrollView Grid.Row="1" Padding="20">
+            <StackLayout Spacing="20">
+
+                <Frame Grid.Row="0" BackgroundColor="LightBlue" Padding="10" IsVisible="False">
+                    <Label Text="{Binding DebugInfo}" FontSize="12" TextColor="Black" />
+                </Frame>
+
+                <Frame Grid.Row="0"
+                       BackgroundColor="Orange"
+                       Padding="10"
+                       CornerRadius="15"
+                       IsVisible="{Binding ConnectivitySvc.IsConnected, Converter={StaticResource InvertedBoolConverter}}">
+                            <Label Text="No hay conexion, no se verificaran saldos"
+                                   TextColor="White"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center" 
+                            />    
+                </Frame>
+
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                    <StackLayout Spacing="15">
+                        
+                        <Label Text="Agregar Articulo al Vale" 
+                               FontSize="20" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}" 
+                               HorizontalOptions="Center" />
+
+                        <!-- Familia -->
+                        <StackLayout>
+                            <Label Text="Familia *" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Familias}"
+                                        SelectedItem="{Binding SelectedFamilia}"
+                                        ItemDisplayBinding="{Binding Nombre}"
+                                        Title="Seleccione una familia"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+
+                        <!-- SubFamilia -->
+                        <StackLayout>
+                            <Label Text="SubFamilia *" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding SubFamilias}"
+                                        SelectedItem="{Binding SelectedSubFamilia}"
+                                        ItemDisplayBinding="{Binding Nombre}"
+                                        Title="Seleccione una subfamilia"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Articulo -->
+                        <StackLayout>
+                            <Label Text="Articulo *" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Articulos}"
+                                        SelectedItem="{Binding SelectedArticulo}"
+                                        ItemDisplayBinding="{Binding Nombre}"
+                                        Title="Seleccione un articulo"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Cantidad (Editable) -->
+                        <StackLayout>
+                            <Label Text="Cantidad *" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Entry Text="{Binding Cantidad, Converter={StaticResource IntegerToFormattedStringConverter}}" 
+                                       Placeholder="Ingrese la cantidad (ej: 1000)"
+                                       Keyboard="Numeric"
+                                       FontSize="16"
+                                       BackgroundColor="Transparent"
+                                       TextColor="{DynamicResource Gray700}">
+                                        <Entry.Behaviors>
+                                            <behaviors:IntegerThousandsSeparatorBehaviorSimple />
+                                        </Entry.Behaviors>
+                                </Entry>
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Concepto Determinado -->
+                        <StackLayout>
+                            <Label Text="Concepto Determinado" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Entry Text="{Binding Concepto}" 
+                                       Placeholder="Ingrese el concepto"
+                                       FontSize="16"
+                                       BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Unidad -->
+                        <StackLayout>
+                            <Label Text="Unidad" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                            <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Entry Text="{Binding Unidad}"  IsReadOnly="true"
+                                       Placeholder="KG, LT, PZ"
+                                       FontSize="16"
+                                       BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Maquinaria Section (only when familia UsaMaquinaria = true) -->
+                        <StackLayout IsVisible="{Binding ShowMaquinariaSection}">
+                            <Label Text="Maquinaria *" FontSize="14" TextColor="{DynamicResource Gray600}"/>
+                            <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Maquinarias}"
+                                        SelectedItem="{Binding SelectedMaquinaria}"
+                                        ItemDisplayBinding="{Binding Nombre}"
+                                        Title="Seleccione una maquinaria"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Lotes Section (only when familia UsaMaquinaria = false) -->
+                        <StackLayout IsVisible="{Binding ShowLotesSection}">
+                            <Label Text="Centro de Costo (Lote)" FontSize="14" TextColor="{DynamicResource Gray600}"/>
+                            <Frame BackgroundColor="{DynamicResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Lotes}"
+                                        SelectedItem="{Binding SelectedLote}"
+                                        ItemDisplayBinding="{Binding Nombre}"
+                                        Title="Seleccione un lote"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                    </StackLayout>
+                </Frame>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="15" Padding="20">
+            <Button Grid.Column="0"
+                    Text="Cancelar"
+                    Command="{Binding CancelarCommand}"
+                    BackgroundColor="{DynamicResource Gray500}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    FontSize="16"
+                    FontAttributes="Bold" />
+            
+            <Button Grid.Column="1"
+                    Text="Guardar"
+                    Command="{Binding GuardarCommand}"
+                    BackgroundColor="{DynamicResource Primary}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    FontSize="16"
+                    FontAttributes="Bold" />
+        </Grid>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsBusy}" 
+                           IsVisible="{Binding IsBusy}"
+                           Color="{DynamicResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>
