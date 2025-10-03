@@ -1,12 +1,128 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:behaviors="clr-namespace:sys21_campos_zukarmex.Behaviors"
              x:Class="sys21_campos_zukarmex.Views.IrrigationLinePage"
-             Title="IrrigationLinePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="viewmodels:IrrigationLineViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource Gray100}">
+
+    <Grid RowDefinitions="*">
+
+        <ScrollView Grid.Row="0">
+            <StackLayout Spacing="20" Padding="20">
+
+                <Frame BackgroundColor="{DynamicResource Primary}" CornerRadius="15" HasShadow="True">
+                    <Label Text="Línea de Riego" 
+                           FontSize="20" 
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"/>
+                </Frame>
+
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                    <StackLayout Spacing="15">
+
+                        <StackLayout>
+                            <Label Text="Predio" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Predios}"
+                                        SelectedItem="{Binding SelectedPredio}"
+                                        Title="Seleccione un predio"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Línea de Riego" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding LineasDeRiego}"
+                                        SelectedItem="{Binding SelectedLineaDeRiego}"
+                                        Title="Seleccione una línea de riego"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Fecha" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <DatePicker Date="{Binding Fecha}" 
+                                            Format="dd/MM/yyyy"
+                                            FontSize="16"
+                                            BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Equipo de bombeo" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Entry Text="{Binding EquipoDeBombeo}"
+                                       Placeholder="Ingrese el equipo de bombeo"
+                                       Keyboard="Text"
+                                       FontSize="16"
+                                       BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Equipos de bombeo operando" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Entry Text="{Binding EquiposDeBombeoOperando}"
+                                       Placeholder="Número de equipos operando"
+                                       Keyboard="Numeric">
+
+                                    <Entry.Behaviors>
+                                        <behaviors:NumericValidationBehavior />
+                                    </Entry.Behaviors>
+
+                                </Entry>
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Observación" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Editor Text="{Binding Observacion}"
+                                        Placeholder="Ingrese cualquier observación"
+                                        AutoSize="TextChanges"
+                                        HeightRequest="80"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent"
+                                        MaxLength="255"/>
+                            </Frame>
+                        </StackLayout>
+
+                    </StackLayout>
+                </Frame>
+
+                <Button Text="Añadir"
+                        Command="{Binding AddIrrigationEntryCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        CornerRadius="25"
+                        HeightRequest="50"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        Margin="0,10,0,0">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="+"
+                                         Color="White"
+                                         Size="22"/>
+                    </Button.ImageSource>
+                </Button>
+
+            </StackLayout>
+        </ScrollView>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                           IsVisible="{Binding IsBusy}"
+                           Color="{DynamicResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
+
 </ContentPage>

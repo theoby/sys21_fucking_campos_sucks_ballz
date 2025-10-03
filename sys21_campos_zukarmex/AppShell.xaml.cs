@@ -21,11 +21,11 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("historial1", typeof(HistorialPage));
         Routing.RegisterRoute("historial2", typeof(HistorialPage));
         Routing.RegisterRoute("historial3", typeof(HistorialPage));
+
         Routing.RegisterRoute(nameof(Views.RatTrappingPage), typeof(Views.RatTrappingPage));
         Routing.RegisterRoute(nameof(Views.RodenticideConsumptionPage), typeof(Views.RodenticideConsumptionPage));
         Routing.RegisterRoute(nameof(Views.DamageAssessmentPage), typeof(Views.DamageAssessmentPage));
         Routing.RegisterRoute(nameof(Views.IrrigationLinePage), typeof(Views.IrrigationLinePage));
-        // Register new routes
         Routing.RegisterRoute(nameof(AgregarArticuloPage), typeof(AgregarArticuloPage));
         Routing.RegisterRoute("navigationdemo", typeof(NavigationDemoPage));
 
