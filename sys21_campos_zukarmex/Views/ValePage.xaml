@@ -17,7 +17,7 @@
                 <!-- Welcome Header -->
                 <Frame BackgroundColor="{DynamicResource Primary}" CornerRadius="15"  HasShadow="True">
                     <StackLayout Spacing="10">
-                        <Label Text="Creacion de Vales de Salida" 
+                        <Label Text="Uso de Maquinaria" 
                                 FontSize="20" 
                                 FontAttributes="Bold"
                                 TextColor="White"
@@ -27,12 +27,12 @@
 
 
                 <Frame
-CornerRadius="10"
-HasShadow="True"
-Padding="6"
-Margin="0"
-HorizontalOptions="Fill"
-IsVisible="False">
+                    CornerRadius="10"
+                    HasShadow="True"
+                    Padding="6"
+                    Margin="0"
+                    HorizontalOptions="Fill"
+                    IsVisible="False">
 
                     <!-- Triggers que afectan solo al Frame -->
                     <Frame.Triggers>
@@ -89,11 +89,47 @@ IsVisible="False">
 
                 <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
                     <StackLayout Spacing="15">
-                        
-                        <Label Text="{Binding SelectedVale, Converter={StaticResource ValeToTitleConverter}}" 
-                               FontSize="20" 
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource Primary}" />
+                 
+                        <!-- Fecha -->
+                        <StackLayout>
+                            <Label Text="Fecha" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <DatePicker Date="{Binding Fecha}" 
+                                  FontSize="16"
+                                  BackgroundColor="Transparent" 
+                                  Format="dd/MM/yyyy"
+                                  IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />        
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Almacen -->
+                        <StackLayout>
+                            <Label Text="Empresa" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Almacenes}"
+                                    SelectedItem="{Binding SelectedAlmacen}"
+                                    ItemDisplayBinding="{Binding Nombre}"
+                                    Title="Seleccione un almacen"
+                                    FontSize="16"
+                                    BackgroundColor="Transparent"
+                                    IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Almacen -->
+                        <StackLayout>
+                            <Label Text="Equipos" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Almacenes}"
+                       SelectedItem="{Binding SelectedAlmacen}"
+                       ItemDisplayBinding="{Binding Nombre}"
+                       Title="Seleccione un almacen"
+                       FontSize="16"
+                       BackgroundColor="Transparent"
+                       IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
+                            </Frame>
+                        </StackLayout>
+
 
                         <!-- Campo -->
                         <StackLayout>
@@ -109,56 +145,37 @@ IsVisible="False">
                             </Frame>
                         </StackLayout>
 
-                        <!-- Almacen -->
-                        <StackLayout>
-                            <Label Text="Almacen" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                <Picker ItemsSource="{Binding Almacenes}"
-                                        SelectedItem="{Binding SelectedAlmacen}"
-                                        ItemDisplayBinding="{Binding Nombre}"
-                                        Title="Seleccione un almacen"
-                                        FontSize="16"
-                                        BackgroundColor="Transparent"
-                                        IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
-                            </Frame>
-                        </StackLayout>
-
-                        <!-- Fecha -->
-                        <StackLayout>
-                            <Label Text="Fecha" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                <DatePicker Date="{Binding Fecha}" 
-                                           FontSize="16"
-                                           BackgroundColor="Transparent" 
-                                           Format="dd/MM/yyyy"
-                                           IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
-                            </Frame>
-                        </StackLayout>
-
-                        <!-- Concepto -->
-                        <StackLayout>
-                            <Label Text="Concepto" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                <Entry Text="{Binding Concepto}" 
-                                       Placeholder="Ingrese el concepto"
-                                       FontSize="16"
-                                       BackgroundColor="Transparent"
-                                       IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
-                            </Frame>
-                        </StackLayout>
 
 
                         <!-- Tipo de Entrada -->
                         <StackLayout>
-                            <Label Text="Tipo" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                <Picker ItemsSource="{Binding TipoEntrada}"
-                                        SelectedItem="{Binding SelectedTipoEntrada}"
-                                        Title="Receta o Articulo"
-                                        FontSize="16"
-                                        BackgroundColor="Transparent"
-                                        IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
-                            </Frame>
+                            <Grid ColumnDefinitions="*, *">
+                                <StackLayout Grid.Column="0">
+                                    <Label Text="Horas" FontSize="14" TextColor="{StaticResource Gray600}" />
+                                    <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                        <Picker ItemsSource="{Binding TipoEntrada}"
+                                             SelectedItem="{Binding SelectedTipoEntrada}"
+                                             Title="Horas"
+                                             FontSize="16"
+                                             BackgroundColor="Transparent"
+                                             IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />     
+                                    </Frame>
+
+                                </StackLayout>
+                                <StackLayout Grid.Column="1">
+                                    <Label Text="Kilometraje" FontSize="14" TextColor="{StaticResource Gray600}" />
+                                    <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                        <Picker ItemsSource="{Binding TipoEntrada}"
+                                            SelectedItem="{Binding SelectedTipoEntrada}"
+                                            Title="Kilometraje"
+                                            FontSize="16"
+                                            BackgroundColor="Transparent"
+                                            IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
+                                    </Frame>
+
+                                </StackLayout>
+                            </Grid>
+                           
                         </StackLayout>
 
                         <!-- Lotes (Visible solo cuando TipoEntrada = "Receta") -->
@@ -201,22 +218,9 @@ IsVisible="False">
 
                         <!-- Buttons -->
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                            <Button Grid.Column="0"
-                                    Text="Nuevo"
-                                    Command="{Binding NewValeCommand}"
-                                    BackgroundColor="{StaticResource Accent}"
-                                    TextColor="White"
-                                    CornerRadius="10"
-                                    FontSize="18" />
+
                             <Button Grid.Column="1"
-                                    Text="Agregar Articulo"
-                                    Command="{Binding AgregarArticuloCommand}"
-                                    BackgroundColor="{StaticResource Secondary}"
-                                    TextColor="White"
-                                    CornerRadius="10"
-                                    FontSize="18" />
-                            <Button Grid.Column="2"
-                                    Text="Guardar"
+                                    Text="Añadir"
                                     Command="{Binding SaveValeCommand}"
                                     BackgroundColor="{StaticResource Primary}"
                                     TextColor="White"
