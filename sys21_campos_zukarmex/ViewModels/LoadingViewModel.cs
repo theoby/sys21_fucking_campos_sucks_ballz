@@ -42,20 +42,20 @@ public partial class LoadingViewModel : BaseViewModel
             Progress = 0.4;
             await Task.Delay(500);
             
-            // Inicializar AppConfigService y cargar URL desde configuración
+            // Inicializar AppConfigService y cargar URL desde configuraciï¿½n
             if (!AppConfigService.IsInitialized)
             {
                 AppConfigService.Initialize(_databaseService);
             }
             
-            // Cargar URL desde el primer registro de configuración
+            // Cargar URL desde el primer registro de configuraciï¿½n
             await AppConfigService.LoadUrlFromDatabaseAsync();
             
             LoadingMessage = "Verificando configuracion...";
             Progress = 0.6;
             await Task.Delay(500);
             
-            // Verificar si existe configuración y si la URL está funcionando
+            // Verificar si existe configuraciï¿½n y si la URL estï¿½ funcionando
             var existeConfig = await _configuracionService.ExisteConfiguracionAsync();
             if (existeConfig)
             {
@@ -75,9 +75,9 @@ public partial class LoadingViewModel : BaseViewModel
             LoadingMessage = "Aplicacion lista";
             Progress = 1.0;
             await Task.Delay(500);
-            
-            // Navigate to login
-            await Shell.Current.GoToAsync("//login");
+
+            System.Diagnostics.Debug.WriteLine("âœ… LoadingViewModel: InicializaciÃ³n completada. Esperando navegaciÃ³n desde App.xaml.cs...");
+            //DejÃ© la navegacion al login desde el App.xaml.cs para no interferir con el metodo de Mario
         }
         catch (Exception ex)
         {
@@ -85,15 +85,12 @@ public partial class LoadingViewModel : BaseViewModel
             System.Diagnostics.Debug.WriteLine($"Error en LoadingViewModel: {ex}");
             await Shell.Current.DisplayAlert("Error", "Error al inicializar la aplicacion", "OK");
             
-            // En caso de error, asegurar que al menos se use la configuración por defecto
+            // En caso de error, asegurar que al menos se use la configuraciï¿½n por defecto
             if (!AppConfigService.IsInitialized)
             {
                 AppConfigService.Initialize(_databaseService);
                 AppConfigService.ResetToDefaultUrl();
             }
-            
-            // Continuar al login incluso si hay errores
-            await Shell.Current.GoToAsync("//login");
         }
     }
 }
