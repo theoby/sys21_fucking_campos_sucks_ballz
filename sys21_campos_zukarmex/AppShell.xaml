@@ -93,28 +93,28 @@
         <ShellContent ContentTemplate="{DataTemplate local:AuthorizationPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Trampeo" 
-                Icon="{OnPlatform Android=pendientes.png, iOS=checkmark.circle, WinUI=Assets/status_icon.png}"
-                Route="status">
-        <ShellContent ContentTemplate="{DataTemplate local:StatusPage}" />
+    <FlyoutItem Title="Trampeo de Ratas" 
+                Icon="{OnPlatform Android=pendientes.png, iOS=pawprint.fill, WinUI=Assets/pendientes.png}"
+                Route="ratTrapping">
+        <ShellContent ContentTemplate="{DataTemplate local:RatTrappingPage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="Rodenticida" 
-                Icon="{OnPlatform Android=historial.png, iOS=clock.fill, WinUI=Assets/status_icon.png}"
-                Route="historial1">
-        <ShellContent ContentTemplate="{DataTemplate local:HistorialPage}" />
+            Icon="{OnPlatform Android=historial.png, iOS=cross.vial.fill, WinUI=Assets/status_icon.png}"
+            Route="rodenticideConsumption">
+        <ShellContent ContentTemplate="{DataTemplate local:RodenticideConsumptionPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Muestra Dano" 
-                Icon="{OnPlatform Android=historial.png, iOS=clock.fill, WinUI=Assets/status_icon.png}"
-                Route="historial2">
-        <ShellContent ContentTemplate="{DataTemplate local:HistorialPage}" />
+    <FlyoutItem Title="Muestra Daño" 
+            Icon="{OnPlatform Android=historial.png, iOS=leaf.arrow.triangle.circlepath, WinUI=Assets/status_icon.png}"
+            Route="damageAssessment">
+        <ShellContent ContentTemplate="{DataTemplate local:DamageAssessmentPage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="Riego" 
-                Icon="{OnPlatform Android=historial.png, iOS=clock.fill, WinUI=Assets/status_icon.png}"
-                Route="historial3">
-        <ShellContent ContentTemplate="{DataTemplate local:HistorialPage}" />
+            Icon="{OnPlatform Android=historial.png, iOS=drop.fill, WinUI=Assets/status_icon.png}"
+            Route="irrigationLine">
+        <ShellContent ContentTemplate="{DataTemplate local:IrrigationLinePage}" />
     </FlyoutItem>
 
     <!-- Menu Item Separator -->

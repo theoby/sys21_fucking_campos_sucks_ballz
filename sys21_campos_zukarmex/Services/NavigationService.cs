@@ -4,7 +4,7 @@ using System.Text;
 namespace sys21_campos_zukarmex.Services;
 
 /// <summary>
-/// Servicio centralizado para manejo de navegación dinámica basada en sesiones
+/// Servicio centralizado para manejo de navegaciï¿½n dinï¿½mica basada en sesiones
 /// </summary>
 public class NavigationService
 {
@@ -20,7 +20,7 @@ public class NavigationService
     }
 
     /// <summary>
-    /// Determina la ruta inicial basada en el estado de la sesión
+    /// Determina la ruta inicial basada en el estado de la sesiï¿½n
     /// </summary>
     public async Task<string> DetermineInitialRouteAsync()
     {
@@ -28,10 +28,10 @@ public class NavigationService
         {
             System.Diagnostics.Debug.WriteLine("?? === DETERMINANDO RUTA INICIAL ===");
             
-            // Verificar si la base de datos está inicializada
+            // Verificar si la base de datos estï¿½ inicializada
             await _databaseService.InitializeAsync();
             
-            // Cargar la sesión más reciente
+            // Cargar la sesiï¿½n mï¿½s reciente
             var session = await _sessionService.LoadMostRecentSessionAsync();
             
             if (session == null)
@@ -40,18 +40,18 @@ public class NavigationService
                 return "//login";
             }
             
-            // Verificar validez de la sesión
+            // Verificar validez de la sesiï¿½n
             bool isValid = await IsSessionValidForNavigationAsync(session);
             
             if (isValid)
             {
-                System.Diagnostics.Debug.WriteLine("?? Sesión válida ? HOME");
+                System.Diagnostics.Debug.WriteLine("?? Sesiï¿½n vï¿½lida ? HOME");
                 return "//home";
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("?? Sesión inválida ? LOGIN");
-                // NO limpiar automáticamente la sesión aquí - puede estar interfiriendo
+                System.Diagnostics.Debug.WriteLine("?? Sesiï¿½n invï¿½lida ? LOGIN");
+                // NO limpiar automï¿½ticamente la sesiï¿½n aquï¿½ - puede estar interfiriendo
                 // await _sessionService.ClearSessionAsync();
                 return "//login";
             }
@@ -72,34 +72,34 @@ public class NavigationService
         {
             if (_isNavigating)
             {
-                System.Diagnostics.Debug.WriteLine("?? ?? Navegación ya en progreso - cancelando nueva navegación");
+                System.Diagnostics.Debug.WriteLine("?? ?? Navegaciï¿½n ya en progreso - cancelando nueva navegaciï¿½n");
                 return;
             }
 
             if (_isInitialized)
             {
-                System.Diagnostics.Debug.WriteLine("?? ?? Navegación inicial ya completada - cancelando nueva navegación");
+                System.Diagnostics.Debug.WriteLine("?? ?? Navegaciï¿½n inicial ya completada - cancelando nueva navegaciï¿½n");
                 return;
             }
 
             _isNavigating = true;
-            System.Diagnostics.Debug.WriteLine("?? ?? BLOQUEANDO navegación - iniciando proceso");
+            System.Diagnostics.Debug.WriteLine("?? ?? BLOQUEANDO navegaciï¿½n - iniciando proceso");
             
             var route = await DetermineInitialRouteAsync();
             
             System.Diagnostics.Debug.WriteLine($"?? ?? Navegando a: {route}");
             
-            // Agregar pequeño delay antes de navegar para evitar conflictos
+            // Agregar pequeï¿½o delay antes de navegar para evitar conflictos
             await Task.Delay(50);
             
             await Shell.Current.GoToAsync(route);
             
             _isInitialized = true;
-            System.Diagnostics.Debug.WriteLine("?? ? Navegación inicial completada - marcando como inicializada");
+            System.Diagnostics.Debug.WriteLine("?? ? Navegaciï¿½n inicial completada - marcando como inicializada");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"?? ? Error en navegación: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"?? ? Error en navegaciï¿½n: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"?? ? StackTrace: {ex.StackTrace}");
             
             // Fallback absoluto
@@ -116,12 +116,12 @@ public class NavigationService
         finally
         {
             _isNavigating = false;
-            System.Diagnostics.Debug.WriteLine("?? ?? DESBLOQUEANDO navegación - proceso completado");
+            System.Diagnostics.Debug.WriteLine("?? ?? DESBLOQUEANDO navegaciï¿½n - proceso completado");
         }
     }
 
     /// <summary>
-    /// Verifica si debe mantenerse en la página actual o navegar
+    /// Verifica si debe mantenerse en la pï¿½gina actual o navegar
     /// </summary>
     public async Task<bool> ShouldStayOnCurrentPageAsync()
     {
@@ -131,7 +131,7 @@ public class NavigationService
             
             if (session == null)
             {
-                System.Diagnostics.Debug.WriteLine("?? No hay sesión ? debe salir");
+                System.Diagnostics.Debug.WriteLine("?? No hay sesiï¿½n ? debe salir");
                 return false;
             }
             
@@ -140,26 +140,26 @@ public class NavigationService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"?? ? Error verificando permanencia: {ex.Message}");
-            return false; // Por seguridad, salir de la página
+            return false; // Por seguridad, salir de la pï¿½gina
         }
     }
 
     /// <summary>
-    /// Verifica si una sesión es válida para navegación (más permisiva que las verificaciones estrictas)
+    /// Verifica si una sesiï¿½n es vï¿½lida para navegaciï¿½n (mï¿½s permisiva que las verificaciones estrictas)
     /// </summary>
     private async Task<bool> IsSessionValidForNavigationAsync(Session session)
     {
         try
         {
-            // Criterios básicos para navegación
+            // Criterios bï¿½sicos para navegaciï¿½n
             bool hasToken = !string.IsNullOrEmpty(session.Token);
             bool isActive = session.IsActive;
             bool notExpired = session.ExpirationDate > DateTime.Now;
             
             // Log detallado para debugging
-            System.Diagnostics.Debug.WriteLine($"?? Validación de sesión ID {session.Id}:");
+            System.Diagnostics.Debug.WriteLine($"?? Validaciï¿½n de sesiï¿½n ID {session.Id}:");
             System.Diagnostics.Debug.WriteLine($"   - Token presente: {hasToken}");
-            System.Diagnostics.Debug.WriteLine($"   - Está activa: {isActive}");
+            System.Diagnostics.Debug.WriteLine($"   - Estï¿½ activa: {isActive}");
             System.Diagnostics.Debug.WriteLine($"   - No expirada: {notExpired}");
             
             if (notExpired)
@@ -169,30 +169,30 @@ public class NavigationService
             }
             
             bool isValid = hasToken && isActive && notExpired;
-            System.Diagnostics.Debug.WriteLine($"?? Resultado: {(isValid ? "? VÁLIDA" : "? INVÁLIDA")}");
+            System.Diagnostics.Debug.WriteLine($"?? Resultado: {(isValid ? "? Vï¿½LIDA" : "? INVï¿½LIDA")}");
             
             return isValid;
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"?? ? Error validando sesión: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"?? ? Error validando sesiï¿½n: {ex.Message}");
             return false;
         }
     }
 
     /// <summary>
-    /// Navega de forma segura con validación de sesión
+    /// Navega de forma segura con validaciï¿½n de sesiï¿½n
     /// </summary>
     public async Task NavigateWithSessionValidationAsync(string route)
     {
         try
         {
-            // Verificar sesión antes de navegar
+            // Verificar sesiï¿½n antes de navegar
             var shouldProceed = await ShouldStayOnCurrentPageAsync();
             
             if (!shouldProceed)
             {
-                System.Diagnostics.Debug.WriteLine("?? Sesión inválida, redirigiendo a login");
+                System.Diagnostics.Debug.WriteLine("?? Sesiï¿½n invï¿½lida, redirigiendo a login");
                 await _sessionService.ClearSessionAsync();
                 await Shell.Current.GoToAsync("//login");
                 return;
@@ -203,38 +203,38 @@ public class NavigationService
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"?? ? Error en navegación segura: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"?? ? Error en navegaciï¿½n segura: {ex.Message}");
             await Shell.Current.GoToAsync("//login");
         }
     }
 
     /// <summary>
-    /// Resetea el estado de navegación (para testing)
+    /// Resetea el estado de navegaciï¿½n (para testing)
     /// </summary>
     public static void ResetNavigationState()
     {
         _isNavigating = false;
         _isInitialized = false;
-        System.Diagnostics.Debug.WriteLine("?? Estado de navegación reseteado");
+        System.Diagnostics.Debug.WriteLine("?? Estado de navegaciï¿½n reseteado");
     }
 
     /// <summary>
-    /// Verifica si la navegación ya fue inicializada
+    /// Verifica si la navegaciï¿½n ya fue inicializada
     /// </summary>
     public static bool IsInitialized => _isInitialized;
 
     /// <summary>
-    /// Genera un diagnóstico completo del estado de navegación
+    /// Genera un diagnï¿½stico completo del estado de navegaciï¿½n
     /// </summary>
     public async Task<string> GetNavigationDiagnosticAsync()
     {
         try
         {
             var diagnostic = new StringBuilder();
-            diagnostic.AppendLine("?? === DIAGNÓSTICO COMPLETO DE NAVEGACIÓN ===");
+            diagnostic.AppendLine("?? === DIAGNï¿½STICO COMPLETO DE NAVEGACIï¿½N ===");
             diagnostic.AppendLine($"?? Fecha: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
-            diagnostic.AppendLine($"?? Navegación inicializada: {IsInitialized}");
-            diagnostic.AppendLine($"?? Navegación en progreso: {_isNavigating}");
+            diagnostic.AppendLine($"?? Navegaciï¿½n inicializada: {IsInitialized}");
+            diagnostic.AppendLine($"?? Navegaciï¿½n en progreso: {_isNavigating}");
             diagnostic.AppendLine();
             
             // Verificar estado de la base de datos
@@ -257,7 +257,7 @@ public class NavigationService
                 var mostRecent = sessions.OrderByDescending(s => s.CreatedAt).FirstOrDefault();
                 if (mostRecent != null)
                 {
-                    diagnostic.AppendLine($"?? Sesión más reciente:");
+                    diagnostic.AppendLine($"?? Sesiï¿½n mï¿½s reciente:");
                     diagnostic.AppendLine($"   - ID: {mostRecent.Id}");
                     diagnostic.AppendLine($"   - Usuario: {mostRecent.Username}");
                     diagnostic.AppendLine($"   - Creada: {mostRecent.CreatedAt:dd/MM/yyyy HH:mm:ss}");
@@ -266,7 +266,7 @@ public class NavigationService
                     diagnostic.AppendLine($"   - Token presente: {!string.IsNullOrEmpty(mostRecent.Token)}");
                     
                     bool isValid = await IsSessionValidForNavigationAsync(mostRecent);
-                    diagnostic.AppendLine($"   - Válida para navegación: {isValid}");
+                    diagnostic.AppendLine($"   - Vï¿½lida para navegaciï¿½n: {isValid}");
                     
                     var route = await DetermineInitialRouteAsync();
                     diagnostic.AppendLine($"?? Ruta determinada: {route}");
@@ -278,52 +278,52 @@ public class NavigationService
                 diagnostic.AppendLine("?? Ruta determinada: //login (sin sesiones)");
             }
             
-            // Información de la sesión actual
+            // Informaciï¿½n de la sesiï¿½n actual
             try
             {
                 var currentSession = await _sessionService.GetCurrentSessionAsync();
                 if (currentSession != null)
                 {
                     diagnostic.AppendLine();
-                    diagnostic.AppendLine("?? Sesión actual en memoria:");
+                    diagnostic.AppendLine("?? Sesiï¿½n actual en memoria:");
                     diagnostic.AppendLine($"   - ID: {currentSession.Id}");
                     diagnostic.AppendLine($"   - Usuario: {currentSession.Username}");
-                    diagnostic.AppendLine($"   - Válida: {await IsSessionValidForNavigationAsync(currentSession)}");
+                    diagnostic.AppendLine($"   - Vï¿½lida: {await IsSessionValidForNavigationAsync(currentSession)}");
                 }
                 else
                 {
                     diagnostic.AppendLine();
-                    diagnostic.AppendLine("? No hay sesión actual en memoria");
+                    diagnostic.AppendLine("? No hay sesiï¿½n actual en memoria");
                 }
             }
             catch (Exception ex)
             {
                 diagnostic.AppendLine();
-                diagnostic.AppendLine($"? Error obteniendo sesión actual: {ex.Message}");
+                diagnostic.AppendLine($"? Error obteniendo sesiï¿½n actual: {ex.Message}");
             }
             
             diagnostic.AppendLine();
-            diagnostic.AppendLine("?? === FIN DIAGNÓSTICO ===");
+            diagnostic.AppendLine("?? === FIN DIAGNï¿½STICO ===");
             
             return diagnostic.ToString();
         }
         catch (Exception ex)
         {
-            return $"? Error generando diagnóstico: {ex.Message}";
+            return $"? Error generando diagnï¿½stico: {ex.Message}";
         }
     }
 
     /// <summary>
-    /// Método de emergencia para forzar navegación al home si hay una sesión válida
+    /// Mï¿½todo de emergencia para forzar navegaciï¿½n al home si hay una sesiï¿½n vï¿½lida
     /// SOLO PARA DEBUGGING - fuerza ir al home sin importar otras verificaciones
     /// </summary>
     public async Task ForceNavigateToHomeIfValidSessionAsync()
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === MODO EMERGENCIA: FORZANDO NAVEGACIÓN AL HOME ===");
+            System.Diagnostics.Debug.WriteLine("?? === MODO EMERGENCIA: FORZANDO NAVEGACIï¿½N AL HOME ===");
             
-            // Verificar si hay alguna sesión con token
+            // Verificar si hay alguna sesiï¿½n con token
             var sessions = await _databaseService.GetAllAsync<Session>();
             
             if (sessions == null || !sessions.Any())
@@ -340,7 +340,7 @@ public class NavigationService
             
             if (sessionWithToken != null)
             {
-                System.Diagnostics.Debug.WriteLine($"?? SESIÓN CON TOKEN ENCONTRADA - FORZANDO A HOME:");
+                System.Diagnostics.Debug.WriteLine($"?? SESIï¿½N CON TOKEN ENCONTRADA - FORZANDO A HOME:");
                 System.Diagnostics.Debug.WriteLine($"   - ID: {sessionWithToken.Id}");
                 System.Diagnostics.Debug.WriteLine($"   - Usuario: {sessionWithToken.Username}");
                 System.Diagnostics.Debug.WriteLine($"   - Token: PRESENTE ({sessionWithToken.Token.Length} chars)");
@@ -348,9 +348,9 @@ public class NavigationService
                 System.Diagnostics.Debug.WriteLine($"   - Expira: {sessionWithToken.ExpirationDate}");
                 System.Diagnostics.Debug.WriteLine($"   - IsActive: {sessionWithToken.IsActive}");
                 
-                // FORZAR navegación al home sin más verificaciones
+                // FORZAR navegaciï¿½n al home sin mï¿½s verificaciones
                 await Shell.Current.GoToAsync("//home");
-                System.Diagnostics.Debug.WriteLine("?? ? NAVEGACIÓN FORZADA AL HOME COMPLETADA");
+                System.Diagnostics.Debug.WriteLine("?? ? NAVEGACIï¿½N FORZADA AL HOME COMPLETADA");
             }
             else
             {
@@ -360,19 +360,19 @@ public class NavigationService
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"?? ? Error en navegación forzada: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"?? ? Error en navegaciï¿½n forzada: {ex.Message}");
             await Shell.Current.GoToAsync("//login");
         }
     }
 
     /// <summary>
-    /// Método simple y directo para navegación inicial - SIN verificaciones complejas
+    /// Mï¿½todo simple y directo para navegaciï¿½n inicial - SIN verificaciones complejas
     /// </summary>
     public async Task SimpleNavigationAsync()
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === NAVEGACIÓN SIMPLE Y DIRECTA ===");
+            System.Diagnostics.Debug.WriteLine("?? === NAVEGACIï¿½N SIMPLE Y DIRECTA ===");
             
             // Verificar base de datos
             await _databaseService.InitializeAsync();
@@ -387,7 +387,7 @@ public class NavigationService
                 return;
             }
             
-            // Buscar sesión más reciente con token
+            // Buscar sesiï¿½n mï¿½s reciente con token
             var recentSessionWithToken = sessions
                 .Where(s => !string.IsNullOrEmpty(s.Token))
                 .OrderByDescending(s => s.CreatedAt)
@@ -395,12 +395,12 @@ public class NavigationService
             
             if (recentSessionWithToken != null)
             {
-                System.Diagnostics.Debug.WriteLine($"?? Sesión con token encontrada: {recentSessionWithToken.Username}");
+                System.Diagnostics.Debug.WriteLine($"?? Sesiï¿½n con token encontrada: {recentSessionWithToken.Username}");
                 System.Diagnostics.Debug.WriteLine($"?? Token length: {recentSessionWithToken.Token.Length}");
                 System.Diagnostics.Debug.WriteLine($"?? Expira: {recentSessionWithToken.ExpirationDate}");
                 System.Diagnostics.Debug.WriteLine($"?? Expirada: {recentSessionWithToken.ExpirationDate <= DateTime.Now}");
                 
-                // Ir al home SIN importar si está expirada (para test)
+                // Ir al home SIN importar si estï¿½ expirada (para test)
                 System.Diagnostics.Debug.WriteLine("?? ? NAVEGANDO A HOME");
                 await Shell.Current.GoToAsync("//home");
             }

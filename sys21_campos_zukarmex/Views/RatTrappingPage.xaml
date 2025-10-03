@@ -1,12 +1,121 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
              x:Class="sys21_campos_zukarmex.Views.RatTrappingPage"
-             Title="RatTrappingPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="viewmodels:RatTrappingViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource Gray100}">
+
+    <Grid RowDefinitions="*">
+
+        <ScrollView Grid.Row="0">
+            <StackLayout Spacing="20" Padding="20">
+
+                <Frame BackgroundColor="{DynamicResource Primary}" CornerRadius="15" HasShadow="True">
+                    <Label Text="Trampeo de Ratas" 
+                           FontSize="20" 
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"/>
+                </Frame>
+
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                    <StackLayout Spacing="15">
+
+                        <StackLayout>
+                            <Label Text="Zafra" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Zafras}"
+                                        SelectedItem="{Binding SelectedZafra}"
+                                        Title="Seleccione una zafra"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Predio" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Picker ItemsSource="{Binding Predios}"
+                                        SelectedItem="{Binding SelectedPredio}"
+                                        Title="Seleccione un predio"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Fecha" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <DatePicker Date="{Binding Fecha}" 
+                                            Format="dd/MM/yyyy"
+                                            FontSize="16"
+                                            BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Número de trampas" FontSize="14" TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                <Entry Text="{Binding NumeroDeTrampas}"
+                                       Placeholder="Ingrese el número total de trampas"
+                                       Keyboard="Numeric"
+                                       FontSize="16"
+                                       BackgroundColor="Transparent" />
+                            </Frame>
+                        </StackLayout>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                            <StackLayout Grid.Column="0">
+                                <Label Text="Machos" FontSize="14" TextColor="{StaticResource Gray600}" />
+                                <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                    <Entry Text="{Binding MachosCapturados}"
+                                           Keyboard="Numeric"
+                                           FontSize="16"
+                                           BackgroundColor="Transparent" />
+                                </Frame>
+                            </StackLayout>
+
+                            <StackLayout Grid.Column="1">
+                                <Label Text="Hembras" FontSize="14" TextColor="{StaticResource Gray600}" />
+                                <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                                    <Entry Text="{Binding HembrasCapturadas}"
+                                           Keyboard="Numeric"
+                                           FontSize="16"
+                                           BackgroundColor="Transparent" />
+                                </Frame>
+                            </StackLayout>
+                        </Grid>
+
+                    </StackLayout>
+                </Frame>
+
+                <Button Text="Añadir"
+                        Command="{Binding AddCaptureCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        CornerRadius="25"
+                        HeightRequest="50"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        Margin="0,10,0,0">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="+"
+                                         Color="White"
+                                         Size="22"/>
+                    </Button.ImageSource>
+                </Button>
+
+            </StackLayout>
+        </ScrollView>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                           IsVisible="{Binding IsBusy}"
+                           Color="{DynamicResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
+
 </ContentPage>

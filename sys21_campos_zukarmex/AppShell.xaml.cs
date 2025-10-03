@@ -21,7 +21,10 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("historial1", typeof(HistorialPage));
         Routing.RegisterRoute("historial2", typeof(HistorialPage));
         Routing.RegisterRoute("historial3", typeof(HistorialPage));
-        
+        Routing.RegisterRoute(nameof(Views.RatTrappingPage), typeof(Views.RatTrappingPage));
+        Routing.RegisterRoute(nameof(Views.RodenticideConsumptionPage), typeof(Views.RodenticideConsumptionPage));
+        Routing.RegisterRoute(nameof(Views.DamageAssessmentPage), typeof(Views.DamageAssessmentPage));
+        Routing.RegisterRoute(nameof(Views.IrrigationLinePage), typeof(Views.IrrigationLinePage));
         // Register new routes
         Routing.RegisterRoute(nameof(AgregarArticuloPage), typeof(AgregarArticuloPage));
         Routing.RegisterRoute("navigationdemo", typeof(NavigationDemoPage));
@@ -68,9 +71,9 @@ public partial class AppShell : Shell
         try
         {
             bool confirm = await Shell.Current.DisplayAlert(
-                "Cerrar Sesión", 
-                "¿Está seguro que desea cerrar sesión?", 
-                "Sí", 
+                "Cerrar Sesiï¿½n", 
+                "ï¿½Estï¿½ seguro que desea cerrar sesiï¿½n?", 
+                "Sï¿½", 
                 "No");
                 
             if (confirm)
@@ -91,7 +94,7 @@ public partial class AppShell : Shell
                         if (sessionService != null)
                         {
                             await sessionService.ClearSessionAsync();
-                            System.Diagnostics.Debug.WriteLine("? Sesión limpiada correctamente");
+                            System.Diagnostics.Debug.WriteLine("? Sesiï¿½n limpiada correctamente");
                         }
                         
                         // Stop connectivity monitoring
@@ -110,13 +113,13 @@ public partial class AppShell : Shell
                 
                 // Navigate to login
                 await Shell.Current.GoToAsync("//login");
-                System.Diagnostics.Debug.WriteLine("? Navegación a login completada");
+                System.Diagnostics.Debug.WriteLine("? Navegaciï¿½n a login completada");
             }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"? Error durante logout: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error", "Error al cerrar sesión", "OK");
+            await Shell.Current.DisplayAlert("Error", "Error al cerrar sesiï¿½n", "OK");
         }
     }
 
