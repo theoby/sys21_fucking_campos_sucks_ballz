@@ -11,71 +11,88 @@
     <Grid RowDefinitions="Auto,*">
 
         <!-- Vale Form -->
-        <ScrollView Grid.Row="1" IsVisible="True" Padding="20">
+        <ScrollView Grid.Row="1"
+                    IsVisible="True"
+                    Padding="20">
             <StackLayout Spacing="20">
 
                 <!-- Welcome Header -->
-                <Frame BackgroundColor="{DynamicResource Primary}" CornerRadius="15"  HasShadow="True">
+                <Frame BackgroundColor="{DynamicResource Primary}"
+                       CornerRadius="15"
+                       HasShadow="True">
                     <StackLayout Spacing="10">
-                        <Label Text="Uso de Maquinaria" 
-                                FontSize="20" 
-                                FontAttributes="Bold"
-                                TextColor="White"
-                               HorizontalOptions="Center"/>
-                        </StackLayout>
+                        <Label Text="Uso de Maquinaria"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
                 </Frame>
 
 
-                <Frame
-                    CornerRadius="10"
-                    HasShadow="True"
-                    Padding="6"
-                    Margin="0"
-                    HorizontalOptions="Fill"
-                    IsVisible="False">
+                <Frame CornerRadius="10"
+                       HasShadow="True"
+                       Padding="6"
+                       Margin="0"
+                       HorizontalOptions="Fill"
+                       IsVisible="False">
 
                     <!-- Triggers que afectan solo al Frame -->
                     <Frame.Triggers>
                         <!-- Cuando es true: -->
-                        <DataTrigger TargetType="Frame" Binding="{Binding RequiereAutorizacion}" Value="False">
-                            <Setter Property="IsVisible" Value="True" />
-                            <Setter Property="BackgroundColor" Value="{StaticResource Success}" />
+                        <DataTrigger TargetType="Frame"
+                                     Binding="{Binding RequiereAutorizacion}"
+                                     Value="False">
+                            <Setter Property="IsVisible"
+                                    Value="True" />
+                            <Setter Property="BackgroundColor"
+                                    Value="{StaticResource Success}" />
                         </DataTrigger>
 
                         <!-- Cuando es false: -->
-                        <DataTrigger TargetType="Frame" Binding="{Binding RequiereAutorizacion}" Value="True">
-                            <Setter Property="IsVisible" Value="True" />
-                            <Setter Property="BackgroundColor" Value="{StaticResource Warning}" />
+                        <DataTrigger TargetType="Frame"
+                                     Binding="{Binding RequiereAutorizacion}"
+                                     Value="True">
+                            <Setter Property="IsVisible"
+                                    Value="True" />
+                            <Setter Property="BackgroundColor"
+                                    Value="{StaticResource Warning}" />
                         </DataTrigger>
                     </Frame.Triggers>
 
-                    <StackLayout Spacing="0" HorizontalOptions="Center">
+                    <StackLayout Spacing="0"
+                                 HorizontalOptions="Center">
                         <!-- Un solo Label; su texto se define por sus propios triggers -->
-                        <Label
-        x:Name="LblAutorizacion"
-        Text=""
-        FontSize="15"
-        FontAttributes="Bold"
-        TextColor="White"
-        HorizontalOptions="Center"
-        VerticalOptions="Center"
-        LineBreakMode="NoWrap"
-        Margin="0">
+                        <Label x:Name="LblAutorizacion"
+                               Text=""
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               LineBreakMode="NoWrap"
+                               Margin="0">
 
                             <!-- Triggers del Label -->
                             <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding RequiereAutorizacion}" Value="False">
-                                    <Setter Property="Text" Value="Este vale no requiere autorización." />
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding RequiereAutorizacion}"
+                                             Value="False">
+                                    <Setter Property="Text"
+                                            Value="Este vale no requiere autorización." />
                                 </DataTrigger>
 
-                                <DataTrigger TargetType="Label" Binding="{Binding RequiereAutorizacion}" Value="True">
-                                    <Setter Property="Text" Value="Este vale requiere autorización." />
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding RequiereAutorizacion}"
+                                             Value="True">
+                                    <Setter Property="Text"
+                                            Value="Este vale requiere autorización." />
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
                 </Frame>
-                
+
                 <Frame Grid.Row="0"
                        BackgroundColor="Orange"
                        Padding="10"
@@ -87,54 +104,77 @@
                            HorizontalOptions="Center" />
                 </Frame>
 
-                <Frame BackgroundColor="White" CornerRadius="15" Padding="20" HasShadow="True">
+                <Frame BackgroundColor="White"
+                       CornerRadius="15"
+                       Padding="20"
+                       HasShadow="True">
                     <StackLayout Spacing="15">
-                 
+
                         <!-- Fecha -->
                         <StackLayout>
-                            <Label Text="Fecha" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                <DatePicker Date="{Binding Fecha}" 
-                                  FontSize="16"
-                                  BackgroundColor="Transparent" 
-                                  Format="dd/MM/yyyy"
-                                  IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />        
+                            <Label Text="Fecha"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}"
+                                   CornerRadius="10"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <DatePicker Date="{Binding Fecha}"
+                                            FontSize="16"
+                                            BackgroundColor="Transparent"
+                                            Format="dd/MM/yyyy"
+                                            IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
                             </Frame>
                         </StackLayout>
 
                         <!-- Almacen -->
                         <StackLayout>
-                            <Label Text="Empresa" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Label Text="Empresa"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}"
+                                   CornerRadius="10"
+                                   Padding="0"
+                                   HasShadow="False">
                                 <Picker ItemsSource="{Binding Almacenes}"
-                                    SelectedItem="{Binding SelectedAlmacen}"
-                                    ItemDisplayBinding="{Binding Nombre}"
-                                    Title="Seleccione un almacen"
-                                    FontSize="16"
-                                    BackgroundColor="Transparent"
-                                    IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
+                                        SelectedItem="{Binding SelectedAlmacen}"
+                                        ItemDisplayBinding="{Binding Nombre}"
+                                        Title="Seleccione un almacen"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent"
+                                        IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
                             </Frame>
                         </StackLayout>
 
                         <!-- Almacen -->
                         <StackLayout>
-                            <Label Text="Equipos" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Label Text="Equipos"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}"
+                                   CornerRadius="10"
+                                   Padding="0"
+                                   HasShadow="False">
                                 <Picker ItemsSource="{Binding Almacenes}"
-                       SelectedItem="{Binding SelectedAlmacen}"
-                       ItemDisplayBinding="{Binding Nombre}"
-                       Title="Seleccione un almacen"
-                       FontSize="16"
-                       BackgroundColor="Transparent"
-                       IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
+                                        SelectedItem="{Binding SelectedAlmacen}"
+                                        ItemDisplayBinding="{Binding Nombre}"
+                                        Title="Seleccione un almacen"
+                                        FontSize="16"
+                                        BackgroundColor="Transparent"
+                                        IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
                             </Frame>
                         </StackLayout>
 
 
                         <!-- Campo -->
                         <StackLayout>
-                            <Label Text="Campo" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Label Text="Campo"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}"
+                                   CornerRadius="10"
+                                   Padding="0"
+                                   HasShadow="False">
                                 <Picker ItemsSource="{Binding Campos}"
                                         SelectedItem="{Binding SelectedCampo}"
                                         ItemDisplayBinding="{Binding Nombre}"
@@ -151,37 +191,50 @@
                         <StackLayout>
                             <Grid ColumnDefinitions="*, *">
                                 <StackLayout Grid.Column="0">
-                                    <Label Text="Horas" FontSize="14" TextColor="{StaticResource Gray600}" />
-                                    <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                        <Picker ItemsSource="{Binding TipoEntrada}"
-                                             SelectedItem="{Binding SelectedTipoEntrada}"
-                                             Title="Horas"
-                                             FontSize="16"
-                                             BackgroundColor="Transparent"
-                                             IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />     
+                                    <Label Text="Horas"
+                                           FontSize="14"
+                                           TextColor="{StaticResource Gray600}" />
+                                    <Frame BackgroundColor="{StaticResource Gray100}"
+                                           CornerRadius="10"
+                                           Padding="0"
+                                           HasShadow="False">
+                                        <Entry Text="{Binding Superficie}"
+                                               Placeholder="0"
+                                               Keyboard="Numeric"
+                                               FontSize="16"
+                                               BackgroundColor="Transparent" />
                                     </Frame>
 
                                 </StackLayout>
                                 <StackLayout Grid.Column="1">
-                                    <Label Text="Kilometraje" FontSize="14" TextColor="{StaticResource Gray600}" />
-                                    <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                        <Picker ItemsSource="{Binding TipoEntrada}"
-                                            SelectedItem="{Binding SelectedTipoEntrada}"
-                                            Title="Kilometraje"
-                                            FontSize="16"
-                                            BackgroundColor="Transparent"
-                                            IsEnabled="{Binding AreFieldsLocked, Converter={StaticResource InvertedBoolConverter}}" />
+                                    <Label Text="Kilometraje"
+                                           FontSize="14"
+                                           TextColor="{StaticResource Gray600}" />
+                                    <Frame BackgroundColor="{StaticResource Gray100}"
+                                           CornerRadius="10"
+                                           Padding="0"
+                                           HasShadow="False">
+                                        <Entry Text="{Binding Superficie}"
+                                               Placeholder="0"
+                                               Keyboard="Numeric"
+                                               FontSize="16"
+                                               BackgroundColor="Transparent" />
                                     </Frame>
 
                                 </StackLayout>
                             </Grid>
-                           
+
                         </StackLayout>
 
                         <!-- Lotes (Visible solo cuando TipoEntrada = "Receta") -->
                         <StackLayout IsVisible="{Binding ShowLotesAndRecetas}">
-                            <Label Text="Lote a Aplicar Receta" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Label Text="Lote a Aplicar Receta"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}"
+                                   CornerRadius="10"
+                                   Padding="0"
+                                   HasShadow="False">
                                 <Picker ItemsSource="{Binding Lotes}"
                                         SelectedItem="{Binding SelectedLote}"
                                         ItemDisplayBinding="{Binding Nombre}"
@@ -190,16 +243,21 @@
                                         BackgroundColor="Transparent" />
                             </Frame>
                             <!-- Debug info para lotes -->
-                            <Label Text="{Binding Lotes.Count, StringFormat='Lotes disponibles: {0}'}" 
-                                   FontSize="12" 
+                            <Label Text="{Binding Lotes.Count, StringFormat='Lotes disponibles: {0}'}"
+                                   FontSize="12"
                                    TextColor="{StaticResource Gray500}"
                                    IsVisible="True" />
                         </StackLayout>
 
                         <!-- Recetas (Visible solo cuando TipoEntrada = "Receta") -->
                         <StackLayout IsVisible="{Binding ShowLotesAndRecetas}">
-                            <Label Text="Recetas *" FontSize="14" TextColor="{StaticResource Gray600}" />
-                            <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Label Text="Recetas *"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray600}" />
+                            <Frame BackgroundColor="{StaticResource Gray100}"
+                                   CornerRadius="10"
+                                   Padding="0"
+                                   HasShadow="False">
                                 <Picker ItemsSource="{Binding Recetas}"
                                         SelectedItem="{Binding SelectedReceta}"
                                         ItemDisplayBinding="{Binding NombreReceta}"
@@ -208,23 +266,24 @@
                                         BackgroundColor="Transparent" />
                             </Frame>
                             <!-- Debug info para recetas -->
-                            <Label Text="{Binding Recetas.Count, StringFormat='Recetas disponibles: {0}'}" 
-                                   FontSize="12" 
+                            <Label Text="{Binding Recetas.Count, StringFormat='Recetas disponibles: {0}'}"
+                                   FontSize="12"
                                    TextColor="{StaticResource Gray500}"
                                    IsVisible="True" />
                         </StackLayout>
 
-                      
+
 
                         <!-- Buttons -->
-                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        <Grid ColumnDefinitions="*,*,*"
+                              ColumnSpacing="10">
 
                             <Button Grid.Column="1"
                                     Text="Añadir"
                                     Command="{Binding SaveValeCommand}"
                                     BackgroundColor="{StaticResource Primary}"
                                     TextColor="White"
-                                    CornerRadius="10"    
+                                    CornerRadius="10"
                                     FontSize="18" />
                         </Grid>
 
@@ -241,19 +300,19 @@
 
                 <!-- Articulos Section -->
                 <Frame BackgroundColor="LightGray"
-                       CornerRadius="15" 
-                       Padding="20" 
+                       CornerRadius="15"
+                       Padding="20"
                        HasShadow="True"
                        IsVisible="{Binding HasArticulos}">
                     <StackLayout Spacing="15">
-                        
+
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Grid.Column="0"
-                                   Text="Articulos Agregados" 
-                                   FontSize="18" 
+                                   Text="Articulos Agregados"
+                                   FontSize="18"
                                    FontAttributes="Bold"
                                    TextColor="{StaticResource Primary}" />
-                            
+
                             <Frame Grid.Column="1"
                                    BackgroundColor="{StaticResource Primary}"
                                    CornerRadius="12"
@@ -268,91 +327,104 @@
                         </Grid>
 
                         <CollectionView ItemsSource="{Binding ArticulosDetalle}"
-                             HeightRequest="300">
+                                        HeightRequest="300">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:SalidaDetalle">
                                     <Frame BackgroundColor="{StaticResource Gray100}"
-                                       CornerRadius="8"
-                                       Padding="15"
-                                       Margin="0,5"
-                                       HasShadow="False">                                       
-                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                                           CornerRadius="8"
+                                           Padding="15"
+                                           Margin="0,5"
+                                           HasShadow="False">
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 
-                                            <Label Grid.Column="0" Grid.Row="0"
-                                               Text="{Binding FamiliaNombre, StringFormat='Familia: {0}'}"
-                                               FontSize="14"
-                                               FontAttributes="Bold"
-                                               TextColor="{StaticResource Primary}" />      
+                                            <Label Grid.Column="0"
+                                                   Grid.Row="0"
+                                                   Text="{Binding FamiliaNombre, StringFormat='Familia: {0}'}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource Primary}" />
 
-                                            <Button Grid.Column="1" Grid.Row="0"
-                                Text="🗑️"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ValeViewModel}}, Path=EliminarArticuloCommand}"
-                                CommandParameter="{Binding .}"
-                                BackgroundColor="Transparent"
-                                TextColor="#DC3545"
-                                FontSize="18"
-                                WidthRequest="44"
-                                HeightRequest="44"
-                                VerticalOptions="Center"
-                                HorizontalOptions="End"
-                                CornerRadius="22"
-                                BorderWidth="0"
-                                Padding="0">
-                                <Button.Shadow>
-                                    <Shadow Brush="Black" 
-                                            Opacity="0.1" 
-                                            Radius="2"
-                                            Offset="0,1" />
-                                </Button.Shadow>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup Name="CommonStates">
-                                        <VisualState Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="Transparent" />
-                                                <Setter Property="Scale" Value="1.0" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="#FFE6E6" />
-                                                <Setter Property="Scale" Value="0.95" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                            </Button>
+                                            <Button Grid.Column="1"
+                                                    Grid.Row="0"
+                                                    Text="🗑️"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ValeViewModel}}, Path=EliminarArticuloCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="#DC3545"
+                                                    FontSize="18"
+                                                    WidthRequest="44"
+                                                    HeightRequest="44"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="End"
+                                                    CornerRadius="22"
+                                                    BorderWidth="0"
+                                                    Padding="0">
+                                                <Button.Shadow>
+                                                    <Shadow Brush="Black"
+                                                            Opacity="0.1"
+                                                            Radius="2"
+                                                            Offset="0,1" />
+                                                </Button.Shadow>
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup Name="CommonStates">
+                                                        <VisualState Name="Normal">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor"
+                                                                        Value="Transparent" />
+                                                                <Setter Property="Scale"
+                                                                        Value="1.0" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                        <VisualState Name="Pressed">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor"
+                                                                        Value="#FFE6E6" />
+                                                                <Setter Property="Scale"
+                                                                        Value="0.95" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                            </Button>
 
-                                            <Label Grid.Column="0" Grid.Row="1"
-                                               Text="{Binding SubFamiliaNombre, StringFormat='SubFamilia: {0}'}"
-                                               FontSize="13"
-                                               TextColor="{StaticResource Gray700}" />
+                                            <Label Grid.Column="0"
+                                                   Grid.Row="1"
+                                                   Text="{Binding SubFamiliaNombre, StringFormat='SubFamilia: {0}'}"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource Gray700}" />
 
-                                            <Label Grid.Column="0" Grid.Row="2"
-                                               Text="{Binding ArticuloNombre, StringFormat='Articulo: {0}'}"
-                                               FontSize="13"
-                                               FontAttributes="Bold"
-                                               TextColor="{StaticResource Gray900}" />
+                                            <Label Grid.Column="0"
+                                                   Grid.Row="2"
+                                                   Text="{Binding ArticuloNombre, StringFormat='Articulo: {0}'}"
+                                                   FontSize="13"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource Gray900}" />
 
-                                            <Label Grid.Column="0" Grid.Row="3"
-                                               Text="{Binding Cantidad, StringFormat='Cantidad: {0}'}"
-                                               FontSize="13"
-                                               TextColor="{StaticResource Gray700}" />
+                                            <Label Grid.Column="0"
+                                                   Grid.Row="3"
+                                                   Text="{Binding Cantidad, StringFormat='Cantidad: {0}'}"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource Gray700}" />
 
-                                            <Label Grid.Column="0" Grid.Row="4"
-                                               Text="{Binding Unidad, StringFormat='Unidad: {0}'}"
-                                               FontSize="13"
-                                               TextColor="{StaticResource Gray700}" />
+                                            <Label Grid.Column="0"
+                                                   Grid.Row="4"
+                                                   Text="{Binding Unidad, StringFormat='Unidad: {0}'}"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource Gray700}" />
 
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                             <CollectionView.EmptyView>
-                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="20">
+                                <StackLayout HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             Padding="20">
                                     <Label Text="No hay articulos agregados"
-                   FontSize="14"
-                   TextColor="{StaticResource Gray600}"
-                   HorizontalOptions="Center" />
+                                           FontSize="14"
+                                           TextColor="{StaticResource Gray600}"
+                                           HorizontalOptions="Center" />
                                 </StackLayout>
                             </CollectionView.EmptyView>
                         </CollectionView>
@@ -365,11 +437,11 @@
 
         <!-- Loading Indicator -->
         <ActivityIndicator Grid.Row="1"
-                          IsRunning="{Binding IsBusy}" 
-                          IsVisible="{Binding IsBusy}"
-                          Color="{StaticResource Primary}"
-                          VerticalOptions="Center"
-                          HorizontalOptions="Center" />
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="{StaticResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
 
     </Grid>
 
