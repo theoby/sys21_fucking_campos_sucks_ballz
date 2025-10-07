@@ -4,8 +4,8 @@ namespace sys21_campos_zukarmex.Services;
 
 public static class AppConfigService
 {
-    private static string _dynamicApiBaseUrl = ""; // Default URL - debe estar vacía, se obtiene de BD
-    private static string _fallbackUrl = ""; // Fallback URL - debe estar vacía, se obtiene de BD
+    private static string _dynamicApiBaseUrl = ""; // Default URL - debe estar vacï¿½a, se obtiene de BD
+    private static string _fallbackUrl = ""; // Fallback URL - debe estar vacï¿½a, se obtiene de BD
     private static DatabaseService? _databaseService;
     private static bool _isInitialized = false;
     
@@ -35,6 +35,7 @@ public static class AppConfigService
     public const string ValesSalidasPendienteEndpoint = "ValesDeSalida/Obtener_Vales_Pendientes";
     public const string SaldosEndpoint = "Articulos/Saldos";
     public const string DetallesValeEndpoint = "ValesDeSalida/Obtener_Vale_Detalle";
+    public const string RatCapturesEndpoint = "Trampeo/Captura"; //Falta definir con Roberto
 
     // User Types
     public const int UserTypeAdmin = 1;

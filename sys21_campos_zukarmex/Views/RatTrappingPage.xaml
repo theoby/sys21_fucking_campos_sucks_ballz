@@ -29,7 +29,7 @@
                             <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
                                 <Picker ItemsSource="{Binding Zafras}"
                                         SelectedItem="{Binding SelectedZafra}"
-                                        Title="Seleccione una zafra"
+                                        ItemDisplayBinding="{Binding Nombre}"  Title="Seleccione una zafra"
                                         FontSize="16"
                                         BackgroundColor="Transparent" />
                             </Frame>
@@ -38,8 +38,9 @@
                         <StackLayout>
                             <Label Text="Predio" FontSize="14" TextColor="{StaticResource Gray600}" />
                             <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                <Picker ItemsSource="{Binding Predios}"
-                                        SelectedItem="{Binding SelectedPredio}"
+                                <Picker ItemsSource="{Binding Campos}"
+                                        SelectedItem="{Binding SelectedCampo}"
+                                        ItemDisplayBinding="{Binding Nombre}"
                                         Title="Seleccione un predio"
                                         FontSize="16"
                                         BackgroundColor="Transparent" />
