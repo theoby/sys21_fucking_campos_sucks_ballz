@@ -677,6 +677,75 @@ public class ApiService : IDisposable
 
     #endregion
 
+    #region IrrigationLine Operations (CON TOKEN BEARER)
+    public async Task<ApiResponse<SalidaLineaDeRiego>> SaveIrrigationEntryAsync(SalidaLineaDeRiego entry)
+    {
+        try
+        {
+                   var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            
+            var json = JsonConvert.SerializeObject(entry);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            
+            var fullUrl = GetFullUrl(AppConfigService.IrrigationEntriesEndpoint);
+
+            System.Diagnostics.Debug.WriteLine($"Enviando JSON de registro de riego a la API: {fullUrl}");
+            System.Diagnostics.Debug.WriteLine($"JSON: {json}");
+
+           
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+        
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = "Sesion caducada" };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Respuesta de la API: {responseContent}");
+
+           
+            var apiResponse = JsonConvert.DeserializeObject<StandardApiResponse<SalidaLineaDeRiego>>(responseContent);
+
+            if (apiResponse != null)
+            {
+                var finalResponse = new ApiResponse<SalidaLineaDeRiego>
+                {
+                    Success = apiResponse.Success,
+                    Message = apiResponse.Mensaje,
+                    Data = apiResponse.FirstData
+                };
+
+         
+                if (finalResponse.Success && _databaseService != null && entry.Id > 0)
+                {
+                    try
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Eliminando registro de riego local (ID: {entry.Id}) tras éxito en API.");
+                        await _databaseService.DeleteAsync(entry);
+                    }
+                    catch (Exception deleteEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error eliminando registro de riego de BD local: {deleteEx.Message}");
+                    }
+                }
+
+                return finalResponse;
+            }
+
+            return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = "Respuesta inválida de la API." };
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error en SaveIrrigationEntryAsync: {ex.Message}");
+            return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = ex.Message };
+        }
+    }
+    #endregion
+
     #region Other Catalog Operations (CON TOKEN BEARER)
 
     public async Task<List<Almacen>> GetAlmacenesAsync()
