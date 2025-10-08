@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace sys21_campos_zukarmex.Models
 {
-    internal class LineaRiego
+    public class LineaRiego
     {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public int IdCampo { get; set; }
     }
 }
