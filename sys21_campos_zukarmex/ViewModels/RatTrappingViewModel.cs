@@ -76,8 +76,10 @@ namespace sys21_campos_zukarmex.ViewModels
                 var zafraList = await _databaseService.GetAllAsync<Zafra>();
                 Zafras.Clear();
                 Debug.WriteLine("Zafras a cargar");
+                Debug.WriteLine($"ZafraList.Count = {zafraList?.Count ?? 0}");
                 foreach (var zafra in zafraList.OrderBy(z => z.Nombre))
                 {
+                    Debug.WriteLine("Zafras:");
                     Debug.WriteLine(zafra);
                     Zafras.Add(zafra);
                 }

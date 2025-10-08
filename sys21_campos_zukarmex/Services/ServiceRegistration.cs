@@ -50,6 +50,9 @@ public static class ServiceRegistration
         services.AddSingleton<ISalidaRepository, SalidaRepository>();
         services.AddSingleton<ISalidaDetalleRepository, SalidaDetalleRepository>();
         services.AddSingleton<IZafraRepository, ZafraRepository>();
+        services.AddSingleton<IPluviometroRepository, PluviometroRepository>();
+        services.AddSingleton<ICicloRepository, CicloRepository>();
+
 
         // ViewModels
         services.AddTransient<LoginViewModel>();
@@ -64,6 +67,8 @@ public static class ServiceRegistration
         services.AddTransient<CatalogExampleViewModel>();
         services.AddTransient<HistorialViewModel>();
         services.AddTransient<RatTrappingViewModel>();
+        services.AddTransient<DamageAssessmentViewModel>();
+        services.AddTransient<RodenticideConsumptionViewModel>();
 
 
         // Pages
@@ -78,6 +83,8 @@ public static class ServiceRegistration
         services.AddTransient<LoadingPage>();
         services.AddTransient<HistorialPage>();
         services.AddTransient<RatTrappingPage>();
+        services.AddTransient<DamageAssessmentPage>();
+        services.AddTransient<RodenticideConsumptionPage>();
 
         return services;
     }

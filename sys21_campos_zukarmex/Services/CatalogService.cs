@@ -47,8 +47,10 @@ public class CatalogService : ICatalogService
     private readonly IInspectorRepository _inspectorRepository;
     private readonly ILoteRepository _loteRepository;
     private readonly IZafraRepository _zafraRepository;
+    private readonly IPluviometroRepository _pluviometroRepository;
     private readonly IMaquinariaRepository _maquinariaRepository;
     private readonly ISubFamiliaRepository _subFamiliaRepository;
+    private readonly ICicloRepository _cicloRepository;
 
     public CatalogService(
         ApiService apiService,
@@ -63,7 +65,10 @@ public class CatalogService : ICatalogService
         ILoteRepository loteRepository,
         IZafraRepository zafraRepository,
         IMaquinariaRepository maquinariaRepository,
-        ISubFamiliaRepository subFamiliaRepository)
+        ISubFamiliaRepository subFamiliaRepository,
+        IPluviometroRepository pluviometroReposirory,
+        ICicloRepository cicloRepository
+        )
     {
         _apiService = apiService;
         _databaseService = databaseService;
@@ -71,6 +76,7 @@ public class CatalogService : ICatalogService
         _almacenRepository = almacenRepository;
         _articuloRepository = articuloRepository;
         _campoRepository = campoRepository;
+        _cicloRepository = cicloRepository;
         _empresaRepository = empresaRepository;
         _familiaRepository = familiaRepository;
         _inspectorRepository = inspectorRepository;
@@ -78,6 +84,7 @@ public class CatalogService : ICatalogService
         _maquinariaRepository = maquinariaRepository;
         _subFamiliaRepository = subFamiliaRepository;
         _zafraRepository = zafraRepository;
+        _pluviometroRepository = pluviometroReposirory;
     }
 
     #region Generic CRUD Operations

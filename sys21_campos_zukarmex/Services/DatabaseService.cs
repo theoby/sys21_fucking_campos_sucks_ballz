@@ -33,6 +33,7 @@ public class DatabaseService
         await _database.CreateTableAsync<Inspector>();
         await _database.CreateTableAsync<Lote>();
         await _database.CreateTableAsync<Maquinaria>();
+        await _database.CreateTableAsync<Pluviometro>();
         await _database.CreateTableAsync<Receta>();
         await _database.CreateTableAsync<RecetaArticulo>();
         await _database.CreateTableAsync<Salida>();
@@ -41,6 +42,8 @@ public class DatabaseService
         await _database.CreateTableAsync<User>();
         await _database.CreateTableAsync<Zafra>();
         await _database.CreateTableAsync<Session>();
+        await _database.CreateTableAsync<Ciclo>();
+
     }
 
     #region Generic CRUD Operations
@@ -312,6 +315,12 @@ public class DatabaseService
         return await GetFirstOrDefaultAsync<Articulo>(a => a.Nombre == nombre);
     }
 
+    // Ciclo
+    public async Task<Ciclo?> GetCicloByNameAsync(string nombre)
+    {
+        return await GetFirstOrDefaultAsync<Ciclo>(c => c.Nombre == nombre);
+    }
+
     // Campo
     public async Task<List<Campo>> GetCamposByInspectorAsync(int idInspector)
     {
@@ -355,6 +364,12 @@ public class DatabaseService
     public async Task<Zafra?> GetActiveZafraAsync()
     {
         return await GetFirstOrDefaultAsync<Zafra>(z => z.Activa || z.IsActive);
+    }
+
+    // Pluviometro
+    public async Task<Pluviometro?> GetPluviometroByNameAsync(string nombre)
+    {
+        return await GetFirstOrDefaultAsync<Pluviometro>(p => p.Nombre == nombre);
     }
 
 
@@ -704,6 +719,6 @@ public class DatabaseService
         }
         return Task.FromResult(0L);
     }
-
+   
     #endregion
 }

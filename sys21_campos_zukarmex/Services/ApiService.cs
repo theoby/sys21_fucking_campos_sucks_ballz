@@ -792,7 +792,15 @@ public class ApiService : IDisposable
     {
         return await GetCatalogAsync<Zafra>(AppConfigService.ZafrasEndpoint);
     }
+    public async Task<List<Ciclo>> GetCiclosAsync()
+    {
+        return await GetCatalogAsync<Ciclo>(AppConfigService.CiclosEndpoint);
+    }
 
+    public async Task<List<Pluviometro>> GetPluviometrosAsync()
+    {
+        return await GetCatalogAsync<Pluviometro>(AppConfigService.PluviometrosEndpoint);
+    }
     public async Task<List<Receta>> GetRecetasAsync()
     {
         try

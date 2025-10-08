@@ -13,6 +13,6 @@ public class Pluviometro
     public int Id { get; set; } = 0;
     public string Nombre { get; set; } = string.Empty;
     public DateTime FechaInicio { get; set; }
-    public DateTime FechaBaja { get; set; }
+    public DateTime? FechaBaja { get; set; }
 }
 

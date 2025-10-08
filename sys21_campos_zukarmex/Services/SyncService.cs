@@ -21,6 +21,8 @@ public class SyncService
     private readonly IRecetaRepository _recetaRepository;
     private readonly ISubFamiliaRepository _subFamiliaRepository;
     private readonly IZafraRepository _zafraRepository;
+    private readonly IPluviometroRepository _pluviometroRepository;
+    private readonly ICicloRepository _cicloRepository;
 
     public SyncService(
         ApiService apiService, 
@@ -31,11 +33,13 @@ public class SyncService
         IEmpresaRepository empresaRepository,
         IFamiliaRepository familiaRepository,
         IInspectorRepository inspectorRepository,
+        ICicloRepository cicloRepository,
         ILoteRepository loteRepository,
         IMaquinariaRepository maquinariaRepository,
         IRecetaRepository recetaRepository,
         IZafraRepository zafraRepository,
-        ISubFamiliaRepository subFamiliaRepository)
+        ISubFamiliaRepository subFamiliaRepository,
+        IPluviometroRepository pluviometroRepository)
     {
         _apiService = apiService;
         _databaseService = databaseService;
@@ -48,14 +52,16 @@ public class SyncService
         _loteRepository = loteRepository;
         _zafraRepository = zafraRepository;
         _maquinariaRepository = maquinariaRepository;
+        _cicloRepository = cicloRepository;
         _recetaRepository = recetaRepository;
         _subFamiliaRepository = subFamiliaRepository;
+        _pluviometroRepository = pluviometroRepository;
     }
 
     public async Task<List<SyncStatus>> SyncAllCatalogsAsync(IProgress<SyncStatus>? progress = null)
     {
         var syncStatuses = new List<SyncStatus>();
-        var totalCatalogs = 10; // Incrementado para incluir Recetas
+        var totalCatalogs = 12; // Incrementado para incluir Recetas
         var currentCatalog = 0;
 
         // Sync Empresas first (needed for login)
@@ -66,8 +72,10 @@ public class SyncService
         await SyncInspectoresAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncAlmacenesAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncLotesAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
+        await SyncCiclosAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncFamiliasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncZafrasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
+        await SyncPluviometroAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncSubFamiliasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncArticulosAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncMaquinariasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
@@ -84,12 +92,26 @@ public class SyncService
             _empresaRepository.ClearAllAsync, _empresaRepository.SaveAllAsync, 
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
+    private async Task SyncCiclosAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
+    {
+        await SyncCatalogAsync("Ciclos", _apiService.GetCiclosAsync,
+            _cicloRepository.ClearAllAsync, _cicloRepository.SaveAllAsync,
+            progress, syncStatuses, currentCatalog, totalCatalogs);
+    }
+
     private async Task SyncZafrasAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
     {
         await SyncCatalogAsync("Zafras", _apiService.GetZafrasAsync,
             _zafraRepository.ClearAllAsync, _zafraRepository.SaveAllAsync,
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
+    private async Task SyncPluviometroAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
+    {
+        await SyncCatalogAsync("Pluviometro", _apiService.GetPluviometrosAsync,
+            _pluviometroRepository.ClearAllAsync, _pluviometroRepository.SaveAllAsync,
+            progress, syncStatuses, currentCatalog, totalCatalogs);
+    }
+
 
     private async Task SyncInspectoresAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
     {
@@ -428,7 +450,9 @@ public class SyncService
                 "Articulos" => await _articuloRepository.CountAsync(),
                 "Zafras" => await _zafraRepository.CountAsync(),
                 "Maquinarias" => await _maquinariaRepository.CountAsync(),
+                "Ciclos" => await _cicloRepository.CountAsync(),
                 "Recetas" => await _recetaRepository.CountAsync(),
+                "Pluviometros" => await _pluviometroRepository.CountAsync(),
                 _ => 0
             };
             
@@ -473,8 +497,10 @@ public class SyncService
                         "lotes" => await _loteRepository.CountAsync(),
                         "maquinarias" => await _maquinariaRepository.CountAsync(),
                         "recetas" => await _recetaRepository.CountAsync(),
-                        "Zafras" => await _zafraRepository.CountAsync(),
+                        "zafras" => await _zafraRepository.CountAsync(),
+                        "ciclos" => await _cicloRepository.CountAsync(),
                         "subfamilias" => await _subFamiliaRepository.CountAsync(),
+                        "pluviometros" => await _pluviometroRepository.CountAsync(),
                         _ => 0
                     };
                 }
@@ -516,7 +542,9 @@ public class SyncService
                 "maquinarias" => await _apiService.GetMaquinariasAsync() as List<T>,
                 "recetas" => await _apiService.GetRecetasAsync() as List<T>,
                 "subfamilias" => await _apiService.GetSubFamiliasAsync() as List<T>,
+                "ciclos" => await _apiService.GetCiclosAsync() as List<T>,
                 "zafras" => await _apiService.GetZafrasAsync() as List<T>,
+                "pluviometros" => await _apiService.GetPluviometrosAsync() as List<T>,
                 _ => new List<T>()
             };
 
@@ -589,10 +617,12 @@ public class SyncService
                     "familias" => await _familiaRepository.CountAsync(),
                     "inspectores" => await _inspectorRepository.CountAsync(),
                     "lotes" => await _loteRepository.CountAsync(),
+                    "ciclos" => await _cicloRepository.CountAsync(),
                     "maquinarias" => await _maquinariaRepository.CountAsync(),
                     "recetas" => await _recetaRepository.CountAsync(),
                     "subfamilias" => await _subFamiliaRepository.CountAsync(),
                     "zafras" => await _zafraRepository.CountAsync(),
+                    "pluviometros" => await _pluviometroRepository.CountAsync(),
                     _ => 0
                 };
                 
@@ -645,7 +675,9 @@ public class SyncService
                 ("articulos", "Articulos"),
                 ("maquinarias", "Maquinarias"),
                 ("recetas", "Recetas"),
-                ("zafras", "Zafras")
+                ("zafras", "Zafras"),
+                ("pluviometros", "Pluviometros"),
+                ("ciclos", "Ciclos"),
             };
 
             var totalCatalogs = catalogsToSync.Length;
@@ -680,6 +712,7 @@ public class SyncService
                         "maquinarias" => await SyncCatalogAsync<Maquinaria>(catalogKey),
                         "recetas" => await SyncRecetasSpecialAsync(catalogKey),
                         "zafras" => await SyncCatalogAsync<Zafra>(catalogKey),
+                        "ciclos" => await SyncCatalogAsync<Ciclo>(catalogKey),
                         _ => new SyncResult { Success = false, Message = $"Catalogo {catalogKey} no reconocido" }
                     };
 
@@ -759,7 +792,10 @@ public class SyncService
                 { "Articulos", () => _articuloRepository.CountAsync() },
                 { "Maquinarias", () => _maquinariaRepository.CountAsync() },
                 { "Recetas", () => _recetaRepository.CountAsync() },
-                { "Zafras", () => _zafraRepository.CountAsync() }
+                { "Zafras", () => _zafraRepository.CountAsync() },
+                { "Pluviometros", () => _pluviometroRepository.CountAsync()},
+                { "Ciclos", () => _cicloRepository.CountAsync()},
+    
             };
 
             foreach (var (catalogName, countFunc) in catalogChecks)
@@ -877,11 +913,13 @@ public class SyncService
             stats.RecetasCount = await _recetaRepository.CountAsync();
             stats.SubFamiliasCount = await _subFamiliaRepository.CountAsync();
             stats.ZafrasCount = await _zafraRepository.CountAsync();
+            stats.PluviometrosCount = await _pluviometroRepository.CountAsync();
+            stats.CiclosCount = await _cicloRepository.CountAsync();
 
             stats.TotalRecords = stats.AlmacenesCount + stats.ArticulosCount + stats.CamposCount +
-                               stats.EmpresasCount + stats.FamiliasCount + 
+                               stats.EmpresasCount + stats.FamiliasCount +
                                stats.InspectoresCount + stats.LotesCount + stats.MaquinariasCount +
-                               stats.RecetasCount + stats.SubFamiliasCount + stats.ZafrasCount; 
+                               stats.RecetasCount + stats.SubFamiliasCount + stats.ZafrasCount + stats.PluviometrosCount + stats.CiclosCount; 
 
             stats.LastSyncDate = DateTime.Now;
         }

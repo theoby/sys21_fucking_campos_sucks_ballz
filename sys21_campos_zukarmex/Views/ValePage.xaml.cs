@@ -13,10 +13,7 @@ public partial class ValePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-
-        if (BindingContext is ValeViewModel viewModel)
-        {
-            await viewModel.PageAppearingCommand.ExecuteAsync(null);
-        }
+        if (BindingContext is ValeViewModel vm)
+            await vm.InitializeAsync();
     }
 }

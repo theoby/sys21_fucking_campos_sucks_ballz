@@ -114,8 +114,8 @@
                                    CornerRadius="10"
                                    Padding="0"
                                    HasShadow="False">
-                                <Picker ItemsSource="{Binding Campos}"
-                                        SelectedItem="{Binding SelectedCampo}"
+                                <Picker ItemsSource="{Binding Zafras}"
+                                        SelectedItem="{Binding SelectedZafra}"
                                         ItemDisplayBinding="{Binding Nombre}"
                                         Title="Seleccione una Zafra"
                                         FontSize="16"
@@ -133,8 +133,8 @@
                                    CornerRadius="10"
                                    Padding="0"
                                    HasShadow="False">
-                                <Picker ItemsSource="{Binding Almacenes}"
-                                        SelectedItem="{Binding SelectedAlmacen}"
+                                <Picker ItemsSource="{Binding Campos}"
+                                        SelectedItem="{Binding SelectedCampos}"
                                         ItemDisplayBinding="{Binding Nombre}"
                                         Title="Seleccione un Predio"
                                         FontSize="16"

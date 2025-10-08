@@ -61,6 +61,21 @@ public class ZafraRepository : BaseRepository<Zafra>, IZafraRepository
     }
 }
 
+public interface IPluviometroRepository : IRepository<Pluviometro>
+{
+    Task<Pluviometro?> GetByNameAsync(string nombre);
+}
+
+public class PluviometroRepository : BaseRepository<Pluviometro>, IPluviometroRepository
+{
+    public PluviometroRepository(DatabaseService databaseService) : base(databaseService) { }
+
+    public async Task<Pluviometro?> GetByNameAsync(string nombre)
+    {
+        return await _databaseService.GetPluviometroByNameAsync(nombre);
+    }
+}
+
 
 public interface IInspectorRepository : IRepository<Inspector>
 {
@@ -76,6 +91,22 @@ public class InspectorRepository : BaseRepository<Inspector>, IInspectorReposito
         return await _databaseService.GetInspectorByNameAsync(nombre);
     }
 }
+
+public interface ICicloRepository : IRepository<Ciclo>
+{
+    Task<Ciclo?> GetByNameAsync(string nombre);
+}
+
+public class CicloRepository : BaseRepository<Ciclo>, ICicloRepository
+{
+    public CicloRepository(DatabaseService databaseService) : base(databaseService) { }
+
+    public async Task<Ciclo?> GetByNameAsync(string nombre)
+    {
+        return await _databaseService.GetCicloByNameAsync(nombre);
+    }
+}
+
 
 public interface IEmpresaRepository : IRepository<Empresa>
 {
