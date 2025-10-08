@@ -682,33 +682,40 @@ public class ApiService : IDisposable
     {
         try
         {
-                   var httpClient = await GetConfiguredHttpClientAsync();
+            var httpClient = await GetConfiguredHttpClientAsync();
             await EnsureAuthTokenAsync();
 
-            
-            var json = JsonConvert.SerializeObject(entry);
+            // Creamos el DTO para la petición (esto ya estaba correcto)
+            var apiRequest = new IrrigationEntryApiRequest
+            {
+                IdCampo = entry.IdCampo,
+                IdLineaRiego = entry.IdLineaRiego,
+                Fecha = entry.Fecha,
+                EquiposBombeoOperando = entry.EquiposBombeoOperando,
+                Observaciones = entry.Observaciones,
+                 Lat = entry.Lat,
+                Lng = entry.Lng
+            };
+            var requestBody = new List<IrrigationEntryApiRequest> { apiRequest };
+            var json = JsonConvert.SerializeObject(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            
             var fullUrl = GetFullUrl(AppConfigService.IrrigationEntriesEndpoint);
 
-            System.Diagnostics.Debug.WriteLine($"Enviando JSON de registro de riego a la API: {fullUrl}");
+            System.Diagnostics.Debug.WriteLine($"Enviando JSON de Línea de Riego a: {fullUrl}");
             System.Diagnostics.Debug.WriteLine($"JSON: {json}");
 
-           
             var response = await httpClient.PostAsync(fullUrl, content);
 
-        
             if (!await ValidateHttpResponseAsync(response))
             {
                 return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = "Sesion caducada" };
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            System.Diagnostics.Debug.WriteLine($"Respuesta de la API: {responseContent}");
+            System.Diagnostics.Debug.WriteLine($"Respuesta de la API (Línea de Riego): {responseContent}");
 
-           
-            var apiResponse = JsonConvert.DeserializeObject<StandardApiResponse<SalidaLineaDeRiego>>(responseContent);
+            var apiResponse = JsonConvert.DeserializeObject<IrrigationEntryApiResponse>(responseContent);
 
             if (apiResponse != null)
             {
@@ -716,21 +723,11 @@ public class ApiService : IDisposable
                 {
                     Success = apiResponse.Success,
                     Message = apiResponse.Mensaje,
-                    Data = apiResponse.FirstData
                 };
 
-         
                 if (finalResponse.Success && _databaseService != null && entry.Id > 0)
                 {
-                    try
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Eliminando registro de riego local (ID: {entry.Id}) tras éxito en API.");
-                        await _databaseService.DeleteAsync(entry);
-                    }
-                    catch (Exception deleteEx)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Error eliminando registro de riego de BD local: {deleteEx.Message}");
-                    }
+                    await _databaseService.DeleteAsync(entry);
                 }
 
                 return finalResponse;
@@ -740,7 +737,6 @@ public class ApiService : IDisposable
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error en SaveIrrigationEntryAsync: {ex.Message}");
             return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = ex.Message };
         }
     }
@@ -1347,18 +1343,28 @@ public class ApiService : IDisposable
         try
         {
             var httpClient = await GetConfiguredHttpClientAsync();
-
-          
             await EnsureAuthTokenAsync();
 
-          
-            var json = JsonConvert.SerializeObject(capture);
+            var apiRequest = new RatCaptureApiRequest
+            {
+                IdTemporada = capture.IdTemporada,
+                IdCampo = capture.IdCampo,
+                Fecha = capture.Fecha,
+                CantidadTrampas = capture.CantidadTrampas,
+                CantidadMachos = capture.CantidadMachos,
+                CantidadHembras = capture.CantidadHembras,
+                Lat = capture.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                Lng = capture.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture)
+            };
+
+            var requestBody = new List<RatCaptureApiRequest> { apiRequest };
+
+            var json = JsonConvert.SerializeObject(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            
             var fullUrl = GetFullUrl(AppConfigService.RatCapturesEndpoint);
 
-            System.Diagnostics.Debug.WriteLine($"Enviando JSON de captura de rata a la API: {fullUrl}");
+            System.Diagnostics.Debug.WriteLine($"Enviando JSON de Trampeo de Ratas a: {fullUrl}");
             System.Diagnostics.Debug.WriteLine($"JSON: {json}");
 
             var response = await httpClient.PostAsync(fullUrl, content);
@@ -1371,8 +1377,7 @@ public class ApiService : IDisposable
             var responseContent = await response.Content.ReadAsStringAsync();
             System.Diagnostics.Debug.WriteLine($"Respuesta de la API: {responseContent}");
 
-            
-            var apiResponse = JsonConvert.DeserializeObject<StandardApiResponse<SalidaTrampeoRatas>>(responseContent);
+            var apiResponse = JsonConvert.DeserializeObject<RatCaptureApiResponse>(responseContent);
 
             if (apiResponse != null)
             {
@@ -1380,21 +1385,11 @@ public class ApiService : IDisposable
                 {
                     Success = apiResponse.Success,
                     Message = apiResponse.Mensaje,
-                    Data = apiResponse.FirstData
                 };
 
-                
                 if (finalResponse.Success && _databaseService != null && capture.Id > 0)
                 {
-                    try
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Eliminando captura de rata local (ID: {capture.Id}) tras éxito en API.");
-                        await _databaseService.DeleteAsync(capture);
-                    }
-                    catch (Exception deleteEx)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Error eliminando captura de rata de BD local: {deleteEx.Message}");
-                    }
+                    await _databaseService.DeleteAsync(capture);
                 }
 
                 return finalResponse;
@@ -1404,7 +1399,6 @@ public class ApiService : IDisposable
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error en SaveRatCaptureAsync: {ex.Message}");
             return new ApiResponse<SalidaTrampeoRatas> { Success = false, Message = ex.Message };
         }
     }

@@ -50,11 +50,11 @@ public partial class LoginViewModel : BaseViewModel
     {
         System.Diagnostics.Debug.WriteLine("?? Inicializando LoginViewModel...");
 
-        // NO verificar token ni navegar automáticamente aquí
-        // La navegación inicial ya se maneja en App.xaml.cs
+        // NO verificar token ni navegar automï¿½ticamente aquï¿½
+        // La navegaciï¿½n inicial ya se maneja en App.xaml.cs
         // Solo preparar la pantalla de login
 
-        // Verificar configuración de URL antes de cargar empresas
+        // Verificar configuraciï¿½n de URL antes de cargar empresas
         await ValidateUrlConfigurationAsync();
 
         // Cargar empresas para mostrar en el dropdown
@@ -68,7 +68,7 @@ public partial class LoginViewModel : BaseViewModel
     {
         try
         {
-            // Re-validar configuración de URL antes de cargar empresas
+            // Re-validar configuraciï¿½n de URL antes de cargar empresas
             await ValidateUrlConfigurationAsync();
             
             // First check if we have empresas in database quickly
@@ -210,9 +210,9 @@ public partial class LoginViewModel : BaseViewModel
 
                 if (response.Session != null)
                 {
-                    // Guardar sesión (automáticamente guarda token en configuración)
+                    // Guardar sesiï¿½n (automï¿½ticamente guarda token en configuraciï¿½n)
                     await _sessionService.SaveSessionAsync(response.Session);
-                    System.Diagnostics.Debug.WriteLine(">>> Sesión de usuario guardada correctamente con token en configuración.");
+                    System.Diagnostics.Debug.WriteLine(">>> Sesiï¿½n de usuario guardada correctamente con token en configuraciï¿½n.");
                 }
                 else
                 {
@@ -341,12 +341,12 @@ public partial class LoginViewModel : BaseViewModel
             SetBusy(true);
             ErrorMessage = string.Empty; // Limpiar cualquier mensaje de error previo
             
-            System.Diagnostics.Debug.WriteLine("?? Iniciando acceso directo a configuración...");
+            System.Diagnostics.Debug.WriteLine("?? Iniciando acceso directo a configuraciï¿½n...");
             
-            // Crear usuario administrador automáticamente
+            // Crear usuario administrador automï¿½ticamente
             var adminUser = AdminUserService.CreateAdminUser();
             
-            // Crear sesión especial para admin
+            // Crear sesiï¿½n especial para admin
             var adminSession = new Session  
             {
                 UserId = adminUser.Id,
@@ -366,18 +366,18 @@ public partial class LoginViewModel : BaseViewModel
 
             await _sessionService.SaveSessionAsync(adminSession);
             
-            System.Diagnostics.Debug.WriteLine("?? Sesión de administrador creada exitosamente");
+            System.Diagnostics.Debug.WriteLine("?? Sesiï¿½n de administrador creada exitosamente");
             
-            // Navegar a la pantalla de configuración de administrador
+            // Navegar a la pantalla de configuraciï¿½n de administrador
             await Shell.Current.GoToAsync("//adminconfig");
             
-            System.Diagnostics.Debug.WriteLine("?? Navegación a AdminConfig completada");
+            System.Diagnostics.Debug.WriteLine("?? Navegaciï¿½n a AdminConfig completada");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? Error accediendo a configuración: {ex.Message}");
-            ErrorMessage = $"Error al acceder a configuración: {ex.Message}";
-            await Shell.Current.DisplayAlert("Error", $"Error al acceder a configuración: {ex.Message}", "OK");
+            System.Diagnostics.Debug.WriteLine($"? Error accediendo a configuraciï¿½n: {ex.Message}");
+            ErrorMessage = $"Error al acceder a configuraciï¿½n: {ex.Message}";
+            await Shell.Current.DisplayAlert("Error", $"Error al acceder a configuraciï¿½n: {ex.Message}", "OK");
         }
         finally
         {
@@ -398,49 +398,49 @@ public partial class LoginViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Valida si hay una configuración de URL válida en la base de datos
+    /// Valida si hay una configuraciï¿½n de URL vï¿½lida en la base de datos
     /// </summary>
     private async Task ValidateUrlConfigurationAsync()
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("=== Validando configuración de URL ===");
+            System.Diagnostics.Debug.WriteLine("=== Validando configuraciï¿½n de URL ===");
 
-            // Verificar si existe configuración en la base de datos
+            // Verificar si existe configuraciï¿½n en la base de datos
             var todasConfiguraciones = await _databaseService.GetAllAsync<Configuracion>();
             var configuracionesValidas = todasConfiguraciones?.Where(c => !string.IsNullOrWhiteSpace(c.Ruta)).ToList() ?? new List<Configuracion>();
             
-            // Verificar si la URL actual es válida (no vacía)
+            // Verificar si la URL actual es vï¿½lida (no vacï¿½a)
             var urlActual = AppConfigService.ApiBaseUrl;
             bool urlValidaEnBD = configuracionesValidas.Any();
             bool urlActualValida = !string.IsNullOrWhiteSpace(urlActual) && urlActual != AppConfigService.FallbackUrl;
             
-            System.Diagnostics.Debug.WriteLine($"Configuraciones válidas en BD: {configuracionesValidas.Count}");
+            System.Diagnostics.Debug.WriteLine($"Configuraciones vï¿½lidas en BD: {configuracionesValidas.Count}");
             System.Diagnostics.Debug.WriteLine($"URL actual: '{urlActual}'");
-            System.Diagnostics.Debug.WriteLine($"URL válida en BD: {urlValidaEnBD}, URL actual válida: {urlActualValida}");
+            System.Diagnostics.Debug.WriteLine($"URL vï¿½lida en BD: {urlValidaEnBD}, URL actual vï¿½lida: {urlActualValida}");
             
             if (!urlValidaEnBD || !urlActualValida)
             {
-                // No hay configuración válida
+                // No hay configuraciï¿½n vï¿½lida
                 ShowUrlConfigWarning = true;
-                UrlConfigMessage = "No se encontró un URL en la configuración, favor de entrar como administrador y configurar aplicación";
+                UrlConfigMessage = "No se encontrï¿½ un URL en la configuraciï¿½n, favor de entrar como administrador y configurar aplicaciï¿½n";
                 
-                System.Diagnostics.Debug.WriteLine("?? No se encontró configuración de URL válida");
+                System.Diagnostics.Debug.WriteLine("?? No se encontrï¿½ configuraciï¿½n de URL vï¿½lida");
                 return;
             }
 
-            // Hay configuración válida
+            // Hay configuraciï¿½n vï¿½lida
             ShowUrlConfigWarning = false;
             UrlConfigMessage = string.Empty;
-            System.Diagnostics.Debug.WriteLine($"? Configuración de URL válida encontrada: {urlActual}");
+            System.Diagnostics.Debug.WriteLine($"? Configuraciï¿½n de URL vï¿½lida encontrada: {urlActual}");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? Error validando configuración de URL: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"? Error validando configuraciï¿½n de URL: {ex.Message}");
             
             // En caso de error, mostrar aviso por seguridad
             ShowUrlConfigWarning = true;
-            UrlConfigMessage = "No se encontró un URL en la configuración, favor de entrar como administrador y configurar aplicación";
+            UrlConfigMessage = "No se encontrï¿½ un URL en la configuraciï¿½n, favor de entrar como administrador y configurar aplicaciï¿½n";
         }
     }
 
@@ -450,7 +450,7 @@ public partial class LoginViewModel : BaseViewModel
         try
         {
             SetBusy(true);
-            System.Diagnostics.Debug.WriteLine("?? === CONSULTANDO INFORMACIÓN DE LA ÚLTIMA SESIÓN ===");
+            System.Diagnostics.Debug.WriteLine("?? === CONSULTANDO INFORMACIï¿½N DE LA ï¿½LTIMA SESIï¿½N ===");
             
             // Obtener todas las sesiones de la base de datos
             var sessions = await _databaseService.GetAllAsync<Session>();
@@ -462,18 +462,18 @@ public partial class LoginViewModel : BaseViewModel
                 return;
             }
             
-            // Obtener la sesión más reciente (por CreatedAt)
+            // Obtener la sesiï¿½n mï¿½s reciente (por CreatedAt)
             var lastSession = sessions.OrderByDescending(s => s.CreatedAt).FirstOrDefault();
             
             if (lastSession == null)
             {
                 await Shell.Current.DisplayAlert("Error", 
-                    "No se pudo obtener la última sesión.", "OK");
+                    "No se pudo obtener la ï¿½ltima sesiï¿½n.", "OK");
                 return;
             }
             
-            // Construir el mensaje con la información de la sesión
-            var sessionInfo = $"?? INFORMACIÓN DE LA ÚLTIMA SESIÓN\n\n" +
+            // Construir el mensaje con la informaciï¿½n de la sesiï¿½n
+            var sessionInfo = $"?? INFORMACIï¿½N DE LA ï¿½LTIMA SESIï¿½N\n\n" +
                              $"?? ID: {lastSession.Id}\n" +
                              $"?? Usuario: {lastSession.Username}\n" +
                              $"?? Nombre: {lastSession.NombreCompleto}\n" +
@@ -488,11 +488,11 @@ public partial class LoginViewModel : BaseViewModel
             
             sessionInfo += $"? Creada: {lastSession.CreatedAt:dd/MM/yyyy HH:mm:ss}\n" +
                           $"? Expira: {lastSession.ExpirationDate:dd/MM/yyyy HH:mm:ss}\n" +
-                          $"?? Activa: {(lastSession.IsActive ? "? SÍ" : "? NO")}\n" +
-                          $"?? Online: {(lastSession.IsOnline ? "? SÍ" : "? NO")}\n" +
+                          $"?? Activa: {(lastSession.IsActive ? "? Sï¿½" : "? NO")}\n" +
+                          $"?? Online: {(lastSession.IsOnline ? "? Sï¿½" : "? NO")}\n" +
                           $"?? Tipo Usuario: {lastSession.TipoUsuario}\n" +
                           $"?? Inspector ID: {lastSession.IdInspector}\n" +
-                          $"?? Es Promotora: {(lastSession.IsPromotora ? "? SÍ" : "? NO")}\n\n";
+                          $"?? Es Promotora: {(lastSession.IsPromotora ? "? Sï¿½" : "? NO")}\n\n";
             
             // Verificar validez
             var timeRemaining = lastSession.ExpirationDate - DateTime.Now;
@@ -501,35 +501,35 @@ public partial class LoginViewModel : BaseViewModel
             bool isValid = hasToken && !isExpired && lastSession.IsActive;
             
             sessionInfo += $"?? Tiempo restante: {(isExpired ? "?? EXPIRADA" : $"{timeRemaining.TotalMinutes:F1} minutos")}\n";
-            sessionInfo += $"? ESTADO: {(isValid ? "?? VÁLIDA - PUEDE IR AL HOME" : "?? INVÁLIDA - DEBE IR AL LOGIN")}\n\n";
+            sessionInfo += $"? ESTADO: {(isValid ? "?? Vï¿½LIDA - PUEDE IR AL HOME" : "?? INVï¿½LIDA - DEBE IR AL LOGIN")}\n\n";
             
             if (!isValid)
             {
                 sessionInfo += "? RAZONES DE INVALIDEZ:\n";
                 if (!hasToken)
-                    sessionInfo += "   • Token vacío o ausente\n";
+                    sessionInfo += "   ï¿½ Token vacï¿½o o ausente\n";
                 if (isExpired)
-                    sessionInfo += "   • Sesión expirada\n";
+                    sessionInfo += "   ï¿½ Sesiï¿½n expirada\n";
                 if (!lastSession.IsActive)
-                    sessionInfo += "   • Sesión marcada como inactiva\n";
+                    sessionInfo += "   ï¿½ Sesiï¿½n marcada como inactiva\n";
             }
             
-            // Mostrar información adicional
-            sessionInfo += $"\n?? ESTADÍSTICAS:\n" +
-                          $"   • Total de sesiones en BD: {sessions.Count}\n" +
-                          $"   • Sesiones activas: {sessions.Count(s => s.IsActive)}\n" +
-                          $"   • Sesiones con token: {sessions.Count(s => !string.IsNullOrEmpty(s.Token))}\n" +
-                          $"   • Sesiones válidas: {sessions.Count(s => !string.IsNullOrEmpty(s.Token) && s.ExpirationDate > DateTime.Now && s.IsActive)}";
+            // Mostrar informaciï¿½n adicional
+            sessionInfo += $"\n?? ESTADï¿½STICAS:\n" +
+                          $"   ï¿½ Total de sesiones en BD: {sessions.Count}\n" +
+                          $"   ï¿½ Sesiones activas: {sessions.Count(s => s.IsActive)}\n" +
+                          $"   ï¿½ Sesiones con token: {sessions.Count(s => !string.IsNullOrEmpty(s.Token))}\n" +
+                          $"   ï¿½ Sesiones vï¿½lidas: {sessions.Count(s => !string.IsNullOrEmpty(s.Token) && s.ExpirationDate > DateTime.Now && s.IsActive)}";
             
-            await Shell.Current.DisplayAlert("Información de Sesión", sessionInfo, "OK");
+            await Shell.Current.DisplayAlert("Informaciï¿½n de Sesiï¿½n", sessionInfo, "OK");
             
-            System.Diagnostics.Debug.WriteLine($"?? Información de última sesión mostrada - ID: {lastSession.Id}, Usuario: {lastSession.Username}");
+            System.Diagnostics.Debug.WriteLine($"?? Informaciï¿½n de ï¿½ltima sesiï¿½n mostrada - ID: {lastSession.Id}, Usuario: {lastSession.Username}");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"?? ? Error obteniendo información de sesión: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"?? ? Error obteniendo informaciï¿½n de sesiï¿½n: {ex.Message}");
             await Shell.Current.DisplayAlert("Error", 
-                $"Error al obtener información de la sesión:\n{ex.Message}", "OK");
+                $"Error al obtener informaciï¿½n de la sesiï¿½n:\n{ex.Message}", "OK");
         }
         finally
         {

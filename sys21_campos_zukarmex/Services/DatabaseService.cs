@@ -43,7 +43,9 @@ public class DatabaseService
         await _database.CreateTableAsync<Zafra>();
         await _database.CreateTableAsync<Session>();
         await _database.CreateTableAsync<Ciclo>();
-
+        await _database.CreateTableAsync<SalidaTrampeoRatas>();
+        await _database.CreateTableAsync<LineaDeRiego>();
+        await _database.CreateTableAsync<SalidaLineaDeRiego>();
     }
 
     #region Generic CRUD Operations

@@ -67,6 +67,7 @@ public static class ServiceRegistration
         services.AddTransient<CatalogExampleViewModel>();
         services.AddTransient<HistorialViewModel>();
         services.AddTransient<RatTrappingViewModel>();
+        services.AddTransient<IrrigationLineViewModel>();
         services.AddTransient<DamageAssessmentViewModel>();
         services.AddTransient<RodenticideConsumptionViewModel>();
 
@@ -83,6 +84,7 @@ public static class ServiceRegistration
         services.AddTransient<LoadingPage>();
         services.AddTransient<HistorialPage>();
         services.AddTransient<RatTrappingPage>();
+        services.AddTransient<IrrigationLinePage>();
         services.AddTransient<DamageAssessmentPage>();
         services.AddTransient<RodenticideConsumptionPage>();
 

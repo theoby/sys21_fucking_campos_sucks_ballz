@@ -19,22 +19,17 @@ namespace sys21_campos_zukarmex.ViewModels
 
         private bool isInitialized = false;
 
-        // Listas completas de catálogos para filtrar
-        private List<LineaRiego> allLineasDeRiego = new();
-
-        // Colecciones para la UI (Pickers)
         [ObservableProperty]
-        private ObservableCollection<Campo> predios; // Usamos 'Campo' como el modelo para 'Predio'
+        private ObservableCollection<Campo> predios;
 
         [ObservableProperty]
-        private ObservableCollection<LineaRiego> lineasDeRiego;
+        private ObservableCollection<LineaDeRiego> lineasDeRiego;
 
-        // Propiedades para los valores del formulario
         [ObservableProperty]
         private Campo? selectedPredio;
 
         [ObservableProperty]
-        private LineaRiego? selectedLineaDeRiego;
+        private LineaDeRiego? selectedLineaDeRiego;
 
         [ObservableProperty]
         private DateTime fecha = DateTime.Now;
@@ -58,11 +53,10 @@ namespace sys21_campos_zukarmex.ViewModels
             Title = "Línea de Riego";
 
             predios = new ObservableCollection<Campo>();
-            lineasDeRiego = new ObservableCollection<LineaRiego>();
+            lineasDeRiego = new ObservableCollection<LineaDeRiego>();
         }
 
-        [RelayCommand]
-        private async Task PageAppearingAsync()
+        public async Task InitializeAsync()
         {
             if (isInitialized) return;
             await LoadCatalogsAsync();
@@ -82,10 +76,9 @@ namespace sys21_campos_zukarmex.ViewModels
                     return;
                 }
 
-                // Cargar Campos y filtrarlos por inspector
                 var allCamposFromDb = await _databaseService.GetAllAsync<Campo>();
                 List<Campo> filteredCampos;
-                if (session.TipoUsuario == 1) // Admin
+                if (session.TipoUsuario == 1) 
                 {
                     filteredCampos = allCamposFromDb;
                 }
@@ -100,9 +93,20 @@ namespace sys21_campos_zukarmex.ViewModels
                     Predios.Add(campo);
                 }
 
-                // Cargar todas las líneas de riego para tenerlas listas para filtrar
-                allLineasDeRiego = await _databaseService.GetAllAsync<LineaRiego>();
-                LineasDeRiego.Clear();
+                var lineasPredefinidas = new List<LineaDeRiego>
+                {
+                    new LineaDeRiego { Id = 1, Nombre = "Principal Norte" },
+                    new LineaDeRiego { Id = 2, Nombre = "Secundaria A-1" },
+                    new LineaDeRiego { Id = 3, Nombre = "Secundaria A-2" },
+                    new LineaDeRiego { Id = 4, Nombre = "Principal Sur" },
+                    new LineaDeRiego { Id = 5, Nombre = "Terciaria B-3 (Goteo)" }
+                };
+
+                LineasDeRiego.Clear();//Modificar cuando tengamos el catalogo on
+                foreach (var linea in lineasPredefinidas.OrderBy(l => l.Nombre))
+                {
+                    LineasDeRiego.Add(linea);
+                }
             }
             catch (Exception ex)
             {
@@ -114,21 +118,6 @@ namespace sys21_campos_zukarmex.ViewModels
             }
         }
 
-        // Método que se dispara cuando el usuario selecciona un Predio (Campo)
-        partial void OnSelectedPredioChanged(Campo? value)
-        {
-            LineasDeRiego.Clear();
-            SelectedLineaDeRiego = null;
-
-            if (value == null) return;
-
-            // Filtrar las líneas de riego que pertenecen al campo seleccionado
-            var filteredLineas = allLineasDeRiego.Where(l => l.IdCampo == value.Id).OrderBy(l => l.Nombre);
-            foreach (var linea in filteredLineas)
-            {
-                LineasDeRiego.Add(linea);
-            }
-        }
 
         [RelayCommand]
         private async Task AddIrrigationEntryAsync()

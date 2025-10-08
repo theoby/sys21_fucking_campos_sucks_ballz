@@ -38,8 +38,8 @@ public static class AppConfigService
     public const string ValesSalidasPendienteEndpoint = "ValesDeSalida/Obtener_Vales_Pendientes";
     public const string SaldosEndpoint = "Articulos/Saldos";
     public const string DetallesValeEndpoint = "ValesDeSalida/Obtener_Vale_Detalle";
-    public const string RatCapturesEndpoint = "Trampeo/Captura"; //Falta definir con Roberto
-    public const string IrrigationEntriesEndpoint = "Riego/Captura";
+    public const string RatCapturesEndpoint = "TrampeoRatas/Trampeo";
+    public const string IrrigationEntriesEndpoint = "CapturaLineaRiego/PorEnviar";
 
     // User Types
     public const int UserTypeAdmin = 1;

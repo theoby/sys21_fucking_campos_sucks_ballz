@@ -3,12 +3,12 @@ using System.Text.Json.Serialization;
 namespace sys21_campos_zukarmex.Models.DTOs.Api;
 
 /// <summary>
-/// Estructura de respuesta estándar de la API
+/// Estructura de respuesta estï¿½ndar de la API
 /// </summary>
 public class StandardApiResponse<T>
 {
     /// <summary>
-    /// Estado de la respuesta (código de estado)
+    /// Estado de la respuesta (cï¿½digo de estado)
     /// </summary>
     public int Estado { get; set; }
     
@@ -28,7 +28,7 @@ public class StandardApiResponse<T>
     public string Mensaje { get; set; } = string.Empty;
     
     /// <summary>
-    /// Indica si la operación fue exitosa (estado 200)
+    /// Indica si la operaciï¿½n fue exitosa (estado 200)
     /// </summary>
     public bool Success => Estado == 200;
     
@@ -44,7 +44,7 @@ public class StandardApiResponse<T>
 public class ApiResponseVale
 {
     /// <summary>
-    /// Estado de la respuesta (código de estado)
+    /// Estado de la respuesta (cï¿½digo de estado)
     /// </summary>
     public int Estado { get; set; }
     
@@ -64,7 +64,7 @@ public class ApiResponseVale
     public string Mensaje { get; set; } = string.Empty;
     
     /// <summary>
-    /// Indica si la operación fue exitosa (estado 200)
+    /// Indica si la operaciï¿½n fue exitosa (estado 200)
     /// </summary>
     public bool Success => Estado == 200;
 }
@@ -95,3 +95,40 @@ public class DetalleApiResponse
 {
 
 }
+
+public class RatCaptureApiResponse
+{
+    [Newtonsoft.Json.JsonProperty("estado")]
+    public int Estado { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("datos")]
+    public bool Datos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("totalDatos")]
+    public int TotalDatos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("mensaje")]
+    public string Mensaje { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public bool Success => Estado == 200 && Datos == true;
+}
+
+public class IrrigationEntryApiResponse
+{
+    [Newtonsoft.Json.JsonProperty("estado")]
+    public int Estado { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("datos")]
+    public bool Datos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("totalDatos")]
+    public int TotalDatos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("mensaje")]
+    public string Mensaje { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public bool Success => Estado == 200 && Datos == true;
+}
+
