@@ -49,6 +49,7 @@ public static class ServiceRegistration
         services.AddSingleton<ISessionRepository, SessionRepository>();
         services.AddSingleton<ISalidaRepository, SalidaRepository>();
         services.AddSingleton<ISalidaDetalleRepository, SalidaDetalleRepository>();
+        services.AddSingleton<IZafraRepository, ZafraRepository>();
 
         // ViewModels
         services.AddTransient<LoginViewModel>();

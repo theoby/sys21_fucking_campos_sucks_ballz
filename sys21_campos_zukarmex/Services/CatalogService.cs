@@ -46,6 +46,7 @@ public class CatalogService : ICatalogService
     private readonly IFamiliaRepository _familiaRepository;
     private readonly IInspectorRepository _inspectorRepository;
     private readonly ILoteRepository _loteRepository;
+    private readonly IZafraRepository _zafraRepository;
     private readonly IMaquinariaRepository _maquinariaRepository;
     private readonly ISubFamiliaRepository _subFamiliaRepository;
 
@@ -60,6 +61,7 @@ public class CatalogService : ICatalogService
         IFamiliaRepository familiaRepository,
         IInspectorRepository inspectorRepository,
         ILoteRepository loteRepository,
+        IZafraRepository zafraRepository,
         IMaquinariaRepository maquinariaRepository,
         ISubFamiliaRepository subFamiliaRepository)
     {
@@ -75,6 +77,7 @@ public class CatalogService : ICatalogService
         _loteRepository = loteRepository;
         _maquinariaRepository = maquinariaRepository;
         _subFamiliaRepository = subFamiliaRepository;
+        _zafraRepository = zafraRepository;
     }
 
     #region Generic CRUD Operations
@@ -100,14 +103,14 @@ public class CatalogService : ICatalogService
             {
                 case Almacen almacen:
                     if (string.IsNullOrWhiteSpace(almacen.Nombre))
-                        result.Errors.Add("El nombre del almacén es requerido");
+                        result.Errors.Add("El nombre del almacï¿½n es requerido");
                     if (almacen.IdCampo <= 0)
                         result.Errors.Add("El campo es requerido");
                     break;
 
                 case Articulo articulo:
                     if (string.IsNullOrWhiteSpace(articulo.Nombre))
-                        result.Errors.Add("El nombre del artículo es requerido");
+                        result.Errors.Add("El nombre del artï¿½culo es requerido");
                     if (string.IsNullOrWhiteSpace(articulo.Unidad))
                         result.Errors.Add("La unidad es requerida");
                     if (articulo.IdFamilia <= 0)
@@ -129,7 +132,7 @@ public class CatalogService : ICatalogService
                     if (lote.IdCampo <= 0)
                         result.Errors.Add("El campo es requerido");
                     if (lote.Hectareas <= 0)
-                        result.Errors.Add("Las hectáreas deben ser mayor a 0");
+                        result.Errors.Add("Las hectï¿½reas deben ser mayor a 0");
                     break;
 
                 // Add more validation rules for other entities as needed
@@ -140,7 +143,7 @@ public class CatalogService : ICatalogService
         catch (Exception ex)
         {
             result.IsValid = false;
-            result.Errors.Add($"Error de validación: {ex.Message}");
+            result.Errors.Add($"Error de validaciï¿½n: {ex.Message}");
         }
 
         return Task.FromResult(result);
@@ -178,7 +181,7 @@ public class CatalogService : ICatalogService
                     return new ApiResponse<T>
                     {
                         Success = true,
-                        Message = "Guardado localmente. Se sincronizará cuando esté disponible la conexión.",
+                        Message = "Guardado localmente. Se sincronizarï¿½ cuando estï¿½ disponible la conexiï¿½n.",
                         Data = entity
                     };
                 }
@@ -188,7 +191,7 @@ public class CatalogService : ICatalogService
                     return new ApiResponse<T>
                     {
                         Success = true,
-                        Message = "Guardado localmente. Se sincronizará cuando esté disponible la conexión.",
+                        Message = "Guardado localmente. Se sincronizarï¿½ cuando estï¿½ disponible la conexiï¿½n.",
                         Data = entity
                     };
                 }
@@ -232,7 +235,7 @@ public class CatalogService : ICatalogService
                     return new ApiResponse<bool>
                     {
                         Success = true,
-                        Message = "Eliminado localmente. Se sincronizará cuando esté disponible la conexión.",
+                        Message = "Eliminado localmente. Se sincronizarï¿½ cuando estï¿½ disponible la conexiï¿½n.",
                         Data = true
                     };
                 }
@@ -242,7 +245,7 @@ public class CatalogService : ICatalogService
                     return new ApiResponse<bool>
                     {
                         Success = true,
-                        Message = "Eliminado localmente. Se sincronizará cuando esté disponible la conexión.",
+                        Message = "Eliminado localmente. Se sincronizarï¿½ cuando estï¿½ disponible la conexiï¿½n.",
                         Data = true
                     };
                 }
@@ -356,7 +359,7 @@ public class CatalogService : ICatalogService
     }
 
     /// <summary>
-    /// Sincronización completa forzada con borrado e inserción completa de todas las tablas
+    /// Sincronizaciï¿½n completa forzada con borrado e inserciï¿½n completa de todas las tablas
     /// </summary>
     public async Task<List<SyncResult>> ForceFullResyncAsync(IProgress<SyncStatus>? progress = null)
     {
@@ -364,7 +367,7 @@ public class CatalogService : ICatalogService
     }
 
     /// <summary>
-    /// Verificar integridad de todas las tablas después de sincronización
+    /// Verificar integridad de todas las tablas despuï¿½s de sincronizaciï¿½n
     /// </summary>
     public async Task<SyncIntegrityReport> VerifySyncIntegrityAsync()
     {

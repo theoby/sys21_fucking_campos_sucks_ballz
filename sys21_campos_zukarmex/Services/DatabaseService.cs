@@ -39,6 +39,7 @@ public class DatabaseService
         await _database.CreateTableAsync<SalidaDetalle>();
         await _database.CreateTableAsync<SubFamilia>();
         await _database.CreateTableAsync<User>();
+        await _database.CreateTableAsync<Zafra>();
         await _database.CreateTableAsync<Session>();
     }
 
@@ -343,6 +344,19 @@ public class DatabaseService
     {
         return await GetFirstOrDefaultAsync<SubFamilia>(sf => sf.Nombre == nombre);
     }
+
+
+    // Zafra
+    public async Task<Zafra?> GetZafraByNameAsync(string nombre)
+    {
+        return await GetFirstOrDefaultAsync<Zafra>(z => z.Nombre == nombre);
+    }
+
+    public async Task<Zafra?> GetActiveZafraAsync()
+    {
+        return await GetFirstOrDefaultAsync<Zafra>(z => z.Activa || z.IsActive);
+    }
+
 
     // User
     public async Task<User?> GetUserByUsernameAsync(string username)

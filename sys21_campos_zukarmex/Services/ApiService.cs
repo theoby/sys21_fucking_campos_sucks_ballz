@@ -788,6 +788,11 @@ public class ApiService : IDisposable
         return await GetCatalogAsync<SubFamilia>(AppConfigService.SubFamiliasEndpoint);
     }
 
+    public async Task<List<Zafra>> GetZafrasAsync()
+    {
+        return await GetCatalogAsync<Zafra>(AppConfigService.ZafrasEndpoint);
+    }
+
     public async Task<List<Receta>> GetRecetasAsync()
     {
         try

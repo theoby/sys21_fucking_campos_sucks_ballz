@@ -28,6 +28,7 @@ public static class AppConfigService
     public const string FamiliasEndpoint = "Articulos/Familias";
     public const string InspectoresEndpoint = "Catalogos/inspectores";
     public const string LotesEndpoint = "Catalogos/lotes";
+    public const string ZafrasEndpoint = "Catalogos/temporadas";
     public const string MaquinariasEndpoint = "Catalogos/Maquinaria";
     public const string RecetasEndpoint = "Recetas/Recetas";
     public const string SubFamiliasEndpoint = "Articulos/SubFamilias";

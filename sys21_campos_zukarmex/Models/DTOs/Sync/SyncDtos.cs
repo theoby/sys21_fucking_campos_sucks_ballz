@@ -53,6 +53,7 @@ public class SyncStatistics
     public int MaquinariasCount { get; set; }
     public int RecetasCount { get; set; }
     public int SubFamiliasCount { get; set; }
+    public int ZafrasCount { get; set; }
     public int TotalRecords { get; set; }
     public DateTime LastSyncDate { get; set; }
     public string? ErrorMessage { get; set; }

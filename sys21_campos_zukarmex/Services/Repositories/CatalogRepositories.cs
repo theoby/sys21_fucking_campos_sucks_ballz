@@ -40,6 +40,28 @@ public class SubFamiliaRepository : BaseRepository<SubFamilia>, ISubFamiliaRepos
     }
 }
 
+public interface IZafraRepository : IRepository<Zafra>
+{
+    Task<Zafra?> GetByNameAsync(string nombre);
+    Task<Zafra?> GetActiveAsync();
+}
+
+public class ZafraRepository : BaseRepository<Zafra>, IZafraRepository
+{
+    public ZafraRepository(DatabaseService databaseService) : base(databaseService) { }
+
+    public async Task<Zafra?> GetByNameAsync(string nombre)
+    {
+        return await _databaseService.GetZafraByNameAsync(nombre);
+    }
+
+    public async Task<Zafra?> GetActiveAsync()
+    {
+        return await _databaseService.GetActiveZafraAsync();
+    }
+}
+
+
 public interface IInspectorRepository : IRepository<Inspector>
 {
     Task<Inspector?> GetByNameAsync(string nombre);
@@ -155,10 +177,10 @@ public class RecetaRepository : BaseRepository<Receta>, IRecetaRepository
         // Guardar la receta primero
         var result = await _databaseService.SaveAsync(receta);
         
-        // Si la receta se guardó exitosamente y tiene artículos
+        // Si la receta se guardï¿½ exitosamente y tiene artï¿½culos
         if (result > 0 && receta.Articulos != null && receta.Articulos.Any())
         {
-            // Asegurar que todos los artículos tengan el IdReceta correcto
+            // Asegurar que todos los artï¿½culos tengan el IdReceta correcto
             foreach (var articulo in receta.Articulos)
             {
                 articulo.IdReceta = receta.Id;
@@ -171,7 +193,7 @@ public class RecetaRepository : BaseRepository<Receta>, IRecetaRepository
 
     public async Task<int> DeleteRecetaWithArticulosAsync(int idReceta)
     {
-        // Primero eliminar todos los artículos de la receta
+        // Primero eliminar todos los artï¿½culos de la receta
         await _databaseService.DeleteRecetaArticulosByRecetaAsync(idReceta);
         
         // Luego eliminar la receta

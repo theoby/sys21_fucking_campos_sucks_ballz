@@ -20,6 +20,7 @@ public class SyncService
     private readonly IMaquinariaRepository _maquinariaRepository;
     private readonly IRecetaRepository _recetaRepository;
     private readonly ISubFamiliaRepository _subFamiliaRepository;
+    private readonly IZafraRepository _zafraRepository;
 
     public SyncService(
         ApiService apiService, 
@@ -33,6 +34,7 @@ public class SyncService
         ILoteRepository loteRepository,
         IMaquinariaRepository maquinariaRepository,
         IRecetaRepository recetaRepository,
+        IZafraRepository zafraRepository,
         ISubFamiliaRepository subFamiliaRepository)
     {
         _apiService = apiService;
@@ -44,6 +46,7 @@ public class SyncService
         _familiaRepository = familiaRepository;
         _inspectorRepository = inspectorRepository;
         _loteRepository = loteRepository;
+        _zafraRepository = zafraRepository;
         _maquinariaRepository = maquinariaRepository;
         _recetaRepository = recetaRepository;
         _subFamiliaRepository = subFamiliaRepository;
@@ -64,6 +67,7 @@ public class SyncService
         await SyncAlmacenesAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncLotesAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncFamiliasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
+        await SyncZafrasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncSubFamiliasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncArticulosAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncMaquinariasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
@@ -78,6 +82,12 @@ public class SyncService
     {
         await SyncCatalogAsync("Empresas", _apiService.GetEmpresasAsync, 
             _empresaRepository.ClearAllAsync, _empresaRepository.SaveAllAsync, 
+            progress, syncStatuses, currentCatalog, totalCatalogs);
+    }
+    private async Task SyncZafrasAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
+    {
+        await SyncCatalogAsync("Zafras", _apiService.GetZafrasAsync,
+            _zafraRepository.ClearAllAsync, _zafraRepository.SaveAllAsync,
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
 
@@ -151,25 +161,25 @@ public class SyncService
 
         try
         {
-            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] === INICIANDO SINCRONIZACIÓN ESPECIALIZADA DE RECETAS ===");
+            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] === INICIANDO SINCRONIZACIï¿½N ESPECIALIZADA DE RECETAS ===");
             System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Progreso: {currentCatalog}/{totalCatalogs} ({syncStatus.Progress}%)");
             
-            // 1. LIMPIAR TABLA COMPLETA de recetas Y artículos PRIMERO
-            syncStatus.Status = "Limpiando tablas de recetas y artículos...";
+            // 1. LIMPIAR TABLA COMPLETA de recetas Y artï¿½culos PRIMERO
+            syncStatus.Status = "Limpiando tablas de recetas y artï¿½culos...";
             progress?.Report(syncStatus);
             
             System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Limpiando tablas de RecetaArticulo y Receta ANTES de obtener datos...");
             var deletedRecetaArticulos = await _databaseService.ClearTableAsync<RecetaArticulo>();
             var deletedRecetas = await _databaseService.ClearTableAsync<Receta>();
-            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] DELETE - {deletedRecetas} recetas eliminadas, {deletedRecetaArticulos} artículos eliminados");
+            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] DELETE - {deletedRecetas} recetas eliminadas, {deletedRecetaArticulos} artï¿½culos eliminados");
 
-            // 2. Obtener datos de la API usando método especializado
-            syncStatus.Status = "Obteniendo recetas con artículos desde API...";
+            // 2. Obtener datos de la API usando mï¿½todo especializado
+            syncStatus.Status = "Obteniendo recetas con artï¿½culos desde API...";
             progress?.Report(syncStatus);
             
             System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Llamando a ApiService.GetRecetasAsync()...");
             var recetas = await _apiService.GetRecetasAsync();
-            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] ApiService devolvió {recetas?.Count ?? 0} recetas");
+            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] ApiService devolviï¿½ {recetas?.Count ?? 0} recetas");
 
             if (recetas == null || !recetas.Any())
             {
@@ -184,24 +194,24 @@ public class SyncService
 
             System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] ? Recetas obtenidas exitosamente: {recetas.Count} recetas");
 
-            // 3. GetRecetasAsync ya maneja la sincronización completa con SyncRecetaWithArticulosAsync
-            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Verificando conteo final después de sincronización...");
+            // 3. GetRecetasAsync ya maneja la sincronizaciï¿½n completa con SyncRecetaWithArticulosAsync
+            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Verificando conteo final despuï¿½s de sincronizaciï¿½n...");
             
-            // Pequeña pausa para asegurar que la BD esté actualizada
+            // Pequeï¿½a pausa para asegurar que la BD estï¿½ actualizada
             await Task.Delay(100);
             
             var finalRecetasCount = await _databaseService.CountAsync<Receta>();
             var finalArticulosCount = await _databaseService.CountAsync<RecetaArticulo>();
             
-            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] VERIFY - {finalRecetasCount} recetas finales, {finalArticulosCount} artículos finales en BD");
+            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] VERIFY - {finalRecetasCount} recetas finales, {finalArticulosCount} artï¿½culos finales en BD");
 
-            // 4. Verificar sincronización exitosa
+            // 4. Verificar sincronizaciï¿½n exitosa
             if (finalRecetasCount > 0)
             {
                 syncStatus.IsCompleted = true;
-                syncStatus.Status = $"SUCCESS: {finalRecetasCount} recetas y {finalArticulosCount} artículos sincronizados";
+                syncStatus.Status = $"SUCCESS: {finalRecetasCount} recetas y {finalArticulosCount} artï¿½culos sincronizados";
                 syncStatus.Progress = (currentCatalog * 100) / totalCatalogs;
-                System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] ? COMPLETE: Sincronización exitosa - {finalRecetasCount} recetas, {finalArticulosCount} artículos");
+                System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] ? COMPLETE: Sincronizaciï¿½n exitosa - {finalRecetasCount} recetas, {finalArticulosCount} artï¿½culos");
             }
             else
             {
@@ -215,13 +225,13 @@ public class SyncService
                 // Log de las primeras recetas para debug
                 foreach (var receta in recetas.Take(3))
                 {
-                    System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Debug receta: IdReceta={receta.IdReceta}, Nombre='{receta.NombreReceta}', Artículos={receta.ArticulosCount}");
+                    System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Debug receta: IdReceta={receta.IdReceta}, Nombre='{receta.NombreReceta}', Artï¿½culos={receta.ArticulosCount}");
                 }
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] ? ERROR crítico: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] ? ERROR crï¿½tico: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Stack trace: {ex.StackTrace}");
             
             syncStatus.Status = $"ERROR: {ex.Message}";
@@ -232,7 +242,7 @@ public class SyncService
             {
                 var currentRecetasCount = await _databaseService.CountAsync<Receta>();
                 var currentArticulosCount = await _databaseService.CountAsync<RecetaArticulo>();
-                System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Estado actual después del error: {currentRecetasCount} recetas, {currentArticulosCount} artículos");
+                System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] Estado actual despuï¿½s del error: {currentRecetasCount} recetas, {currentArticulosCount} artï¿½culos");
             }
             catch (Exception verifyEx)
             {
@@ -241,42 +251,42 @@ public class SyncService
         }
 
         progress?.Report(syncStatus);
-        System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] === FIN SINCRONIZACIÓN RECETAS ===");
+        System.Diagnostics.Debug.WriteLine($"[SyncRecetasAsync] === FIN SINCRONIZACIï¿½N RECETAS ===");
     }
 
     /// <summary>
-    /// Sincronización especializada de recetas con artículos para uso individual
+    /// Sincronizaciï¿½n especializada de recetas con artï¿½culos para uso individual
     /// </summary>
     private async Task<SyncResult> SyncRecetasSpecialAsync(string catalogName)
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine($"=== Sincronización individual especializada de {catalogName} ===");
+            System.Diagnostics.Debug.WriteLine($"=== Sincronizaciï¿½n individual especializada de {catalogName} ===");
             
             // PASO 1: BORRAR TABLAS COMPLETAS PRIMERO
-            System.Diagnostics.Debug.WriteLine($"DELETE Limpiando tablas de recetas y artículos ANTES de obtener datos...");
+            System.Diagnostics.Debug.WriteLine($"DELETE Limpiando tablas de recetas y artï¿½culos ANTES de obtener datos...");
             var deletedArticulos = await _databaseService.ClearTableAsync<RecetaArticulo>();
             var deletedRecetas = await _databaseService.ClearTableAsync<Receta>();
-            System.Diagnostics.Debug.WriteLine($"DELETE {catalogName}: {deletedRecetas} recetas eliminadas, {deletedArticulos} artículos eliminados");
+            System.Diagnostics.Debug.WriteLine($"DELETE {catalogName}: {deletedRecetas} recetas eliminadas, {deletedArticulos} artï¿½culos eliminados");
             
-            // PASO 2: Obtener recetas usando método especializado que maneja artículos
+            // PASO 2: Obtener recetas usando mï¿½todo especializado que maneja artï¿½culos
             var recetas = await _apiService.GetRecetasAsync();
-            System.Diagnostics.Debug.WriteLine($"API devolvió {recetas?.Count ?? 0} recetas con artículos");
+            System.Diagnostics.Debug.WriteLine($"API devolviï¿½ {recetas?.Count ?? 0} recetas con artï¿½culos");
 
             if (recetas != null && recetas.Any())
             {
-                // GetRecetasAsync ya maneja la inserción con SyncRecetaWithArticulosAsync
+                // GetRecetasAsync ya maneja la inserciï¿½n con SyncRecetaWithArticulosAsync
                 // Verificar conteo final
                 var finalRecetasCount = await _databaseService.CountAsync<Receta>();
                 var finalArticulosCount = await _databaseService.CountAsync<RecetaArticulo>();
-                System.Diagnostics.Debug.WriteLine($"COUNT {catalogName}: {finalRecetasCount} recetas finales, {finalArticulosCount} artículos finales en BD");
+                System.Diagnostics.Debug.WriteLine($"COUNT {catalogName}: {finalRecetasCount} recetas finales, {finalArticulosCount} artï¿½culos finales en BD");
                 
                 if (finalRecetasCount > 0)
                 {
                     return new SyncResult 
                     { 
                         Success = true, 
-                        Message = $"SUCCESS Sincronización completa: {finalRecetasCount} recetas y {finalArticulosCount} artículos sincronizados",
+                        Message = $"SUCCESS Sincronizaciï¿½n completa: {finalRecetasCount} recetas y {finalArticulosCount} artï¿½culos sincronizados",
                         RecordsCount = finalRecetasCount
                     };
                 }
@@ -292,7 +302,7 @@ public class SyncService
             }
             
             // No hay datos de la API
-            System.Diagnostics.Debug.WriteLine($"WARNING {catalogName}: API no devolvió datos");
+            System.Diagnostics.Debug.WriteLine($"WARNING {catalogName}: API no devolviï¿½ datos");
             
             return new SyncResult 
             { 
@@ -310,12 +320,12 @@ public class SyncService
                 var currentRecetasCount = await _databaseService.CountAsync<Receta>();
                 var currentArticulosCount = await _databaseService.CountAsync<RecetaArticulo>();
                 
-                System.Diagnostics.Debug.WriteLine($"COUNT {catalogName}: {currentRecetasCount} recetas, {currentArticulosCount} artículos actuales después del error");
+                System.Diagnostics.Debug.WriteLine($"COUNT {catalogName}: {currentRecetasCount} recetas, {currentArticulosCount} artï¿½culos actuales despuï¿½s del error");
                 
                 return new SyncResult 
                 { 
                     Success = false, 
-                    Message = $"ERROR Error sincronizando {catalogName}: {ex.Message}. Estado actual: {currentRecetasCount} recetas, {currentArticulosCount} artículos",
+                    Message = $"ERROR Error sincronizando {catalogName}: {ex.Message}. Estado actual: {currentRecetasCount} recetas, {currentArticulosCount} artï¿½culos",
                     RecordsCount = currentRecetasCount
                 };
             }
@@ -387,7 +397,7 @@ public class SyncService
             syncStatus.Status = $"Insertando {data.Count} registros en {catalogName}...";
             progress?.Report(syncStatus);
             
-            System.Diagnostics.Debug.WriteLine($"BEFORE INSERT {catalogName}: Iniciando inserción de {data.Count} registros");
+            System.Diagnostics.Debug.WriteLine($"BEFORE INSERT {catalogName}: Iniciando inserciï¿½n de {data.Count} registros");
             
             // Log detalles del primer registro para debugging
             if (data.Any())
@@ -416,6 +426,7 @@ public class SyncService
                 "Familias" => await _familiaRepository.CountAsync(),
                 "SubFamilias" => await _subFamiliaRepository.CountAsync(),
                 "Articulos" => await _articuloRepository.CountAsync(),
+                "Zafras" => await _zafraRepository.CountAsync(),
                 "Maquinarias" => await _maquinariaRepository.CountAsync(),
                 "Recetas" => await _recetaRepository.CountAsync(),
                 _ => 0
@@ -462,6 +473,7 @@ public class SyncService
                         "lotes" => await _loteRepository.CountAsync(),
                         "maquinarias" => await _maquinariaRepository.CountAsync(),
                         "recetas" => await _recetaRepository.CountAsync(),
+                        "Zafras" => await _zafraRepository.CountAsync(),
                         "subfamilias" => await _subFamiliaRepository.CountAsync(),
                         _ => 0
                     };
@@ -504,6 +516,7 @@ public class SyncService
                 "maquinarias" => await _apiService.GetMaquinariasAsync() as List<T>,
                 "recetas" => await _apiService.GetRecetasAsync() as List<T>,
                 "subfamilias" => await _apiService.GetSubFamiliasAsync() as List<T>,
+                "zafras" => await _apiService.GetZafrasAsync() as List<T>,
                 _ => new List<T>()
             };
 
@@ -546,7 +559,7 @@ public class SyncService
             }
             
             // No hay datos de la API
-            System.Diagnostics.Debug.WriteLine($"WARNING {catalogName}: API no devolvió datos");
+            System.Diagnostics.Debug.WriteLine($"WARNING {catalogName}: API no devolviï¿½ datos");
             
             // Aun asi, limpiar la tabla para mantener consistencia
             var deletedCountEmpty = await _databaseService.ClearTableAsync<T>();
@@ -579,6 +592,7 @@ public class SyncService
                     "maquinarias" => await _maquinariaRepository.CountAsync(),
                     "recetas" => await _recetaRepository.CountAsync(),
                     "subfamilias" => await _subFamiliaRepository.CountAsync(),
+                    "zafras" => await _zafraRepository.CountAsync(),
                     _ => 0
                 };
                 
@@ -630,7 +644,8 @@ public class SyncService
                 ("subfamilias", "SubFamilias"),
                 ("articulos", "Articulos"),
                 ("maquinarias", "Maquinarias"),
-                ("recetas", "Recetas")
+                ("recetas", "Recetas"),
+                ("zafras", "Zafras")
             };
 
             var totalCatalogs = catalogsToSync.Length;
@@ -664,6 +679,7 @@ public class SyncService
                         "articulos" => await SyncCatalogAsync<Articulo>(catalogKey),
                         "maquinarias" => await SyncCatalogAsync<Maquinaria>(catalogKey),
                         "recetas" => await SyncRecetasSpecialAsync(catalogKey),
+                        "zafras" => await SyncCatalogAsync<Zafra>(catalogKey),
                         _ => new SyncResult { Success = false, Message = $"Catalogo {catalogKey} no reconocido" }
                     };
 
@@ -742,7 +758,8 @@ public class SyncService
                 { "SubFamilias", () => _subFamiliaRepository.CountAsync() },
                 { "Articulos", () => _articuloRepository.CountAsync() },
                 { "Maquinarias", () => _maquinariaRepository.CountAsync() },
-                { "Recetas", () => _recetaRepository.CountAsync() }
+                { "Recetas", () => _recetaRepository.CountAsync() },
+                { "Zafras", () => _zafraRepository.CountAsync() }
             };
 
             foreach (var (catalogName, countFunc) in catalogChecks)
@@ -859,11 +876,12 @@ public class SyncService
             stats.MaquinariasCount = await _maquinariaRepository.CountAsync();
             stats.RecetasCount = await _recetaRepository.CountAsync();
             stats.SubFamiliasCount = await _subFamiliaRepository.CountAsync();
+            stats.ZafrasCount = await _zafraRepository.CountAsync();
 
             stats.TotalRecords = stats.AlmacenesCount + stats.ArticulosCount + stats.CamposCount +
                                stats.EmpresasCount + stats.FamiliasCount + 
                                stats.InspectoresCount + stats.LotesCount + stats.MaquinariasCount +
-                               stats.RecetasCount + stats.SubFamiliasCount;
+                               stats.RecetasCount + stats.SubFamiliasCount + stats.ZafrasCount; 
 
             stats.LastSyncDate = DateTime.Now;
         }
