@@ -62,6 +62,8 @@ public static class ServiceRegistration
         services.AddTransient<LoadingViewModel>();
         services.AddTransient<CatalogExampleViewModel>();
         services.AddTransient<HistorialViewModel>();
+        services.AddTransient<RatTrappingViewModel>();
+
 
         // Pages
         services.AddTransient<LoginPage>();
@@ -74,6 +76,7 @@ public static class ServiceRegistration
         services.AddTransient<SyncPage>();
         services.AddTransient<LoadingPage>();
         services.AddTransient<HistorialPage>();
+        services.AddTransient<RatTrappingPage>();
 
         return services;
     }

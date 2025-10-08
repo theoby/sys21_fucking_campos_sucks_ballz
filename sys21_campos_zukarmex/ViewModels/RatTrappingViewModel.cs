@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,20 +52,15 @@ namespace sys21_campos_zukarmex.ViewModels
             Title = "Trampeo de Ratas";
 
             zafras = new ObservableCollection<Zafra>();
-            campos = new ObservableCollection<Campo>(); 
+            campos = new ObservableCollection<Campo>();
+            _ = LoadCatalogsAsync();
         }
 
-        [RelayCommand]
-        private async Task PageAppearingAsync()
-        {
-            if (isInitialized) return;
 
-            await LoadCatalogsAsync();
-            isInitialized = true;
-        }
 
         private async Task LoadCatalogsAsync()
         {
+            Debug.WriteLine("Inicio LoadCatalogs");
             if (IsBusy) return;
             try
             {
@@ -79,8 +75,10 @@ namespace sys21_campos_zukarmex.ViewModels
                 // Cargar todas las zafras
                 var zafraList = await _databaseService.GetAllAsync<Zafra>();
                 Zafras.Clear();
+                Debug.WriteLine("Zafras a cargar");
                 foreach (var zafra in zafraList.OrderBy(z => z.Nombre))
                 {
+                    Debug.WriteLine(zafra);
                     Zafras.Add(zafra);
                 }
 
