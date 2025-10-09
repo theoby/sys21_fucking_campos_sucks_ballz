@@ -27,10 +27,10 @@ namespace sys21_campos_zukarmex.ViewModels
         private Empresa? selectedEmpresa;
 
         [ObservableProperty]
-        private Pluviometro? selectedPluviometro; // CORREGIDO: El tipo ahora es Pluviometro
+        private Pluviometro? selectedPluviometro;
 
         [ObservableProperty]
-        private DateTime fecha = DateTime.Now.AddDays(-1); // REQUERIMIENTO: Fecha del día anterior
+        private DateTime fecha = DateTime.Now.AddDays(-1); 
 
         [ObservableProperty]
         private string precipitacion = string.Empty;

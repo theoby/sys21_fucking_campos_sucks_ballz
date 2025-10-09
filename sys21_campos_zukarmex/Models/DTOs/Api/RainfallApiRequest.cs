@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
-namespace sys21_campos_zukarmex.Models.DTOs.Api
+public class RainfallApiRequest
 {
-    internal class RainfallApiRequest
-    {
-    }
+    [JsonProperty("fecha")]
+    public DateTime Fecha { get; set; }
+    [JsonProperty("idPluviometro")]
+    public int IdPluviometro { get; set; }
+    [JsonProperty("precipitacion")]
+    public decimal Precipitacion { get; set; }
 }
