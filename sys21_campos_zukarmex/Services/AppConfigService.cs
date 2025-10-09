@@ -40,6 +40,8 @@ public static class AppConfigService
     public const string DetallesValeEndpoint = "ValesDeSalida/Obtener_Vale_Detalle";
     public const string RatCapturesEndpoint = "TrampeoRatas/Trampeo";
     public const string IrrigationEntriesEndpoint = "CapturaLineaRiego/PorEnviar";
+    public const string RodenticideConsumptionEndpoint = "Rodenticida/Consumo";
+    public const string DamageAssessmentEndpoint = "MuestreoDaños/PorEnviar";
 
     // User Types
     public const int UserTypeAdmin = 1;

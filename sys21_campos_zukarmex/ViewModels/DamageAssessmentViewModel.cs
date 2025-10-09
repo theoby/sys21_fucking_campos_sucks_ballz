@@ -2,9 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
-using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,96 +14,67 @@ namespace sys21_campos_zukarmex.ViewModels
         private readonly ApiService _apiService;
         private readonly SessionService _sessionService;
         private readonly ConnectivityService _connectivityService;
-
         public ConnectivityService ConnectivitySvc => _connectivityService;
+        private bool isInitialized = false;
 
-        [ObservableProperty]
-        private ObservableCollection<Campo> campos = new();
+        [ObservableProperty] private ObservableCollection<Campo> campos = new();
+        [ObservableProperty] private ObservableCollection<Zafra> zafras = new();
+        [ObservableProperty] private ObservableCollection<Ciclo> ciclos = new();
 
-        [ObservableProperty]
-        private ObservableCollection<Zafra> zafras = new();
+        [ObservableProperty] private Campo? selectedCampo;
+        [ObservableProperty] private Zafra? selectedZafra;
+        [ObservableProperty] private Ciclo? selectedCiclo;
 
-        [ObservableProperty]
-        private ObservableCollection<Ciclo> ciclos = new();
+        [ObservableProperty] private DateTime fecha = DateTime.Now;
+        [ObservableProperty] private string superficie = string.Empty;
+        [ObservableProperty] private string numeroTallos = string.Empty;
+        [ObservableProperty] private string danoViejo = string.Empty;
+        [ObservableProperty] private string danoNuevo = string.Empty;
 
-        [ObservableProperty]
-        private Campo? selectedCampo;
+        [ObservableProperty] private int totalDano;
+        [ObservableProperty] private double porcentajeDano;
 
-        [ObservableProperty]
-        private Zafra? selectedZafra;
-
-        [ObservableProperty]
-        private Ciclo? selectedCiclo;
-
-        [ObservableProperty]
-        private DateTime fechaMuestreo = DateTime.Now;
-
-        [ObservableProperty]
-        private string superficie = "0";
-
-        [ObservableProperty]
-        private string numeroTallos = "0";
-
-        [ObservableProperty]
-        private string numeroDanos = "0";
-
-        [ObservableProperty]
-        private bool areFieldsLocked = false;
-
-        public DamageAssessmentViewModel(
-            DatabaseService databaseService,
-            ApiService apiService,
-            SessionService sessionService,
-            ConnectivityService connectivityService)
+        public DamageAssessmentViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
         {
             _databaseService = databaseService;
             _apiService = apiService;
             _sessionService = sessionService;
             _connectivityService = connectivityService;
+            Title = "Muestreo de Daño";
+        }
 
-            _ = LoadCatalogsAsync();
+        public async Task InitializeAsync()
+        {
+            if (isInitialized) return;
+            await LoadCatalogsAsync();
+            isInitialized = true;
         }
 
         private async Task LoadCatalogsAsync()
         {
             if (IsBusy) return;
-
             try
             {
                 SetBusy(true);
-
                 var session = await _sessionService.GetCurrentSessionAsync();
-                if (session == null)
-                {
-                    await Shell.Current.DisplayAlert("Error de Sesión", "No se pudo obtener la sesión del usuario.", "OK");
-                    return;
-                }
+                if (session == null) { /* ... manejo de error ... */ return; }
 
-                // Cargar Campos según sesión
                 var allCampos = await _databaseService.GetAllAsync<Campo>();
-                var filteredCampos = session.TipoUsuario == 1
-                    ? allCampos
-                    : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
-
+                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
                 Campos.Clear();
-                foreach (var campo in filteredCampos.OrderBy(c => c.Nombre))
-                    Campos.Add(campo);
+                foreach (var campo in filteredCampos.OrderBy(c => c.Nombre)) Campos.Add(campo);
 
-                // Cargar Zafras
                 var zafraList = await _databaseService.GetAllAsync<Zafra>();
                 Zafras.Clear();
-                foreach (var zafra in zafraList.OrderBy(z => z.Nombre))
-                    Zafras.Add(zafra);
+                foreach (var zafra in zafraList.OrderBy(z => z.Nombre)) Zafras.Add(zafra);
 
-                // Cargar Ciclos
                 var cicloList = await _databaseService.GetAllAsync<Ciclo>();
                 Ciclos.Clear();
-                foreach (var ciclo in cicloList.OrderBy(c => c.Nombre))
-                    Ciclos.Add(ciclo);
+                foreach (var ciclo in cicloList.OrderBy(c => c.Nombre)) Ciclos.Add(ciclo);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar los catálogos: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar catálogos: {ex.Message}", "OK");
             }
             finally
             {
@@ -113,10 +82,100 @@ namespace sys21_campos_zukarmex.ViewModels
             }
         }
 
-        [RelayCommand]
-        private void DebugRecetasConArticulos()
+        partial void OnNumeroTallosChanged(string value) => RecalculateTotals();
+        partial void OnDanoViejoChanged(string value) => RecalculateTotals();
+        partial void OnDanoNuevoChanged(string value) => RecalculateTotals();
+
+        private void RecalculateTotals()
         {
-            Debug.WriteLine("🔍 Debug Recetas activado en DamageAssessment");
+            int tallos = int.TryParse(NumeroTallos, out var t) ? t : 0;
+            int viejo = int.TryParse(DanoViejo, out var v) ? v : 0;
+            int nuevo = int.TryParse(DanoNuevo, out var n) ? n : 0;
+
+            TotalDano = viejo + nuevo;
+
+            if (tallos > 0)
+            {
+                PorcentajeDano = (double)TotalDano / tallos;
+            }
+            else
+            {
+                PorcentajeDano = 0;
+            }
+        }
+
+        [RelayCommand]
+        private async Task AddAssessmentAsync()
+        {
+            if (SelectedCampo == null || SelectedZafra == null || SelectedCiclo == null)
+            {
+                await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, seleccione Predio, Zafra y Ciclo.", "OK");
+                return;
+            }
+
+            if (IsBusy) return;
+            SetBusy(true);
+            try
+            {
+                var newAssessment = new SalidaMuestroDaños
+                {
+                    IdTemporada = SelectedZafra.Id,
+                    IdCampo = SelectedCampo.Id,
+                    IdCiclo = SelectedCiclo.Id,
+                    Fecha = this.Fecha,
+                    NumeroTallos = int.TryParse(NumeroTallos, out var t) ? t : 0,
+                    DañoViejo = int.TryParse(DanoViejo, out var v) ? v : 0,
+                    DañoNuevo = int.TryParse(DanoNuevo, out var n) ? n : 0,
+                    Dispositivo = $"{DeviceInfo.Current.Manufacturer} {DeviceInfo.Current.Model}"
+                };
+
+                var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium));
+                if (location != null)
+                {
+                    newAssessment.Lat = location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    newAssessment.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                }
+
+                if (ConnectivitySvc.IsConnected)
+                {
+                    var apiResponse = await _apiService.SaveDamageAssessmentAsync(newAssessment);
+                    if (apiResponse.Success)
+                    {
+                        await Shell.Current.DisplayAlert("Éxito", "Muestreo enviado correctamente.", "OK");
+                    }
+                    else
+                    {
+                        await _databaseService.SaveAsync(newAssessment);
+                        await Shell.Current.DisplayAlert("Guardado Localmente", "La API no respondió. El registro se guardó localmente.", "OK");
+                    }
+                }
+                else
+                {
+                    await _databaseService.SaveAsync(newAssessment);
+                    await Shell.Current.DisplayAlert("Guardado Localmente", "Sin conexión. El registro se guardó localmente.", "OK");
+                }
+
+                ClearForm();
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar el registro: {ex.Message}", "OK");
+            }
+            finally
+            {
+                SetBusy(false);
+            }
+        }
+
+        private void ClearForm()
+        {
+            SelectedCampo = null;
+            SelectedZafra = null;
+            SelectedCiclo = null;
+            Fecha = DateTime.Now;
+            NumeroTallos = string.Empty;
+            DanoViejo = string.Empty;
+            DanoNuevo = string.Empty;
         }
     }
 }

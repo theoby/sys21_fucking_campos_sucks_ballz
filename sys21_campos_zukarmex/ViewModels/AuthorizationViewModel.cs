@@ -3,8 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace sys21_campos_zukarmex.ViewModels
@@ -20,19 +18,22 @@ namespace sys21_campos_zukarmex.ViewModels
         private bool isInitialized = false;
 
         [ObservableProperty]
-        private ObservableCollection<Empresa> empresas;
+        private ObservableCollection<Empresa> empresas = new();
 
         [ObservableProperty]
-        private ObservableCollection<Pluviometro> pluviometros;
+        private ObservableCollection<Pluviometro> pluviometros = new();
 
         [ObservableProperty]
         private Empresa? selectedEmpresa;
 
         [ObservableProperty]
-        private Empresa? selectedPluviometro;
+        private Pluviometro? selectedPluviometro; // CORREGIDO: El tipo ahora es Pluviometro
 
         [ObservableProperty]
-        private DateTime fecha = DateTime.Now;
+        private DateTime fecha = DateTime.Now.AddDays(-1); // REQUERIMIENTO: Fecha del día anterior
+
+        [ObservableProperty]
+        private string precipitacion = string.Empty;
 
 
         public AuthorizationViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
@@ -41,49 +42,39 @@ namespace sys21_campos_zukarmex.ViewModels
             _apiService = apiService;
             _sessionService = sessionService;
             _connectivityService = connectivityService;
-            Title = "Precipitacion pluvial";
-
-            empresas = new ObservableCollection<Empresa>();
-            pluviometros = new ObservableCollection<Pluviometro>();
-            _ = LoadCatalogsAsync();
+            Title = "Precipitación Pluvial";
         }
 
-
+        public async Task InitializeAsync()
+        {
+            if (isInitialized) return;
+            await LoadCatalogsAsync();
+            isInitialized = true;
+        }
 
         private async Task LoadCatalogsAsync()
         {
-            Debug.WriteLine("Inicio LoadCatalogs");
             if (IsBusy) return;
             try
             {
                 SetBusy(true);
-                var session = await _sessionService.GetCurrentSessionAsync();
-                if (session == null)
-                {
-                    await Shell.Current.DisplayAlert("Error de Sesión", "No se pudo obtener la sesión del usuario.", "OK");
-                    return;
-                }
 
-                // Cargar todas las empresas
+                // Cargar Empresas desde la base de datos local
                 var empresaList = await _databaseService.GetAllAsync<Empresa>();
                 Empresas.Clear();
-                foreach (var empresa in empresaList.OrderBy(z => z.Nombre))
-                {
-                    Debug.WriteLine("Zafras:");
-                    Debug.WriteLine(empresa);
-                    Empresas.Add(empresa);
-                }
+                foreach (var empresa in empresaList) Empresas.Add(empresa);
 
-                // cargar todas los pluviometros
-                var pluviometroList = await _databaseService.GetAllAsync<Pluviometro>();
-                Pluviometros.Clear();
-                foreach (var pluviometro in pluviometroList.OrderBy(z => z.Nombre))
+                // NUEVO: Cargar Pluviómetros desde la API
+                if (ConnectivitySvc.IsConnected)
                 {
-                    Debug.WriteLine("Zafras:");
-                    Debug.WriteLine(pluviometro);
-                    Pluviometros.Add(pluviometro);
+                    var pluviometrosFromApi = await _apiService.GetPluviometrosAsync();
+                    Pluviometros.Clear();
+                    foreach (var pluviometro in pluviometrosFromApi) Pluviometros.Add(pluviometro);
                 }
-
+                else
+                {
+                    await Shell.Current.DisplayAlert("Sin Conexión", "Se necesita conexión a internet para cargar el catálogo de pluviómetros.", "OK");
+                }
             }
             catch (Exception ex)
             {
@@ -96,11 +87,72 @@ namespace sys21_campos_zukarmex.ViewModels
         }
 
         [RelayCommand]
-        private async Task AddCaptureAsync()
+        private async Task AddRainfallAsync()
         {
+            if (SelectedEmpresa == null || SelectedPluviometro == null || string.IsNullOrWhiteSpace(Precipitacion))
+            {
+                await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, complete todos los campos.", "OK");
+                return;
+            }
 
+            if (IsBusy) return;
+            SetBusy(true);
+
+            try
+            {
+                // Aquí necesitarás un modelo local, por ejemplo 'SalidaPluvial'
+                var newRainfall = new SalidaPluvial
+                {
+                    IdEmpresa = SelectedEmpresa.Id,
+                    IdPluviometro = SelectedPluviometro.Id,
+                    Fecha = this.Fecha,
+                    Precipitacion = decimal.TryParse(Precipitacion, out var p) ? p : 0,
+                    FechaCreacion = DateTime.Now
+                };
+
+                var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium));
+                if (location != null)
+                {
+                    newRainfall.Lat = location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    newRainfall.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                }
+
+                if (ConnectivitySvc.IsConnected)
+                {
+                    var apiResponse = await _apiService.SaveRainfallAsync(newRainfall);
+                    if (apiResponse.Success)
+                    {
+                        await Shell.Current.DisplayAlert("Éxito", "Registro de precipitación enviado.", "OK");
+                    }
+                    else
+                    {
+                        await _databaseService.SaveAsync(newRainfall);
+                        await Shell.Current.DisplayAlert("Guardado Localmente", "La API no respondió. Se guardó localmente.", "OK");
+                    }
+                }
+                else
+                {
+                    await _databaseService.SaveAsync(newRainfall);
+                    await Shell.Current.DisplayAlert("Guardado Localmente", "Sin conexión. Se guardó localmente.", "OK");
+                }
+                ClearForm();
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar: {ex.Message}", "OK");
+            }
+            finally
+            {
+                SetBusy(false);
+            }
         }
 
-      
+        private void ClearForm()
+        {
+            SelectedEmpresa = null;
+            SelectedPluviometro = null;
+            Precipitacion = string.Empty;
+            Fecha = DateTime.Now.AddDays(-1);
+        }
     }
 }

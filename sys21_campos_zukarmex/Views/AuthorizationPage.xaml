@@ -97,9 +97,6 @@
 
                             <Button Grid.Column="1" Text="Añadir" Command="{Binding SaveValeCommand}" BackgroundColor="{StaticResource Primary}" TextColor="White" CornerRadius="10" FontSize="18" />
                         </Grid>
-
-                        <!-- Debug button for testing recipes -->
-                        <Button Text="🔍 Debug Recetas con Artículos" Command="{Binding DebugRecetasConArticulosCommand}" BackgroundColor="{StaticResource Gray600}" TextColor="White" CornerRadius="10" FontSize="14" Margin="0,10,0,0" />
                     </StackLayout>
                 </Frame>
 

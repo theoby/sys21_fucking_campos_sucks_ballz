@@ -46,6 +46,7 @@ public class DatabaseService
         await _database.CreateTableAsync<SalidaTrampeoRatas>();
         await _database.CreateTableAsync<LineaDeRiego>();
         await _database.CreateTableAsync<SalidaLineaDeRiego>();
+        await _database.CreateTableAsync<SalidaRodenticida>();
     }
 
     #region Generic CRUD Operations

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace sys21_campos_zukarmex.Models
 {
-    internal class SalidaRodenticida
+    public class SalidaRodenticida
     {
         public int Id { get; set; }
         public int IdTemporada { get; set; } = 0;

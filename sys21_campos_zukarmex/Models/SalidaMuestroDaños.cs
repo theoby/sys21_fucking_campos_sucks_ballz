@@ -7,7 +7,7 @@ using SQLite;
 
 namespace sys21_campos_zukarmex.Models
 {
-    internal class SalidaMuestroDaños
+    public class SalidaMuestroDaños
     {
         public int Id { get; set; }
         public int IdTemporada { get; set; } = 0;

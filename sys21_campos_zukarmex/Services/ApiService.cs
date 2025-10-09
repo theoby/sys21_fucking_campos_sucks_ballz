@@ -742,6 +742,122 @@ public class ApiService : IDisposable
     }
     #endregion
 
+    #region Rodenticide Operations (CON TOKEN BEARER)
+    public async Task<ApiResponse<SalidaRodenticida>> SaveRodenticideConsumptionAsync(SalidaRodenticida consumption)
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var apiRequest = new RodenticideApiRequest
+            {
+                IdTemporada = consumption.IdTemporada,
+                IdCampo = consumption.IdCampo,
+                Fecha = consumption.Fecha,
+                CantidadComederos = consumption.CantidadComederos,
+                CantidadPastillas = consumption.CantidadPastillas,
+                CantidadConsumo = consumption.CantidadConsumos,
+                Lat = consumption.Lat,
+                Lng = consumption.Lng
+            };
+
+            var requestBody = new List<RodenticideApiRequest> { apiRequest };
+            var json = JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var fullUrl = GetFullUrl(AppConfigService.RodenticideConsumptionEndpoint);
+
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<SalidaRodenticida> { Success = false, Message = "Sesion caducada" };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<RodenticideApiResponse>(responseContent);
+
+            if (apiResponse != null)
+            {
+                var finalResponse = new ApiResponse<SalidaRodenticida> { Success = apiResponse.Success, Message = apiResponse.Mensaje };
+                if (finalResponse.Success && _databaseService != null && consumption.Id > 0)
+                {
+                    await _databaseService.DeleteAsync(consumption);
+                }
+                return finalResponse;
+            }
+
+            return new ApiResponse<SalidaRodenticida> { Success = false, Message = "Respuesta inválida de la API." };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<SalidaRodenticida> { Success = false, Message = ex.Message };
+        }
+    }
+    #endregion
+
+    #region DAMAGE Operations (CON TOKEN BEARER)
+    public async Task<ApiResponse<SalidaMuestroDaños>> SaveDamageAssessmentAsync(SalidaMuestroDaños assessment)
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var apiRequest = new DamageApiRequest
+            {
+                IdTemporada = assessment.IdTemporada,
+                IdCampo = assessment.IdCampo,
+                IdCiclo = assessment.IdCiclo,
+                Fecha = assessment.Fecha,
+                NumeroTallos = assessment.NumeroTallos,
+                DanoViejo = assessment.DañoViejo,
+                DanoNuevo = assessment.DañoNuevo,
+                Lat = assessment.Lat,
+                Lng = assessment.Lng
+            };
+
+            var requestBody = new List<DamageApiRequest> { apiRequest };
+            var json = JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var fullUrl = GetFullUrl(AppConfigService.DamageAssessmentEndpoint);
+
+            System.Diagnostics.Debug.WriteLine($"Enviando JSON de Muestreo de Daño a: {fullUrl}");
+            System.Diagnostics.Debug.WriteLine($"JSON: {json}");
+
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<SalidaMuestroDaños> { Success = false, Message = "Sesion caducada" };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Respuesta de la API (Muestreo Daño): {responseContent}");
+
+            var apiResponse = JsonConvert.DeserializeObject<DamageAssessmentApiResponse>(responseContent);
+
+            if (apiResponse != null)
+            {
+                var finalResponse = new ApiResponse<SalidaMuestroDaños> { Success = apiResponse.Success, Message = apiResponse.Mensaje };
+                if (finalResponse.Success && _databaseService != null && assessment.Id > 0)
+                {
+                    await _databaseService.DeleteAsync(assessment);
+                }
+                return finalResponse;
+            }
+
+            return new ApiResponse<SalidaMuestroDaños> { Success = false, Message = "Respuesta inválida de la API." };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<SalidaMuestroDaños> { Success = false, Message = ex.Message };
+        }
+    }
+    #endregion
+
     #region Other Catalog Operations (CON TOKEN BEARER)
 
     public async Task<List<Almacen>> GetAlmacenesAsync()

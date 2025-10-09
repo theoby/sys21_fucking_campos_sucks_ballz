@@ -131,4 +131,39 @@ public class IrrigationEntryApiResponse
     [Newtonsoft.Json.JsonIgnore]
     public bool Success => Estado == 200 && Datos == true;
 }
+public class RodenticideApiResponse
+{
+    [Newtonsoft.Json.JsonProperty("estado")]
+    public int Estado { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("datos")]
+    public bool Datos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("totalDatos")]
+    public int TotalDatos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("mensaje")]
+    public string Mensaje { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public bool Success => Estado == 200 && Datos == true;
+}
+public class DamageAssessmentApiResponse
+{
+    [Newtonsoft.Json.JsonProperty("estado")]
+    public int Estado { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("datos")]
+    public bool Datos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("totalDatos")]
+    public int TotalDatos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("mensaje")]
+    public string Mensaje { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public bool Success => Estado == 200 && Datos == true;
+}
+
 
