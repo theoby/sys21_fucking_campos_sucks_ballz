@@ -102,7 +102,7 @@ public class RatCaptureApiResponse
     public int Estado { get; set; }
 
     [Newtonsoft.Json.JsonProperty("datos")]
-    public bool Datos { get; set; }
+    public bool? Datos { get; set; }
 
     [Newtonsoft.Json.JsonProperty("totalDatos")]
     public int TotalDatos { get; set; }
@@ -111,7 +111,7 @@ public class RatCaptureApiResponse
     public string Mensaje { get; set; }
 
     [Newtonsoft.Json.JsonIgnore]
-    public bool Success => Estado == 200 && Datos == true;
+    public bool Success => Estado == 200;
 }
 
 public class IrrigationEntryApiResponse
@@ -120,7 +120,7 @@ public class IrrigationEntryApiResponse
     public int Estado { get; set; }
 
     [Newtonsoft.Json.JsonProperty("datos")]
-    public bool Datos { get; set; }
+    public bool? Datos { get; set; }
 
     [Newtonsoft.Json.JsonProperty("totalDatos")]
     public int TotalDatos { get; set; }
@@ -129,7 +129,7 @@ public class IrrigationEntryApiResponse
     public string Mensaje { get; set; }
 
     [Newtonsoft.Json.JsonIgnore]
-    public bool Success => Estado == 200 && Datos == true;
+    public bool Success => Estado == 200;
 }
 public class RodenticideApiResponse
 {
@@ -137,7 +137,7 @@ public class RodenticideApiResponse
     public int Estado { get; set; }
 
     [Newtonsoft.Json.JsonProperty("datos")]
-    public bool Datos { get; set; }
+    public bool? Datos { get; set; }
 
     [Newtonsoft.Json.JsonProperty("totalDatos")]
     public int TotalDatos { get; set; }
@@ -146,7 +146,7 @@ public class RodenticideApiResponse
     public string Mensaje { get; set; }
 
     [Newtonsoft.Json.JsonIgnore]
-    public bool Success => Estado == 200 && Datos == true;
+    public bool Success => Estado == 200;
 }
 public class DamageAssessmentApiResponse
 {
@@ -154,7 +154,7 @@ public class DamageAssessmentApiResponse
     public int Estado { get; set; }
 
     [Newtonsoft.Json.JsonProperty("datos")]
-    public bool Datos { get; set; }
+    public bool? Datos { get; set; }
 
     [Newtonsoft.Json.JsonProperty("totalDatos")]
     public int TotalDatos { get; set; }
@@ -163,7 +163,43 @@ public class DamageAssessmentApiResponse
     public string Mensaje { get; set; }
 
     [Newtonsoft.Json.JsonIgnore]
-    public bool Success => Estado == 200 && Datos == true;
+    public bool Success => Estado == 200;
+}
+
+public class RainfallApiResponse
+{
+    [Newtonsoft.Json.JsonProperty("estado")]
+    public int Estado { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("datos")]
+    public bool? Datos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("totalDatos")]
+    public int TotalDatos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("mensaje")]
+    public string Mensaje { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public bool Success => Estado == 200;
+}
+
+public class MachineryUsageApiResponse
+{
+    [Newtonsoft.Json.JsonProperty("estado")]
+    public int Estado { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("datos")]
+    public bool? Datos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("totalDatos")]
+    public int TotalDatos { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("mensaje")]
+    public string Mensaje { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public bool Success => Estado == 200;
 }
 
 

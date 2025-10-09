@@ -16,7 +16,6 @@ namespace sys21_campos_zukarmex.Models;
     public int KilometrajeOdometro { get; set; } = 0;
     public string Lng   { get; set; } = string.Empty;
     public string Lat { get; set; } = string.Empty;
-    public string Dispositivo { get; set; } = string.Empty;
 
 }
 

@@ -797,6 +797,124 @@ public class ApiService : IDisposable
     }
     #endregion
 
+    #region Maquinaria Operations (CON TOKEN BEARER)
+    public async Task<ApiResponse<SalidaMaquinaria>> SaveMachineryUsageAsync(SalidaMaquinaria usage)
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var maquinaria = await _databaseService.GetByIdAsync<Maquinaria>(usage.IdMaquinaria);
+
+
+            var apiRequest = new MachineryUsageApiRequest
+            {
+                
+                IdGrupo = maquinaria?.IdGrupo ?? 0,
+                IdMaquinaria = usage.IdMaquinaria,
+                IdCampo = usage.IdCampo,
+                HorasTrabajadas = usage.HorasTrabajadas,
+                KilometrajeOdometro = usage.KilometrajeOdometro,
+                Lat = usage.Lat,
+                Lng = usage.Lng
+            };
+
+            var requestBody = new List<MachineryUsageApiRequest> { apiRequest };
+            var json = JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var fullUrl = GetFullUrl(AppConfigService.MachineryUsageEndpoint);
+
+            System.Diagnostics.Debug.WriteLine($"Enviando JSON de Uso de Maquinaria a: {fullUrl}");
+            System.Diagnostics.Debug.WriteLine($"JSON: {json}");
+
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<SalidaMaquinaria> { Success = false, Message = "Sesion caducada" };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Respuesta de la API (Uso Maquinaria): {responseContent}");
+
+            var apiResponse = JsonConvert.DeserializeObject<MachineryUsageApiResponse>(responseContent);
+
+            if (apiResponse != null)
+            {
+                var finalResponse = new ApiResponse<SalidaMaquinaria>
+                {
+                    Success = apiResponse.Success,
+                    Message = apiResponse.Mensaje
+                };
+
+                if (finalResponse.Success && _databaseService != null && usage.Id > 0)
+                {
+                    await _databaseService.DeleteAsync(usage);
+                }
+                return finalResponse;
+            }
+
+            return new ApiResponse<SalidaMaquinaria> { Success = false, Message = "Respuesta inválida de la API." };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<SalidaMaquinaria> { Success = false, Message = ex.Message };
+        }
+    }
+    #endregion
+
+    #region Rainfall Operations (CON TOKEN BEARER)
+    public async Task<ApiResponse<SalidaPrecipitacion>> SaveRainfallAsync(SalidaPrecipitacion rainfall)
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var apiRequest = new RainfallApiRequest
+            {
+                IdPluviometro = rainfall.IdPluviometro,
+                Fecha = rainfall.Fecha,
+                Precipitacion = rainfall.Precipitacion,
+                 Lat = rainfall.Lat,
+                Lng = rainfall.Lng
+            };
+
+            var requestBody = new List<RainfallApiRequest> { apiRequest };
+            var json = JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var fullUrl = GetFullUrl(AppConfigService.RainfallEndpoint);
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<SalidaPrecipitacion> { Success = false, Message = "Sesion caducada" };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<RainfallApiResponse>(responseContent);
+
+            if (apiResponse != null)
+            {
+                var finalResponse = new ApiResponse<SalidaPrecipitacion> { Success = apiResponse.Success, Message = apiResponse.Mensaje };
+                if (finalResponse.Success && _databaseService != null && rainfall.Id > 0)
+                {
+                    await _databaseService.DeleteAsync(rainfall);
+                }
+                return finalResponse;
+            }
+            return new ApiResponse<SalidaPrecipitacion> { Success = false, Message = "Respuesta inválida." };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<SalidaPrecipitacion> { Success = false, Message = ex.Message };
+        }
+    }
+    #endregion
+
     #region DAMAGE Operations (CON TOKEN BEARER)
     public async Task<ApiResponse<SalidaMuestroDaños>> SaveDamageAssessmentAsync(SalidaMuestroDaños assessment)
     {

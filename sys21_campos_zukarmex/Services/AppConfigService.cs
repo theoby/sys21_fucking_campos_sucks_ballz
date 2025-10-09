@@ -42,6 +42,9 @@ public static class AppConfigService
     public const string IrrigationEntriesEndpoint = "CapturaLineaRiego/PorEnviar";
     public const string RodenticideConsumptionEndpoint = "Rodenticida/Consumo";
     public const string DamageAssessmentEndpoint = "MuestreoDaños/PorEnviar";
+    public const string RainfallEndpoint = "Pluvial/Precipitacion";
+    public const string MachineryUsageEndpoint = "DescargaUsoMaquinaria/PorEnviar";
+
 
     // User Types
     public const int UserTypeAdmin = 1;

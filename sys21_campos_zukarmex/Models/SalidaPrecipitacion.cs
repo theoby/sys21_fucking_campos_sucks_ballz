@@ -13,7 +13,7 @@ namespace sys21_campos_zukarmex.Models;
     public int IdEmpresa { get; set; }
     public int IdPluviometro { get; set; } = 0;
     public DateTime Fecha { get; set; }
-    public decimal Preciptacion { get; set; } = 0;
+    public decimal Precipitacion { get; set; } = 0;
     public string Lat { get; set; } = "0";
     public string Lng { get; set; } = "0";
     public string Dispositivo { get; set; } = string.Empty;

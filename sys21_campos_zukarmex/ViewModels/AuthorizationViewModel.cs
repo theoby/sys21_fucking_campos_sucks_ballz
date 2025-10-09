@@ -100,22 +100,30 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
-                // Aquí necesitarás un modelo local, por ejemplo 'SalidaPluvial'
-                var newRainfall = new SalidaPluvial
+                var newRainfall = new SalidaPrecipitacion
                 {
                     IdEmpresa = SelectedEmpresa.Id,
                     IdPluviometro = SelectedPluviometro.Id,
                     Fecha = this.Fecha,
-                    Precipitacion = decimal.TryParse(Precipitacion, out var p) ? p : 0,
-                    FechaCreacion = DateTime.Now
+                    Precipitacion = decimal.TryParse(Precipitacion, out var p) ? p : 0
                 };
 
-                var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium));
-                if (location != null)
+                try
                 {
-                    newRainfall.Lat = location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    newRainfall.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium));
+                    if (location != null)
+                    {
+                        newRainfall.Lat = location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        newRainfall.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"No se pudo obtener la geolocalización: {ex.Message}");
+                    newRainfall.Lat = "0";
+                    newRainfall.Lng = "0";
+                }
+
 
                 if (ConnectivitySvc.IsConnected)
                 {
@@ -127,7 +135,7 @@ namespace sys21_campos_zukarmex.ViewModels
                     else
                     {
                         await _databaseService.SaveAsync(newRainfall);
-                        await Shell.Current.DisplayAlert("Guardado Localmente", "La API no respondió. Se guardó localmente.", "OK");
+                        await Shell.Current.DisplayAlert("Guardado Localmente", $"La API no respondió ({apiResponse.Message}). Se guardó localmente.", "OK");
                     }
                 }
                 else
