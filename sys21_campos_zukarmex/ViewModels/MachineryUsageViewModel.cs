@@ -95,28 +95,36 @@ namespace sys21_campos_zukarmex.ViewModels
         }
 
         [RelayCommand]
+
+    
         private async Task SaveAsync()
         {
-            if (SelectedEmpresa == null || SelectedCampo == null || SelectedEquipo == null ||
-                (string.IsNullOrWhiteSpace(HorasTrabajadas) && string.IsNullOrWhiteSpace(KilometrajeOdometro)))
+            // Validaciones
+            if (SelectedCampo == null || SelectedEquipo == null ||
+                (string.IsNullOrWhiteSpace(HorasTrabajadas) && string.IsNullOrWhiteSpace(KilometrajeOdometro)) ||
+                (!decimal.TryParse(HorasTrabajadas, out var h) && !decimal.TryParse(KilometrajeOdometro, out var k)))
             {
-                await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, complete todos los campos y capture Horas o Kilometraje.", "OK");
+                await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, complete Predio, Equipo, y capture un valor numérico válido en Horas o Kilometraje.", "OK");
                 return;
             }
 
             if (IsBusy) return;
             SetBusy(true);
+
             try
             {
+                // 1. Crear el objeto de registro con datos de la UI
                 var newUsage = new SalidaMaquinaria
                 {
                     IdMaquinaria = SelectedEquipo.IdPk,
                     IdCampo = SelectedCampo.Id,
                     Fecha = this.Fecha,
-                    HorasTrabajadas = int.TryParse(HorasTrabajadas, out var h) ? h : 0,
-                    KilometrajeOdometro = int.TryParse(KilometrajeOdometro, out var k) ? k : 0,
+                    HorasTrabajadas = (int)(decimal.TryParse(HorasTrabajadas, out var hDecimal) ? hDecimal : 0m),
+                    KilometrajeOdometro = (int)(decimal.TryParse(KilometrajeOdometro, out var kDecimal) ? kDecimal : 0m),
+                    // Id, Lat, Lng se asignan a continuación
                 };
 
+                // 2. Obtener la ubicación GPS
                 var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium));
                 if (location != null)
                 {
@@ -124,30 +132,45 @@ namespace sys21_campos_zukarmex.ViewModels
                     newUsage.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 }
 
-                // Lógica Online/Offline
-                if (ConnectivitySvc.IsConnected)
+                // 3. Guardar en la DB local. El ID del objeto 'newUsage' se actualizará internamente.
+                var rowsAffected = await _databaseService.SaveAsync(newUsage);
+                var realAssignedId = newUsage.Id; // Obtener el ID asignado por SQLite
+
+                System.Diagnostics.Debug.WriteLine($"[DB SAVE]: Uso de Maquinaria guardado. Filas afectadas: {rowsAffected}. ID asignado (desde objeto): {realAssignedId}");
+
+                SalidaMaquinaria? savedUsage = null;
+
+                // 4. Recuperar y verificar (solo si se asignó un ID)
+                if (realAssignedId > 0)
                 {
-                    var apiResponse = await _apiService.SaveMachineryUsageAsync(newUsage);
-                    if (apiResponse.Success)
-                    {
-                        await Shell.Current.DisplayAlert("Éxito", "Registro enviado correctamente.", "OK");
-                    }
-                    else
-                    {
-                        await _databaseService.SaveAsync(newUsage);
-                        await Shell.Current.DisplayAlert("Guardado Localmente", "La API no respondió. Se guardó localmente.", "OK");
-                    }
+                    savedUsage = await _databaseService.GetByIdAsync<SalidaMaquinaria>(realAssignedId);
+                }
+
+                // 5. Lógica de verificación y mensaje al usuario
+                if (savedUsage != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("-------------------------------------------");
+                    System.Diagnostics.Debug.WriteLine($"[DB READ SUCCESS]: Uso de Maquinaria recuperado con ID: {savedUsage.Id}");
+                    System.Diagnostics.Debug.WriteLine($"- Máquina ID: {savedUsage.IdMaquinaria}");
+                    System.Diagnostics.Debug.WriteLine($"- Campo ID: {savedUsage.IdCampo}");
+                    System.Diagnostics.Debug.WriteLine($"- Horas/Km: {savedUsage.HorasTrabajadas} / {savedUsage.KilometrajeOdometro}");
+                    System.Diagnostics.Debug.WriteLine($"- Fecha: {savedUsage.Fecha:yyyy-MM-dd HH:mm:ss}");
+                    System.Diagnostics.Debug.WriteLine($"- Lat/Lng: {savedUsage.Lat}, {savedUsage.Lng}");
+                    System.Diagnostics.Debug.WriteLine("-------------------------------------------");
+
+                    await Shell.Current.DisplayAlert("Guardado Localmente", $"El registro de uso de maquinaria se guardó exitosamente en el dispositivo con ID: {savedUsage.Id}. Se sincronizará más tarde.", "OK");
                 }
                 else
                 {
-                    await _databaseService.SaveAsync(newUsage);
-                    await Shell.Current.DisplayAlert("Guardado Localmente", "Sin conexión. Se guardó localmente.", "OK");
+                    System.Diagnostics.Debug.WriteLine($"[DB VERIFICATION FAILED]: Falló la recuperación por ID {realAssignedId}.");
+                    await Shell.Current.DisplayAlert("Guardado Localmente (Verificación Pendiente)", $"El registro se insertó con ID {realAssignedId}, pero falló la recuperación inmediata para verificación. Es probable que se haya guardado correctamente.", "OK");
                 }
+
                 ClearForm();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar el registro localmente: {ex.Message}", "OK");
             }
             finally
             {

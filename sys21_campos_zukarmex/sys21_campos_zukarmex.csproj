@@ -113,6 +113,12 @@
 	  <Compile Update="Views\IrrigationLine\IrrigationLineHistoryPage.xaml.cs">
 	    <DependentUpon>IrrigationLineHistoryPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\MachineryUsage\MachineryUsageHistoryPage.xaml.cs">
+	    <DependentUpon>MachineryUsageHistoryPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MachineryUsage\MachineryUsagePendingPage.xaml.cs">
+	    <DependentUpon>MachineryUsagePendingPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\MachineryUsage\MachineryUsagePage.xaml.cs">
 	    <DependentUpon>MachineryUsagePage.xaml</DependentUpon>
 	  </Compile>
@@ -144,6 +150,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\IrrigationLine\IrrigationLinePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\MachineryUsage\MachineryUsageHistoryPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\MachineryUsage\MachineryUsagePendingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\NavigationDemoPage.xaml">

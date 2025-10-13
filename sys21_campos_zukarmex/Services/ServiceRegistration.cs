@@ -93,10 +93,10 @@ public static class ServiceRegistration
         // B. Uso de Maquinaria (Machinery Usage)
         services.AddTransient<MachineryUsageViewModel>();
         services.AddTransient<MachineryUsagePage>();
-        //services.AddTransient<MachineryUsagePendingViewModel>();
-        //services.AddTransient<MachineryUsagePendingPage>();
-        //services.AddTransient<MachineryUsageHistoryViewModel>();
-       //services.AddTransient<MachineryUsageHistoryPage>();
+        services.AddTransient<MachineryUsagePendingViewModel>();
+        services.AddTransient<MachineryUsagePendingPage>();
+        services.AddTransient<MachineryUsageHistoryViewModel>();
+        services.AddTransient<MachineryUsageHistoryPage>();
 
         // C. Precipitación (Rainfall)
         services.AddTransient<RainfallViewModel>();
