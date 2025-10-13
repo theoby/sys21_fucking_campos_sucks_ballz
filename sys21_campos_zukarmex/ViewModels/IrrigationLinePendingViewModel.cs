@@ -50,16 +50,14 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
-                // Carga de la DB local, apuntando al modelo correcto
+            
                 var list = await _databaseService.GetAllAsync<SalidaLineaDeRiego>();
-                Debug.WriteLine(list.Count());
-                PendingEntries.Clear();
 
-                // Ordenar por fecha para mejor visualización
-                foreach (var item in list.OrderByDescending(d => d.Fecha))
-                {
-                    PendingEntries.Add(item);
-                }
+               
+                PendingEntries = new ObservableCollection<SalidaLineaDeRiego>(
+                    list.OrderByDescending(d => d.Fecha)
+                );
+
             }
             catch (Exception ex)
             {

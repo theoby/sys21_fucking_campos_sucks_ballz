@@ -157,7 +157,7 @@
                                         Grid.Column="0"
                                         Grid.ColumnSpan="2"
                                         Text="Eliminar de la BD Local"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DamageAssessmentPendingViewModel}}, Path=DeleteAssessmentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:IrrigationLinePendingViewModel}}, Path=DeleteEntryCommand}"
                                         CommandParameter="{Binding .}"
                                         BackgroundColor="{DynamicResource Danger}"
                                         TextColor="White"
