@@ -9,6 +9,7 @@ namespace sys21_campos_zukarmex.Models
 {
     public class SalidaMuestroDaños
     {
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public int IdTemporada { get; set; } = 0;
         public int IdCampo { get; set; } = 0;

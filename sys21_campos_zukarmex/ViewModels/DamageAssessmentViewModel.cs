@@ -126,6 +126,7 @@ namespace sys21_campos_zukarmex.ViewModels
                     NumeroTallos = int.TryParse(NumeroTallos, out var t) ? t : 0,
                     DañoViejo = int.TryParse(DanoViejo, out var v) ? v : 0,
                     DañoNuevo = int.TryParse(DanoNuevo, out var n) ? n : 0,
+                    // El campo Id es 0 aquí.
                     Dispositivo = $"{DeviceInfo.Current.Manufacturer} {DeviceInfo.Current.Model}"
                 };
 
@@ -136,36 +137,68 @@ namespace sys21_campos_zukarmex.ViewModels
                     newAssessment.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 }
 
-                if (ConnectivitySvc.IsConnected)
+                // 1. Guardar en la DB. 
+                // Aunque devuelva 1 (filas afectadas), el Id del objeto newAssessment debería actualizarse aquí.
+                var rowsAffected = await _databaseService.SaveAsync(newAssessment);
+
+                // 2. Obtener el ID asignado. 
+                // Usamos el ID que SQLite debió haber puesto en el objeto.
+                var realAssignedId = newAssessment.Id;
+
+                System.Diagnostics.Debug.WriteLine($"[DB SAVE]: Muestreo de Daño guardado. Filas afectadas: {rowsAffected}. ID asignado (desde objeto): {realAssignedId}");
+
+                SalidaMuestroDaños? savedAssessment = null;
+
+                // Si el ID es mayor que 0 (lo cual es cierto en tus últimas pruebas), intentamos recuperarlo
+                if (realAssignedId > 0)
                 {
-                    var apiResponse = await _apiService.SaveDamageAssessmentAsync(newAssessment);
-                    if (apiResponse.Success)
-                    {
-                        await Shell.Current.DisplayAlert("Éxito", "Muestreo enviado correctamente.", "OK");
-                    }
-                    else
-                    {
-                        await _databaseService.SaveAsync(newAssessment);
-                        await Shell.Current.DisplayAlert("Guardado Localmente", "La API no respondió. El registro se guardó localmente.", "OK");
-                    }
+                    // 3. Recuperar el objeto usando el ID REAL para verificación.
+                    savedAssessment = await _databaseService.GetByIdAsync<SalidaMuestroDaños>(realAssignedId);
+                }
+
+                // 4. Lógica de verificación y mensaje al usuario
+                if (savedAssessment != null)
+                { // Imprimir los detalles del objeto recuperado en el Debug.
+                    System.Diagnostics.Debug.WriteLine("-------------------------------------------");
+                    System.Diagnostics.Debug.WriteLine($"[DB READ SUCCESS]: Muestreo de Daño recuperado con ID: {savedAssessment.Id}");
+
+                    // AÑADIDO: Claves foráneas y fecha
+                    System.Diagnostics.Debug.WriteLine($"- Temporada ID: {savedAssessment.IdTemporada}");
+                    System.Diagnostics.Debug.WriteLine($"- Campo ID: {savedAssessment.IdCampo}");
+                    System.Diagnostics.Debug.WriteLine($"- Ciclo ID: {savedAssessment.IdCiclo}");
+                    System.Diagnostics.Debug.WriteLine($"- Fecha: {savedAssessment.Fecha:yyyy-MM-dd HH:mm:ss}"); // Formato completo
+
+                    // DATOS DEL MUESTREO
+                    System.Diagnostics.Debug.WriteLine($"- Tallos: {savedAssessment.NumeroTallos}");
+                    System.Diagnostics.Debug.WriteLine($"- Daño (V/N): {savedAssessment.DañoViejo} / {savedAssessment.DañoNuevo}");
+
+                    // DATOS GEOGRÁFICOS Y DISPOSITIVO
+                    System.Diagnostics.Debug.WriteLine($"- Dispositivo: {savedAssessment.Dispositivo}");
+                    System.Diagnostics.Debug.WriteLine($"- Lat/Lng: {savedAssessment.Lat}, {savedAssessment.Lng}");
+                    System.Diagnostics.Debug.WriteLine("-------------------------------------------");
+
+                    await Shell.Current.DisplayAlert("Guardado Localmente", $"El muestreo se guardó exitosamente en el dispositivo con ID: {savedAssessment.Id}.", "OK");
                 }
                 else
                 {
-                    await _databaseService.SaveAsync(newAssessment);
-                    await Shell.Current.DisplayAlert("Guardado Localmente", "Sin conexión. El registro se guardó localmente.", "OK");
+                    // Si falla la recuperación, pero sabemos que la inserción (rowsAffected=1) fue exitosa
+                    // y que el ID (realAssignedId) fue asignado, mostramos el ID asignado para referencia.
+                    System.Diagnostics.Debug.WriteLine($"[DB VERIFICATION FAILED]: Falló la recuperación por ID {realAssignedId}.");
+                    await Shell.Current.DisplayAlert("Guardado Localmente (Verificación Pendiente)", $"El muestreo se insertó con ID {realAssignedId}, pero falló la recuperación inmediata para verificación. Es probable que se haya guardado correctamente.", "OK");
                 }
 
                 ClearForm();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar el registro: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar el registro localmente: {ex.Message}", "OK");
             }
             finally
             {
                 SetBusy(false);
             }
         }
+
 
         private void ClearForm()
         {

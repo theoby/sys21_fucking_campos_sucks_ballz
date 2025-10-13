@@ -9,6 +9,7 @@ namespace sys21_campos_zukarmex.Models;
 
  public class SalidaPrecipitacion
     {
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
     public int IdEmpresa { get; set; }
     public int IdPluviometro { get; set; } = 0;

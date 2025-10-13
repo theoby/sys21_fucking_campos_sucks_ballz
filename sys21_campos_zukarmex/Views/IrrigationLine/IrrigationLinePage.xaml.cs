@@ -1,4 +1,4 @@
-namespace sys21_campos_zukarmex.Views;
+namespace sys21_campos_zukarmex.Views.IrrigationLine;
 using sys21_campos_zukarmex.ViewModels;
 
 public partial class IrrigationLinePage : ContentPage

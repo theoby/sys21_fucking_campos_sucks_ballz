@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
-    public partial class ValeViewModel : BaseViewModel
+    public partial class MachineryUsageViewModel : BaseViewModel
     {
         private readonly DatabaseService _databaseService;
         private readonly ApiService _apiService;
@@ -30,7 +30,7 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty] private string kilometrajeOdometro = string.Empty;
 
 
-        public ValeViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
+        public MachineryUsageViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
         {
             _databaseService = databaseService;
             _apiService = apiService;

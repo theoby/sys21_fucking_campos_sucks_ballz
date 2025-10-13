@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="sys21_campos_zukarmex.Views.DamageAssessmentPage"
+             x:Class="sys21_campos_zukarmex.Views.DamageAssessment.DamageAssessmentPage"
              xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
              xmlns:behaviors="clr-namespace:sys21_campos_zukarmex.Behaviors"
              x:DataType="viewmodels:DamageAssessmentViewModel"

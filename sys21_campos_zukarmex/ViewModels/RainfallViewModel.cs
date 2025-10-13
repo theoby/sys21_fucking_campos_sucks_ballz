@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
-    public partial class AuthorizationViewModel : BaseViewModel
+    public partial class RainfallViewModel : BaseViewModel
     {
         private readonly DatabaseService _databaseService;
         private readonly ApiService _apiService;
@@ -36,7 +36,7 @@ namespace sys21_campos_zukarmex.ViewModels
         private string precipitacion = string.Empty;
 
 
-        public AuthorizationViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
+        public RainfallViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
         {
             _databaseService = databaseService;
             _apiService = apiService;

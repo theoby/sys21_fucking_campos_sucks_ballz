@@ -2,6 +2,12 @@ using sys21_campos_zukarmex.Services.Repositories;
 using sys21_campos_zukarmex.Services.Api;
 using sys21_campos_zukarmex.ViewModels;
 using sys21_campos_zukarmex.Views;
+using sys21_campos_zukarmex.Views.DamageAssessment;
+using sys21_campos_zukarmex.Views.IrrigationLine;
+using sys21_campos_zukarmex.Views.RatTrapping;
+using sys21_campos_zukarmex.Views.RodenticideConsumption;
+using sys21_campos_zukarmex.Views.MachineryUsage;
+using sys21_campos_zukarmex.Views.Rainfall;
 
 namespace sys21_campos_zukarmex.Services;
 
@@ -33,7 +39,6 @@ public static class ServiceRegistration
             return new ApiService(httpClientFactory, sessionService, databaseService, connectivityService);
         });
 
-        // Repositories
         services.AddSingleton<IAlmacenRepository, AlmacenRepository>();
         services.AddSingleton<IArticuloRepository, ArticuloRepository>();
         services.AddSingleton<ICampoRepository, CampoRepository>();
@@ -53,40 +58,78 @@ public static class ServiceRegistration
         services.AddSingleton<IPluviometroRepository, PluviometroRepository>();
         services.AddSingleton<ICicloRepository, CicloRepository>();
 
-
-        // ViewModels
+        // 1. ViewModels y Pages de Autenticación, Configuración y Navegación Base
         services.AddTransient<LoginViewModel>();
-        services.AddTransient<AdminConfigViewModel>();
-        services.AddTransient<HomeViewModel>();
-        services.AddTransient<ValeViewModel>();
-        services.AddTransient<AgregarArticuloViewModel>();
-        services.AddTransient<StatusViewModel>();
-        services.AddTransient<AuthorizationViewModel>();
-        services.AddTransient<SyncViewModel>();
-        services.AddTransient<LoadingViewModel>();
-        services.AddTransient<CatalogExampleViewModel>();
-        services.AddTransient<HistorialViewModel>();
-        services.AddTransient<RatTrappingViewModel>();
-        services.AddTransient<IrrigationLineViewModel>();
-        services.AddTransient<DamageAssessmentViewModel>();
-        services.AddTransient<RodenticideConsumptionViewModel>();
-
-
-        // Pages
         services.AddTransient<LoginPage>();
+
+        services.AddTransient<AdminConfigViewModel>();
         services.AddTransient<AdminConfigPage>();
+
+        services.AddTransient<HomeViewModel>();
         services.AddTransient<HomePage>();
-        services.AddTransient<ValePage>();
-        services.AddTransient<AgregarArticuloPage>();
-        services.AddTransient<StatusPage>();
-        services.AddTransient<AuthorizationPage>();
-        services.AddTransient<SyncPage>();
+
+        services.AddTransient<LoadingViewModel>();
         services.AddTransient<LoadingPage>();
-        services.AddTransient<HistorialPage>();
-        services.AddTransient<RatTrappingPage>();
-        services.AddTransient<IrrigationLinePage>();
+
+        // Registros misceláneos o de utilidad
+        services.AddTransient<StatusViewModel>();
+        services.AddTransient<SyncViewModel>();
+        services.AddTransient<SyncPage>();
+        services.AddTransient<CatalogExampleViewModel>();
+
+
+        // 2. Módulos de Captura de Datos (Capture, Pending, History)
+        // Nota: Deberás crear las Pages (Vistas) para Pending y History por separado,
+        //       pero las agrego aquí para completar el registro.
+
+        // A. Muestreo de Daño (Damage Assessment)
+        services.AddTransient<DamageAssessmentViewModel>();
         services.AddTransient<DamageAssessmentPage>();
+        services.AddTransient<DamageAssessmentPendingViewModel>();
+        services.AddTransient<DamageAssessmentPendingPage>();
+        services.AddTransient<DamageAssessmentHistoryViewModel>();
+        services.AddTransient<DamageAssessmentHistoryPage>();
+
+        // B. Uso de Maquinaria (Machinery Usage)
+        services.AddTransient<MachineryUsageViewModel>();
+        services.AddTransient<MachineryUsagePage>();
+        //services.AddTransient<MachineryUsagePendingViewModel>();
+        //services.AddTransient<MachineryUsagePendingPage>();
+        //services.AddTransient<MachineryUsageHistoryViewModel>();
+       //services.AddTransient<MachineryUsageHistoryPage>();
+
+        // C. Precipitación (Rainfall)
+        services.AddTransient<RainfallViewModel>();
+        services.AddTransient<RainfallPage>();
+        //services.AddTransient<RainfallPendingViewModel>();
+       // services.AddTransient<RainfallPendingPage>();
+        //services.AddTransient<RainfallHistoryViewModel>();
+        //services.AddTransient<RainfallHistoryPage>();
+
+        // D. Trampeo de Ratas (Rat Trapping)
+        services.AddTransient<RatTrappingViewModel>();
+        services.AddTransient<RatTrappingPage>();
+        //services.AddTransient<RatTrappingPendingViewModel>();
+        //services.AddTransient<RatTrappingPendingPage>();
+        //services.AddTransient<RatTrappingHistoryViewModel>();
+        //services.AddTransient<RatTrappingHistoryPage>();
+
+        // E. Línea de Riego (Irrigation Line)
+        services.AddTransient<IrrigationLineViewModel>();
+        services.AddTransient<IrrigationLinePage>();
+        services.AddTransient<IrrigationLinePendingViewModel>();
+        services.AddTransient<IrrigationLinePendingPage>();
+        services.AddTransient<IrrigationLineHistoryViewModel>();
+        services.AddTransient<IrrigationLineHistoryPage>();
+
+        // F. Consumo de Rodenticida (Rodenticide Consumption)
+        services.AddTransient<RodenticideConsumptionViewModel>();
         services.AddTransient<RodenticideConsumptionPage>();
+        //services.AddTransient<RodenticideConsumptionPendingViewModel>();
+        //services.AddTransient<RodenticideConsumptionPendingPage>();
+        //services.AddTransient<RodenticideConsumptionHistoryViewModel>();
+        //services.AddTransient<RodenticideConsumptionHistoryPage>();
+
 
         return services;
     }

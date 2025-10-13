@@ -48,6 +48,7 @@ public class DatabaseService
         await _database.CreateTableAsync<SalidaLineaDeRiego>();
         await _database.CreateTableAsync<SalidaRodenticida>();
         await _database.CreateTableAsync<SalidaPrecipitacion>();
+        await _database.CreateTableAsync<SalidaMuestroDaños>();
     }
 
     #region Generic CRUD Operations
@@ -58,10 +59,11 @@ public class DatabaseService
         return await _database!.Table<T>().ToListAsync();
     }
 
+
     public async Task<T?> GetByIdAsync<T>(int id) where T : class, new()
     {
         await InitializeAsync();
-        
+
         // Use reflection to get the Id property
         var idProperty = typeof(T).GetProperty("Id");
         if (idProperty == null)
@@ -69,10 +71,12 @@ public class DatabaseService
 
         var table = _database!.Table<T>();
         var items = await table.ToListAsync();
-        return items.FirstOrDefault(item => 
+
+        return items.FirstOrDefault(item =>
         {
             var itemId = idProperty.GetValue(item);
-            return itemId?.Equals(id) == true;
+
+            return Convert.ToInt32(itemId).Equals(id);
         });
     }
 
@@ -216,6 +220,15 @@ public class DatabaseService
         return await _database!.DeleteAsync(item);
     }
 
+    public async Task DeleteListAsync<T>(List<T> items) where T : new()
+    {
+        await InitializeAsync();
+
+        foreach (var item in items)
+        {
+            await _database!.DeleteAsync(item);
+        }
+    }
     public async Task<int> DeleteByIdAsync<T>(int id) where T : class, new()
     {
         await InitializeAsync();

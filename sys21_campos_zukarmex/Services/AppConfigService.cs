@@ -44,6 +44,14 @@ public static class AppConfigService
     public const string DamageAssessmentEndpoint = "MuestreoDaños/PorEnviar";
     public const string RainfallEndpoint = "Pluvial/Precipitacion";
     public const string MachineryUsageEndpoint = "DescargaUsoMaquinaria/PorEnviar";
+    
+    // Historial
+    public const string DamageAssessmentHistoryEndpoint = "muestreodaños/obtener";
+    public const string IrrigationLineHistoryEndpoint = "CapturaLineaRiego/obtener";
+    public const string MachineryUsageHistoryEndpoint = "DescargaUsoMaquinaria/obtener";
+    public const string RainfallHistoryEndpoint = "Pluvial/obtener";
+    public const string RodenticideConsumptionHistoryEndpoint = "Rodenticida/obtener";
+    public const string RatTrappingHistoryEndpoint = "rampeoRatas/obtener";
 
 
     // User Types

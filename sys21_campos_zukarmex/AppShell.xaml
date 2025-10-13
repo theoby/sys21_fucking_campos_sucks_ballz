@@ -1,38 +1,213 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="sys21_campos_zukarmex.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:sys21_campos_zukarmex.Views"
-    xmlns:controls="clr-namespace:sys21_campos_zukarmex.Controls"
-    Shell.FlyoutBehavior="Flyout"
-    Shell.FlyoutWidth="300"
-    Shell.NavBarIsVisible="True"
-    Shell.FlyoutIcon="hamburger_menu.png">
+<Shell x:Class="sys21_campos_zukarmex.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:sys21_campos_zukarmex.Views"
+       xmlns:machinery="clr-namespace:sys21_campos_zukarmex.Views.MachineryUsage"
+       xmlns:rainfall="clr-namespace:sys21_campos_zukarmex.Views.Rainfall"
+       xmlns:rattrapping="clr-namespace:sys21_campos_zukarmex.Views.RatTrapping"
+       xmlns:rodenticide="clr-namespace:sys21_campos_zukarmex.Views.RodenticideConsumption"
+       xmlns:damageassessment="clr-namespace:sys21_campos_zukarmex.Views.DamageAssessment"
+       xmlns:irrigationline="clr-namespace:sys21_campos_zukarmex.Views.IrrigationLine"
+       xmlns:controls="clr-namespace:sys21_campos_zukarmex.Controls"
+       xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+       Shell.FlyoutBehavior="Flyout"
+       Shell.FlyoutWidth="300"
+       Shell.NavBarIsVisible="True"
+       Shell.FlyoutIcon="hamburger_menu.png">
 
     <!-- Custom Flyout Header -->
     <Shell.FlyoutHeader>
         <controls:CustomFlyoutHeader />
     </Shell.FlyoutHeader>
 
+    <!-- FlyoutContent: Expander "GENERAL" -->
+    <Shell.FlyoutContent>
+        <ScrollView>
+            <VerticalStackLayout Padding="10"
+                                 Spacing="0">
+
+                <!-- Expander GENERAL -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="10"
+                              BackgroundColor="{DynamicResource Gray200}">
+                            <Label Text="GENERAL"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}" />
+                        </Grid>
+                    </toolkit:Expander.Header>
+
+                    <VerticalStackLayout Padding="10,5">
+                        <Button Text="Inicio"
+                                CommandParameter="//home"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                    </VerticalStackLayout>
+                </toolkit:Expander>
+
+                <!-- Expander USO DE MAQUINARIA -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="10"
+                              BackgroundColor="{DynamicResource Gray200}">
+                            <Label Text="USO DE MAQUINARIA"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}" />
+                        </Grid>
+                    </toolkit:Expander.Header>
+
+                    <VerticalStackLayout Padding="10,5">
+                        <Button Text="Maquinaria"
+                                CommandParameter="//machineryUsage"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                    </VerticalStackLayout>
+                </toolkit:Expander>
+
+
+                <!-- Expander PRECIPITACION PLUVIAL -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="10"
+                              BackgroundColor="{DynamicResource Gray200}">
+                            <Label Text="PRECIPITACION PLUVIAL"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}" />
+                        </Grid>
+                    </toolkit:Expander.Header>
+
+                    <Button Text="Pluvial"
+                            CommandParameter="//rainfall"
+                            Clicked="OnGeneralNavClicked"
+                            BackgroundColor="Transparent"
+                            TextColor="{DynamicResource Gray900}" />
+                </toolkit:Expander>
+
+
+                <!-- Expander TRAMPEO DE RATA -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="10"
+                              BackgroundColor="{DynamicResource Gray200}">
+                            <Label Text="TRAMPEO DE RATA"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}" />
+                        </Grid>
+                    </toolkit:Expander.Header>
+
+                    <Button Text="Trampeo de Ratas"
+                            CommandParameter="//ratTrapping"
+                            Clicked="OnGeneralNavClicked"
+                            BackgroundColor="Transparent"
+                            TextColor="{DynamicResource Gray900}" />
+                </toolkit:Expander>
+
+                <!-- Expander CONSUMO DE RODENTICIDA -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="10"
+                              BackgroundColor="{DynamicResource Gray200}">
+                            <Label Text="CONSUMO DE RODENTICIDA"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}" />
+                        </Grid>
+                    </toolkit:Expander.Header>
+
+                    <VerticalStackLayout Padding="10,5">
+                        <Button Text="Rodenticida"
+                                CommandParameter="//rodenticideConsumption"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                    </VerticalStackLayout>
+                </toolkit:Expander>
+
+                <!-- Expander MUESTRO DE DAÑO -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="10"
+                              BackgroundColor="{DynamicResource Gray200}">
+                            <Label Text="MUESTRO DE DAÑO"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}" />
+                        </Grid>
+                    </toolkit:Expander.Header>
+
+                    <VerticalStackLayout Padding="10,5">
+                        <Button Text="Forma"
+                                CommandParameter="//damageAssessment"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                        <Button Text="Por Enviar"
+                                CommandParameter="//damageAssessmentPending"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                        <Button Text="Historial"
+                                CommandParameter="//damageAssessmentHistory"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+
+                    </VerticalStackLayout>
+                </toolkit:Expander>
+
+                <!-- Expander LINEA DE RIEGO -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="10"
+                              BackgroundColor="{DynamicResource Gray200}">
+                            <Label Text="LINEA DE RIEGO"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}" />
+                        </Grid>
+                    </toolkit:Expander.Header>
+
+                    <VerticalStackLayout Padding="10,5">
+                        <Button Text="Riego"
+                                CommandParameter="//irrigationLine"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                    </VerticalStackLayout>
+                </toolkit:Expander>
+
+
+                <!-- Opcional: puedes añadir separadores u otros enlaces aquí -->
+            </VerticalStackLayout>
+        </ScrollView>
+    </Shell.FlyoutContent>
+
     <!-- Flyout Footer -->
     <Shell.FlyoutFooter>
-        <Grid BackgroundColor="{DynamicResource Gray100}" 
+        <Grid BackgroundColor="{DynamicResource Gray100}"
               Padding="20,15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
-            <StackLayout Grid.Column="0" Orientation="Vertical">
-                <Label Text="Version 1.0.0" 
-                       FontSize="15" 
+
+            <StackLayout Grid.Column="0"
+                         Orientation="Vertical">
+                <Label Text="Version 1.0.0"
+                       FontSize="15"
                        TextColor="{DynamicResource Gray600}" />
-                <Label Text="(c) 2024 Zucarmex" 
-                       FontSize="15" 
+                <Label Text="(c) 2024 Zucarmex"
+                       FontSize="15"
                        TextColor="{DynamicResource Gray500}" />
             </StackLayout>
-            
+
             <Button Grid.Column="1"
                     Text="Cerrar Sesion"
                     FontSize="15"
@@ -43,132 +218,105 @@
     </Shell.FlyoutFooter>
 
     <!-- Loading Flow -->
-    <ShellContent
-        Route="loading"
-        ContentTemplate="{DataTemplate local:LoadingPage}"
-        Shell.FlyoutBehavior="Disabled" />
+    <ShellContent Route="loading"
+                  ContentTemplate="{DataTemplate local:LoadingPage}"
+                  Shell.FlyoutBehavior="Disabled" />
 
     <!-- Login Flow -->
-    <ShellContent
-        Route="login"
-        ContentTemplate="{DataTemplate local:LoginPage}"
-        Shell.FlyoutBehavior="Disabled" />
+    <ShellContent Route="login"
+                  ContentTemplate="{DataTemplate local:LoginPage}"
+                  Shell.FlyoutBehavior="Disabled" />
 
     <!-- Admin Config Flow -->
-    <ShellContent
-        Route="adminconfig"
-        ContentTemplate="{DataTemplate local:AdminConfigPage}"
-        Shell.FlyoutBehavior="Disabled" />
+    <ShellContent Route="adminconfig"
+                  ContentTemplate="{DataTemplate local:AdminConfigPage}"
+                  Shell.FlyoutBehavior="Disabled" />
 
     <!-- Sync Flow -->
-    <ShellContent
-        Route="sync"
-        ContentTemplate="{DataTemplate local:SyncPage}"
-        Shell.FlyoutBehavior="Disabled" />
+    <ShellContent Route="sync"
+                  ContentTemplate="{DataTemplate local:SyncPage}"
+                  Shell.FlyoutBehavior="Disabled" />
 
     <!-- Navigation Demo -->
-    <ShellContent
-        Route="navigationdemo"
-        ContentTemplate="{DataTemplate local:NavigationDemoPage}"
-        Shell.FlyoutBehavior="Disabled" />
+    <ShellContent Route="navigationdemo"
+                  ContentTemplate="{DataTemplate local:NavigationDemoPage}"
+                  Shell.FlyoutBehavior="Disabled" />
 
-    <!-- Main App Navigation with Vertical Menu -->
-    <!-- Make the first FlyoutItem the default but hide it initially -->
-    <FlyoutItem Title="Inicio" 
-                Icon="{OnPlatform Android=home_icon.png, iOS=house.fill, WinUI=Assets/home_icon.png}"
-                Route="home"
-                IsVisible="True">
-        <ShellContent Route="homepage" ContentTemplate="{DataTemplate local:HomePage}" />
-    </FlyoutItem>
+    <!-- NOTE:
+         Las páginas del menú GENERAL se navegan por ruta desde los botones del Expander.
+         Asegúrate de que las rutas (ej. "home","vale","autorizacion","ratTrapping","rodenticideConsumption","damageAssessment","irrigationLine")
+         estén disponibles en la navegación de tu app (por ejemplo con FlyoutItems o ShellContent con esas rutas).
+         A continuación incluyo ShellContent para esas rutas si las quieres registradas también. -->
 
-    <FlyoutItem Title="Maquinaria" 
-                Icon="{OnPlatform Android=vale_icon.png, iOS=doc.text, WinUI=Assets/vale_icon.png}"
-                Route="vale">
-        <ShellContent ContentTemplate="{DataTemplate local:ValePage}" />
-    </FlyoutItem>
+    <!-- Registro de páginas accesibles por ruta (puedes mantenerlos aunque el menú principal sea el Expander) -->
+    <ShellContent Route="home"
+                  ContentTemplate="{DataTemplate local:HomePage}" />
+    <ShellContent Route="machineryUsage"
+                  ContentTemplate="{DataTemplate machinery:MachineryUsagePage}" />
+    <ShellContent Route="rainfall"
+                  ContentTemplate="{DataTemplate rainfall:RainfallPage}" />
+    <ShellContent Route="ratTrapping"
+                  ContentTemplate="{DataTemplate rattrapping:RatTrappingPage}" />
+    <ShellContent Route="rodenticideConsumption"
+                  ContentTemplate="{DataTemplate rodenticide:RodenticideConsumptionPage}" />
+    <ShellContent Route="damageAssessment"
+                  ContentTemplate="{DataTemplate damageassessment:DamageAssessmentPage}" />
+    <ShellContent Route="damageAssessmentPending"
+                  ContentTemplate="{DataTemplate damageassessment:DamageAssessmentPendingPage}" />
+    <ShellContent Route="damageAssessmentHistory"
+                  ContentTemplate="{DataTemplate damageassessment:DamageAssessmentHistoryPage}" />
+    <ShellContent Route="irrigationLine"
+                  ContentTemplate="{DataTemplate irrigationline:IrrigationLinePage}" />
 
-    <FlyoutItem Title="Pluvial" 
-                Icon="{OnPlatform Android=auth_icon.png, iOS=person.badge.key, WinUI=Assets/auth_icon.png}"
-                Route="autorizacion">
-        <ShellContent ContentTemplate="{DataTemplate local:AuthorizationPage}" />
-    </FlyoutItem>
-
-    <FlyoutItem Title="Trampeo de Ratas" 
-                Icon="{OnPlatform Android=pendientes.png, iOS=pawprint.fill, WinUI=Assets/pendientes.png}"
-                Route="ratTrapping">
-        <ShellContent ContentTemplate="{DataTemplate local:RatTrappingPage}" />
-    </FlyoutItem>
-
-    <FlyoutItem Title="Rodenticida" 
-            Icon="{OnPlatform Android=historial.png, iOS=cross.vial.fill, WinUI=Assets/status_icon.png}"
-            Route="rodenticideConsumption">
-        <ShellContent ContentTemplate="{DataTemplate local:RodenticideConsumptionPage}" />
-    </FlyoutItem>
-
-    <FlyoutItem Title="Muestra Daño" 
-            Icon="{OnPlatform Android=historial.png, iOS=leaf.arrow.triangle.circlepath, WinUI=Assets/status_icon.png}"
-            Route="damageAssessment">
-        <ShellContent ContentTemplate="{DataTemplate local:DamageAssessmentPage}" />
-    </FlyoutItem>
-
-    <FlyoutItem Title="Riego" 
-            Icon="{OnPlatform Android=historial.png, iOS=drop.fill, WinUI=Assets/status_icon.png}"
-            Route="irrigationLine">
-        <ShellContent ContentTemplate="{DataTemplate local:IrrigationLinePage}" />
-    </FlyoutItem>
-
-    <!-- Menu Item Separator -->
-    <MenuItem Text="Guia de Navegacion" 
-              IconImageSource="{OnPlatform Android=help_icon.png, iOS=questionmark.circle, WinUI=Assets/help_icon.png}"
-              Clicked="OnSettingsClicked" />
-
-    <!-- Shell Styles -->
+    <!-- Shell Resources / Styles -->
     <Shell.Resources>
         <Style TargetType="Shell">
-            <Setter Property="Shell.BackgroundColor" Value="{DynamicResource White}" />
-            <Setter Property="Shell.ForegroundColor" Value="{DynamicResource Primary}" />
-            <Setter Property="Shell.TitleColor" Value="White" />
-            <Setter Property="Shell.DisabledColor" Value="{DynamicResource Gray200}" />
-            <Setter Property="Shell.UnselectedColor" Value="{DynamicResource Gray400}" />
+            <Setter Property="Shell.BackgroundColor"
+                    Value="{DynamicResource White}" />
+            <Setter Property="Shell.ForegroundColor"
+                    Value="{DynamicResource Primary}" />
+            <Setter Property="Shell.TitleColor"
+                    Value="White" />
+            <Setter Property="Shell.DisabledColor"
+                    Value="{DynamicResource Gray200}" />
+            <Setter Property="Shell.UnselectedColor"
+                    Value="{DynamicResource Gray400}" />
         </Style>
 
-        <!-- Flyout Styles -->
         <Style TargetType="FlyoutItem">
-            <Setter Property="Shell.BackgroundColor" Value="{DynamicResource White}" />
-            <Setter Property="Shell.ForegroundColor" Value="{DynamicResource Gray900}" />
-            <Setter Property="Shell.TitleColor" Value="{DynamicResource Gray900}" />
+            <Setter Property="Shell.BackgroundColor"
+                    Value="{DynamicResource White}" />
+            <Setter Property="Shell.ForegroundColor"
+                    Value="{DynamicResource Gray900}" />
+            <Setter Property="Shell.TitleColor"
+                    Value="{DynamicResource Gray900}" />
         </Style>
 
-        <!-- Selected Item Style -->
         <Style TargetType="ShellContent">
-            <Setter Property="Shell.BackgroundColor" Value="{DynamicResource Primary}" />
-            <Setter Property="Shell.ForegroundColor" Value="White" />
-            <Setter Property="Shell.TitleColor" Value="White" />
+            <Setter Property="Shell.BackgroundColor"
+                    Value="{DynamicResource Primary}" />
+            <Setter Property="Shell.ForegroundColor"
+                    Value="White" />
+            <Setter Property="Shell.TitleColor"
+                    Value="White" />
         </Style>
 
-        <!-- Flyout Item Template -->
-        <DataTemplate x:Key="FlyoutItemTemplate">
-            <Grid HeightRequest="50" 
-                  Padding="20,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                
-                <Image Grid.Column="0"
-                       Source="{Binding Icon}"
-                       WidthRequest="24"
-                       HeightRequest="24"
-                       VerticalOptions="Center" />
-                       
-                <Label Grid.Column="1"
-                       Text="{Binding Title}"
-                       FontSize="16"
-                       VerticalOptions="Center"
-                       Margin="20,0,0,0" />
-            </Grid>
-        </DataTemplate>
+        <!-- Estilo simple para los botones del Expander -->
+        <Style x:Key="FlyoutButtonStyle"
+               TargetType="Button">
+            <Setter Property="BackgroundColor"
+                    Value="Transparent" />
+            <Setter Property="TextColor"
+                    Value="{DynamicResource Gray900}" />
+            <Setter Property="HorizontalOptions"
+                    Value="FillAndExpand" />
+            <Setter Property="CornerRadius"
+                    Value="6" />
+            <Setter Property="Padding"
+                    Value="10" />
+            <Setter Property="FontAttributes"
+                    Value="None" />
+        </Style>
     </Shell.Resources>
 
 </Shell>
-

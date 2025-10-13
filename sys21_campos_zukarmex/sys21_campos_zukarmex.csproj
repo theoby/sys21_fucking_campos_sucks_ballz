@@ -101,34 +101,58 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\DamageAssessment\DamageAssessmentPendingPage.xaml.cs">
+	    <DependentUpon>DamageAssessmentPendingPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\DamageAssessment\DamageAssessmentHistoryPage.xaml.cs">
+	    <DependentUpon>DamageAssessmentHistoryPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\IrrigationLine\IrrigationLinePendingPage.xaml.cs">
+	    <DependentUpon>IrrigationLinePendingPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\IrrigationLine\IrrigationLineHistoryPage.xaml.cs">
+	    <DependentUpon>IrrigationLineHistoryPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MachineryUsage\MachineryUsagePage.xaml.cs">
+	    <DependentUpon>MachineryUsagePage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Rainfall\RainfallPage.xaml.cs">
+	    <DependentUpon>RainfallPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Controls\CustomFlyoutHeader.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\AdminConfigPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\AgregarArticuloPage.xaml">
+	  <MauiXaml Update="Views\DamageAssessment\DamageAssessmentPendingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\DamageAssessmentPage.xaml">
+	  <MauiXaml Update="Views\DamageAssessment\DamageAssessmentHistoryPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\HistorialPage.xaml">
+	  <MauiXaml Update="Views\DamageAssessment\DamageAssessmentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\IrrigationLinePage.xaml">
+	  <MauiXaml Update="Views\IrrigationLine\IrrigationLineHistoryPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\IrrigationLine\IrrigationLinePendingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\IrrigationLine\IrrigationLinePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\NavigationDemoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\RatTrappingPage.xaml">
+	  <MauiXaml Update="Views\RatTramping\RatTrappingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\RodenticideConsumptionPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ValeDetallesPopup.xaml">
+	  <MauiXaml Update="Views\RodenticideConsumption\RodenticideConsumptionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

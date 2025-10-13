@@ -1,10 +1,10 @@
 using sys21_campos_zukarmex.ViewModels;
 
-namespace sys21_campos_zukarmex.Views;
+namespace sys21_campos_zukarmex.Views.RodenticideConsumption;
 
-public partial class DamageAssessmentPage : ContentPage
+public partial class RodenticideConsumptionPage : ContentPage
 {
-    public DamageAssessmentPage(DamageAssessmentViewModel viewModel)
+    public RodenticideConsumptionPage(RodenticideConsumptionViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
@@ -13,7 +13,7 @@ public partial class DamageAssessmentPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is DamageAssessmentViewModel viewModel)
+        if (BindingContext is RodenticideConsumptionViewModel viewModel)
         {
             await viewModel.InitializeAsync();
         }

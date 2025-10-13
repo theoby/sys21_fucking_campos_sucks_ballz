@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="sys21_campos_zukarmex.Views.DamageAssessment.DamageAssessmentHistoryPage"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:behaviors="clr-namespace:sys21_campos_zukarmex.Behaviors"
+             xmlns:models="clr-namespace:sys21_campos_zukarmex.Models"
+             x:DataType="viewmodels:DamageAssessmentHistoryViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="{Binding Title}">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing"
+                                        Command="{Binding PageAppearingAsyncCommand}" />
+    </ContentPage.Behaviors>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="10">
+
+        <Frame Grid.Row="0"
+               BackgroundColor="White"
+               CornerRadius="10"
+               Padding="20"
+               Margin="10">
+            <StackLayout Spacing="15">
+
+                <Label Text="Historial de Muestreos"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource Primary}"
+                       HorizontalOptions="Center" />
+
+                <Button Text="Actualizar Historial"
+                        Command="{Binding RefreshAsyncCommand}"
+                        BackgroundColor="{DynamicResource Primary}"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40" />
+
+            </StackLayout>
+        </Frame> 
+
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding HistorialAssessments}"
+                            BackgroundColor="Transparent"
+                            Margin="10,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SalidaMuestroDaños">
+                        <Frame BackgroundColor="White"
+                               CornerRadius="15"
+                               Padding="15"
+                               Margin="5"
+                               HasShadow="True">
+
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DamageAssessmentHistoryViewModel}}, Path=ViewAssessmentDetailsAsyncCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+
+                            <StackLayout Spacing="10">
+
+                                <Grid ColumnDefinitions="*,Auto,Auto">
+
+                                    <StackLayout Grid.Column="0">
+                                        <Label Text="{Binding Id, StringFormat='Muestreo #{0}'}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource Primary}" />
+
+                                        <Label Text="{Binding FechaFormateada}"
+                                               FontSize="14"
+                                               TextColor="Gray" />
+                                    </StackLayout>
+
+                                    <Frame Grid.Column="1"
+                                           BackgroundColor="{Binding EstatusColor}"
+                                           CornerRadius="12"
+                                           Padding="8,4"
+                                           Margin="0,0,5,0"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Start">
+                                        <Label Text="{Binding EstatusTexto}"
+                                               FontSize="10"
+                                               TextColor="White"
+                                               FontAttributes="Bold" />
+                                    </Frame>
+
+                                    <Frame Grid.Column="2"
+                                           BackgroundColor="{Binding AutorizadoColor}"
+                                           CornerRadius="12"
+                                           Padding="8,4"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Start">
+                                        <Label Text="{Binding AutorizadoTexto}"
+                                               FontSize="10"
+                                               TextColor="White"
+                                               FontAttributes="Bold" />
+                                    </Frame>
+                                </Grid>
+
+                                <BoxView HeightRequest="1"
+                                         Color="LightGray" />
+
+                                <Grid ColumnDefinitions="*,*">
+
+                                    <StackLayout Grid.Column="0"
+                                                 Spacing="2">
+                                        <Label Text="INFORMACIÓN BÁSICA"
+                                               FontSize="10"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource Primary}" />
+
+                                        <Label Text="{Binding IdTemporada, StringFormat='Temporada ID: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Black" />
+
+                                        <Label Text="{Binding IdCiclo, StringFormat='Ciclo ID: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Black" />
+
+                                        <Label Text="{Binding IdCampo, StringFormat='Predio ID: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Black" />
+
+                                        <Label Text="{Binding Usuario, StringFormat='Usuario: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Gray" />
+                                    </StackLayout>
+
+                                    <StackLayout Grid.Column="1"
+                                                 Spacing="2">
+                                        <Label Text="RESULTADOS CLAVE"
+                                               FontSize="10"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource Primary}" />
+
+                                        <Label Text="{Binding NumeroTallos, StringFormat='Tallos Contados: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Black" />
+
+                                        <Label Text="{Binding DañoNuevo, StringFormat='Daño Nuevo: {0}%'}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource Success}" />
+
+                                        <Label Text="{Binding DañoViejo, StringFormat='Daño Viejo: {0}%'}"
+                                               FontSize="12"
+                                               TextColor="OrangeRed" />
+                                    </StackLayout>
+                                </Grid>
+
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+   
+            </CollectionView>
+        </RefreshView>
+
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding IsRefreshing}"
+                           IsVisible="{Binding IsRefreshing}"
+                           Color="{DynamicResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>

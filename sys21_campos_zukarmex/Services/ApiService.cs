@@ -685,36 +685,42 @@ public class ApiService : IDisposable
             var httpClient = await GetConfiguredHttpClientAsync();
             await EnsureAuthTokenAsync();
 
-            // Creamos el DTO para la petición (esto ya estaba correcto)
+            // 1. Crear el DTO para la petición a la API, usando el nombre original
             var apiRequest = new IrrigationEntryApiRequest
             {
+                // Propiedades de mapeo (Asegúrate de que SalidaLineaDeRiego contenga IdTemporada e IdCiclo)
                 IdCampo = entry.IdCampo,
                 IdLineaRiego = entry.IdLineaRiego,
                 Fecha = entry.Fecha,
                 EquiposBombeoOperando = entry.EquiposBombeoOperando,
                 Observaciones = entry.Observaciones,
-                 Lat = entry.Lat,
+                Lat = entry.Lat,
                 Lng = entry.Lng
             };
+
+            // La API espera una lista, incluso para un solo registro
             var requestBody = new List<IrrigationEntryApiRequest> { apiRequest };
             var json = JsonConvert.SerializeObject(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+            // Usando el nombre de endpoint original: IrrigationEntriesEndpoint
             var fullUrl = GetFullUrl(AppConfigService.IrrigationEntriesEndpoint);
 
             System.Diagnostics.Debug.WriteLine($"Enviando JSON de Línea de Riego a: {fullUrl}");
             System.Diagnostics.Debug.WriteLine($"JSON: {json}");
 
+            // 2. Enviar la petición POST
             var response = await httpClient.PostAsync(fullUrl, content);
 
             if (!await ValidateHttpResponseAsync(response))
             {
-                return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = "Sesion caducada" };
+                return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = "Sesión caducada" };
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            System.Diagnostics.Debug.WriteLine($"Respuesta de la API (Línea de Riego): {responseContent}");
+            System.Diagnostics.Debug.WriteLine($"Respuesta de la API (Línea de Riego - Individual): {responseContent}");
 
+            // 3. Deserializar la respuesta, usando el nombre original: IrrigationEntryApiResponse
             var apiResponse = JsonConvert.DeserializeObject<IrrigationEntryApiResponse>(responseContent);
 
             if (apiResponse != null)
@@ -725,6 +731,7 @@ public class ApiService : IDisposable
                     Message = apiResponse.Mensaje,
                 };
 
+                // 4. Si el envío fue exitoso, eliminamos el registro local
                 if (finalResponse.Success && _databaseService != null && entry.Id > 0)
                 {
                     await _databaseService.DeleteAsync(entry);
@@ -737,6 +744,7 @@ public class ApiService : IDisposable
         }
         catch (Exception ex)
         {
+            // 5. Manejo de errores de conexión o servicio
             return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = ex.Message };
         }
     }
@@ -974,9 +982,92 @@ public class ApiService : IDisposable
             return new ApiResponse<SalidaMuestroDaños> { Success = false, Message = ex.Message };
         }
     }
+
+    // Asegúrate de que este método esté dentro de tu clase ApiService.
+    public async Task<ApiResponse<SalidaMuestroDaños>> SendPendingDamageAssessmentsAsync(List<SalidaMuestroDaños> assessments)
+    {
+        // Verificación inicial. Si la lista está vacía, no hay nada que hacer.
+        if (assessments == null || !assessments.Any())
+        {
+            return new ApiResponse<SalidaMuestroDaños> { Success = true, Message = "No hay elementos para enviar." };
+        }
+
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            // 1. Mapear la lista completa (SalidaMuestroDaños) al formato de la API (DamageApiRequest)
+            var apiRequests = assessments.Select(assessment => new DamageApiRequest
+            {
+                IdTemporada = assessment.IdTemporada,
+                IdCampo = assessment.IdCampo,
+                IdCiclo = assessment.IdCiclo,
+                Fecha = assessment.Fecha,
+                NumeroTallos = assessment.NumeroTallos,
+                DanoViejo = assessment.DañoViejo,
+                DanoNuevo = assessment.DañoNuevo,
+                Lat = assessment.Lat,
+                Lng = assessment.Lng
+                // Nota: El campo 'Dispositivo' (si es necesario) y la lógica de geolocalización
+                // ya deben estar en los objetos 'assessments' guardados localmente.
+            }).ToList();
+
+            // 2. Serializar la lista completa de peticiones
+            var json = JsonConvert.SerializeObject(apiRequests);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var fullUrl = GetFullUrl(AppConfigService.DamageAssessmentEndpoint);
+
+            System.Diagnostics.Debug.WriteLine($"Enviando {assessments.Count} Muestreos de Daño a: {fullUrl}");
+            System.Diagnostics.Debug.WriteLine($"JSON: {json}");
+
+            // 3. Enviar la petición POST
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<SalidaMuestroDaños> { Success = false, Message = "Sesión caducada o error de autenticación." };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Respuesta de la API (Sincronización Masiva): {responseContent}");
+
+            // 4. Deserializar la respuesta de la API (Asumimos que el formato de respuesta es el mismo)
+            var apiResponse = JsonConvert.DeserializeObject<DamageAssessmentApiResponse>(responseContent);
+
+            if (apiResponse != null)
+            {
+                // 5. Retornar el resultado de la operación masiva
+                return new ApiResponse<SalidaMuestroDaños>
+                {
+                    Success = apiResponse.Success,
+                    Message = apiResponse.Mensaje
+                };
+            }
+
+            return new ApiResponse<SalidaMuestroDaños> { Success = false, Message = "Respuesta inválida o nula de la API al intentar la sincronización masiva." };
+        }
+        catch (Exception ex)
+        {
+            // En caso de fallo de conexión o servicio
+            return new ApiResponse<SalidaMuestroDaños> { Success = false, Message = $"Fallo de conexión o servicio: {ex.Message}" };
+        }
+    }
+
+
     #endregion
 
     #region Other Catalog Operations (CON TOKEN BEARER)
+
+    public async Task<List<SalidaMuestroDaños>> GetDamageAssessmentHistoryAsync()
+    {
+        return await GetCatalogAsync<SalidaMuestroDaños>(AppConfigService.DamageAssessmentHistoryEndpoint);
+    }
+    public async Task<List<SalidaLineaDeRiego>> GetIrrigationLineHistoryAsync()
+    {
+        return await GetCatalogAsync<SalidaLineaDeRiego>(AppConfigService.IrrigationLineHistoryEndpoint);
+    }
 
     public async Task<List<Almacen>> GetAlmacenesAsync()
     {

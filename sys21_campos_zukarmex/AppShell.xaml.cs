@@ -15,18 +15,13 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("adminconfig", typeof(AdminConfigPage));
         Routing.RegisterRoute("sync", typeof(SyncPage));
         Routing.RegisterRoute("home", typeof(HomePage));
-        Routing.RegisterRoute("vale", typeof(ValePage));
-        Routing.RegisterRoute("status", typeof(StatusPage));
-        Routing.RegisterRoute("autorizacion", typeof(AuthorizationPage));
-        Routing.RegisterRoute("historial1", typeof(HistorialPage));
-        Routing.RegisterRoute("historial2", typeof(HistorialPage));
-        Routing.RegisterRoute("historial3", typeof(HistorialPage));
 
-        Routing.RegisterRoute(nameof(Views.RatTrappingPage), typeof(Views.RatTrappingPage));
-        Routing.RegisterRoute(nameof(Views.RodenticideConsumptionPage), typeof(Views.RodenticideConsumptionPage));
-        Routing.RegisterRoute(nameof(Views.DamageAssessmentPage), typeof(Views.DamageAssessmentPage));
-        Routing.RegisterRoute(nameof(Views.IrrigationLinePage), typeof(Views.IrrigationLinePage));
-        Routing.RegisterRoute(nameof(AgregarArticuloPage), typeof(AgregarArticuloPage));
+        Routing.RegisterRoute(nameof(Views.Rainfall.RainfallPage), typeof(Views.Rainfall.RainfallPage));
+        Routing.RegisterRoute(nameof(Views.MachineryUsage.MachineryUsagePage), typeof(Views.MachineryUsage.MachineryUsagePage));
+        Routing.RegisterRoute(nameof(Views.RatTrapping.RatTrappingPage), typeof(Views.RatTrapping.RatTrappingPage));
+        Routing.RegisterRoute(nameof(Views.RodenticideConsumption.RodenticideConsumptionPage), typeof(Views.RodenticideConsumption.RodenticideConsumptionPage));
+        Routing.RegisterRoute(nameof(Views.DamageAssessment.DamageAssessmentPage), typeof(Views.DamageAssessment.DamageAssessmentPage));
+        Routing.RegisterRoute(nameof(Views.IrrigationLine.IrrigationLinePage), typeof(Views.IrrigationLine.IrrigationLinePage));
         Routing.RegisterRoute("navigationdemo", typeof(NavigationDemoPage));
 
         // Configure flyout behavior
@@ -157,4 +152,38 @@ public partial class AppShell : Shell
     {
         FlyoutIsPresented = false;
     }
+
+    // Event handler para los botones del Expander "GENERAL"
+    private async void OnGeneralNavClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            // Cerrar flyout inmediatamente para UI responsiva
+            FlyoutIsPresented = false;
+
+            if (sender is Button btn && btn.CommandParameter is string route && !string.IsNullOrWhiteSpace(route))
+            {
+                // Si la ruta comienza con "//" la tratamos como navegación absoluta, si no como relativa
+                string navRoute = route.StartsWith("//") ? route : $"{route}";
+
+                // Pequeña espera para que la animación del flyout termine (opcional)
+                await Task.Delay(150);
+
+                // Navegar a la ruta registrada
+                await Shell.Current.GoToAsync(navRoute);
+                System.Diagnostics.Debug.WriteLine($"? Navegación a: {navRoute}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("?? OnGeneralNavClicked: sender no es Button o no tiene CommandParameter válido.");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"?? Error en OnGeneralNavClicked: {ex.Message}");
+            // opcional: mostrar alerta
+            await Shell.Current.DisplayAlert("Error", $"No se pudo navegar: {ex.Message}", "OK");
+        }
+    }
+
 }

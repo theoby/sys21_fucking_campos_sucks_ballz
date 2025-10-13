@@ -1,10 +1,10 @@
 using sys21_campos_zukarmex.ViewModels;
 
-namespace sys21_campos_zukarmex.Views;
+namespace sys21_campos_zukarmex.Views.MachineryUsage;
 
-public partial class ValePage : ContentPage
+public partial class MachineryUsagePage : ContentPage
 {
-    public ValePage(ValeViewModel viewModel)
+    public MachineryUsagePage(MachineryUsageViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
@@ -13,7 +13,7 @@ public partial class ValePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is ValeViewModel vm)
+        if (BindingContext is MachineryUsageViewModel vm)
             await vm.InitializeAsync();
     }
 }

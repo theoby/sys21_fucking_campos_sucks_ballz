@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 using sys21_campos_zukarmex.ViewModels;
-namespace sys21_campos_zukarmex.Views;
+namespace sys21_campos_zukarmex.Views.RatTrapping;
 
 public partial class RatTrappingPage : ContentPage
 {

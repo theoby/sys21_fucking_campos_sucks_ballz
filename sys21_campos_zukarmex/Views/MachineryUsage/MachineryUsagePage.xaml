@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Class="sys21_campos_zukarmex.Views.ValePage"
+<ContentPage x:Class="sys21_campos_zukarmex.Views.MachineryUsage.MachineryUsagePage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
              xmlns:behaviors="clr-namespace:sys21_campos_zukarmex.Behaviors"
              xmlns:models="clr-namespace:sys21_campos_zukarmex.Models"
-             x:DataType="viewmodels:ValeViewModel"
+             x:DataType="viewmodels:MachineryUsageViewModel"
              Title="Uso de Maquinaria"
              BackgroundColor="{DynamicResource Gray100}">
 

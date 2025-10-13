@@ -1,10 +1,10 @@
 using sys21_campos_zukarmex.ViewModels;
 
-namespace sys21_campos_zukarmex.Views;
+namespace sys21_campos_zukarmex.Views.DamageAssessment;
 
-public partial class HistorialPage : ContentPage
+public partial class DamageAssessmentPage : ContentPage
 {
-    public HistorialPage(HistorialViewModel viewModel)
+    public DamageAssessmentPage(DamageAssessmentViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
@@ -13,7 +13,7 @@ public partial class HistorialPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is HistorialViewModel viewModel)
+        if (BindingContext is DamageAssessmentViewModel viewModel)
         {
             await viewModel.InitializeAsync();
         }
