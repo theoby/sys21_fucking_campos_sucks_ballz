@@ -175,11 +175,20 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Riego"
+                        <Button Text="Forma"
                                 CommandParameter="//irrigationLine"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
+                        <Button Text="Por Enviar"
+                                CommandParameter="//irrigationLinePending"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent" />
+                        <Button Text="Historial"
+                                 CommandParameter="//irrigationLineHistory"
+                                 Clicked="OnGeneralNavClicked"
+                                 BackgroundColor="Transparent"
+                                 TextColor="{DynamicResource Gray900}" />
                     </VerticalStackLayout>
                 </toolkit:Expander>
 
@@ -267,6 +276,10 @@
                   ContentTemplate="{DataTemplate damageassessment:DamageAssessmentHistoryPage}" />
     <ShellContent Route="irrigationLine"
                   ContentTemplate="{DataTemplate irrigationline:IrrigationLinePage}" />
+    <ShellContent Route="irrigationLinePending"
+                  ContentTemplate="{DataTemplate irrigationline:IrrigationLinePendingPage}" />
+    <ShellContent Route="irrigationLineHistory"
+                  ContentTemplate="{DataTemplate irrigationline:IrrigationLineHistoryPage}" />
 
     <!-- Shell Resources / Styles -->
     <Shell.Resources>

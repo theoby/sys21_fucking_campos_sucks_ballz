@@ -10,6 +10,7 @@ namespace sys21_campos_zukarmex.Models;
 
 public class SalidaLineaDeRiego
 {
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
     public int IdCampo { get; set; } = 0;
     public int IdLineaRiego { get; set; } = 0;

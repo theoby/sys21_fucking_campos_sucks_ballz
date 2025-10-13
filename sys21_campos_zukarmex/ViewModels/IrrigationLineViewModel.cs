@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -134,6 +135,7 @@ namespace sys21_campos_zukarmex.ViewModels
             SetBusy(true);
             try
             {
+                // 1. Crear el objeto de salida
                 var newEntry = new SalidaLineaDeRiego
                 {
                     IdCampo = SelectedPredio.Id,
@@ -141,59 +143,74 @@ namespace sys21_campos_zukarmex.ViewModels
                     Fecha = this.Fecha,
                     Observaciones = this.Observacion,
 
+                    // Manejo seguro de la conversión de string a int
                     EquipoBombeo = int.TryParse(EquipoDeBombeo, out var eb) ? eb : 0,
                     EquiposBombeoOperando = int.TryParse(EquiposDeBombeoOperando, out var eo) ? eo : 0,
 
                     Dispositivo = $"{DeviceInfo.Current.Manufacturer} {DeviceInfo.Current.Model}"
                 };
 
-                //Geolocalización (Latitud y Longitud)
+                // 2. Geolocalización (Latitud y Longitud)
                 try
                 {
                     var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
                     if (location != null)
                     {
-                        // El modelo espera string para Lat/Lng, lo cual es ideal
-                        newEntry.Lat = location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        newEntry.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        // Usamos InvariantCulture para evitar problemas con comas/puntos decimales
+                        newEntry.Lat = location.Latitude.ToString(CultureInfo.InvariantCulture);
+                        newEntry.Lng = location.Longitude.ToString(CultureInfo.InvariantCulture);
                     }
                 }
                 catch (Exception ex)
                 {
+                    // No es un error crítico si falla el GPS, solo se registra
                     System.Diagnostics.Debug.WriteLine($"No se pudo obtener la geolocalización: {ex.Message}");
                 }
 
 
-                if (ConnectivitySvc.IsConnected)
+                // 3. Guardar en la DB LOCAL (similar al AddAssessmentAsync)
+                var rowsAffected = await _databaseService.SaveAsync(newEntry);
+                var realAssignedId = newEntry.Id; // El ID se asigna en el objeto después del SaveAsync (si el servicio es correcto)
+
+                System.Diagnostics.Debug.WriteLine($"[DB SAVE]: Registro de Riego guardado. Filas afectadas: {rowsAffected}. ID asignado (desde objeto): {realAssignedId}");
+
+                SalidaLineaDeRiego? savedEntry = null;
+
+                if (realAssignedId > 0)
                 {
-                    var apiResponse = await _apiService.SaveIrrigationEntryAsync(newEntry);
-                    if (apiResponse.Success)
-                    {
-                        await Shell.Current.DisplayAlert("Éxito", "Registro de riego enviado correctamente.", "OK");
-                    }
-                    else
-                    {
-                        await _databaseService.SaveAsync(newEntry);
-                        await Shell.Current.DisplayAlert("Guardado Localmente", "La API no respondió. El registro se guardó localmente.", "OK");
-                    }
+                    // Recuperar el objeto usando el ID REAL para verificación.
+                    savedEntry = await _databaseService.GetByIdAsync<SalidaLineaDeRiego>(realAssignedId);
+                }
+
+                // 4. Lógica de verificación y mensaje al usuario
+                if (savedEntry != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("-------------------------------------------");
+                    System.Diagnostics.Debug.WriteLine($"[DB READ SUCCESS]: Entrada de Riego recuperada con ID: {savedEntry.Id}");
+                    System.Diagnostics.Debug.WriteLine($"- Campo ID: {savedEntry.IdCampo}, Línea ID: {savedEntry.IdLineaRiego}");
+                    System.Diagnostics.Debug.WriteLine($"- Equipos Operando: {savedEntry.EquiposBombeoOperando}");
+                    System.Diagnostics.Debug.WriteLine($"-------------------------------------------");
+
+                    await Shell.Current.DisplayAlert("Guardado Localmente", $"El registro se guardó exitosamente en el dispositivo con ID: {savedEntry.Id}. Se sincronizará más tarde.", "OK");
                 }
                 else
                 {
-                    await _databaseService.SaveAsync(newEntry);
-                    await Shell.Current.DisplayAlert("Guardado Localmente", "Sin conexión. El registro se guardó localmente.", "OK");
+                    System.Diagnostics.Debug.WriteLine($"[DB VERIFICATION FAILED]: Falló la verificación para ID {realAssignedId}.");
+                    await Shell.Current.DisplayAlert("Guardado Localmente", $"El registro se insertó, pero falló la verificación inmediata. ID asignado: {realAssignedId}", "OK");
                 }
 
                 ClearForm();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar el registro: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar el registro localmente: {ex.Message}", "OK");
             }
             finally
             {
                 SetBusy(false);
             }
         }
+
 
         private void ClearForm()
         {

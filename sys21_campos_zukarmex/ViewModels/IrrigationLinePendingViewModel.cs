@@ -9,8 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
-// Se asume que BaseViewModel y otros usings están disponibles
-// using CommunityToolkit.Mvvm.ComponentModel.__Internals; // No es necesario si se usa CommunityToolkit.Mvvm.ComponentModel
+using System.Diagnostics;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
@@ -37,6 +36,7 @@ namespace sys21_campos_zukarmex.ViewModels
             PendingEntries = new ObservableCollection<SalidaLineaDeRiego>();
             Title = "Líneas de Riego Pendientes";
 
+            Debug.WriteLine("WASAAAA");
             // Carga la lista local al iniciar
             _ = LoadPendingEntriesAsync();
         }
@@ -52,7 +52,7 @@ namespace sys21_campos_zukarmex.ViewModels
             {
                 // Carga de la DB local, apuntando al modelo correcto
                 var list = await _databaseService.GetAllAsync<SalidaLineaDeRiego>();
-
+                Debug.WriteLine(list.Count());
                 PendingEntries.Clear();
 
                 // Ordenar por fecha para mejor visualización
@@ -102,7 +102,7 @@ namespace sys21_campos_zukarmex.ViewModels
             {
                 // 1. Enviar la lista completa a la API
                 // NOTA: Se asume que _apiService.SendPendingIrrigationLineAsync existe y devuelve un objeto con 'Success' y 'Message'.
-                var response = await _apiService.SaveIrrigationEntryAsync(itemsToSend);
+                var response = await _apiService.SendPendingIrrigationEntriesAsync(itemsToSend);
 
                 if (response != null && response.Success)
                 {

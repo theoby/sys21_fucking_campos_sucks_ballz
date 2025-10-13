@@ -748,6 +748,90 @@ public class ApiService : IDisposable
             return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = ex.Message };
         }
     }
+
+    public async Task<ApiResponse<SalidaLineaDeRiego>> SendPendingIrrigationEntriesAsync(List<SalidaLineaDeRiego> entries)
+    {
+        // Verificación inicial. Si la lista está vacía, no hay nada que hacer.
+        if (entries == null || !entries.Any())
+        {
+            return new ApiResponse<SalidaLineaDeRiego> { Success = true, Message = "No hay elementos de riego pendientes para enviar." };
+        }
+
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            // 1. Mapear la lista completa (SalidaLineaDeRiego) al formato de la API (IrrigationEntryApiRequest)
+            var apiRequests = entries.Select(entry => new IrrigationEntryApiRequest
+            {
+                IdCampo = entry.IdCampo,
+                IdLineaRiego = entry.IdLineaRiego,
+                Fecha = entry.Fecha,
+                EquiposBombeoOperando = entry.EquiposBombeoOperando,
+                Observaciones = entry.Observaciones,
+                Lat = entry.Lat,
+                Lng = entry.Lng
+            }).ToList();
+
+            // 2. Serializar la lista completa de peticiones
+            var json = JsonConvert.SerializeObject(apiRequests);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Usando el nombre de endpoint original: IrrigationEntriesEndpoint
+            var fullUrl = GetFullUrl(AppConfigService.IrrigationEntriesEndpoint);
+
+            System.Diagnostics.Debug.WriteLine($"Enviando {entries.Count} registros de Línea de Riego a: {fullUrl}");
+            System.Diagnostics.Debug.WriteLine($"JSON: {json}");
+
+            // 3. Enviar la petición POST
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = "Sesión caducada o error de autenticación." };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Respuesta de la API (Línea de Riego - Masiva): {responseContent}");
+
+            // 4. Deserializar la respuesta, usando el nombre original: IrrigationEntryApiResponse
+            var apiResponse = JsonConvert.DeserializeObject<IrrigationEntryApiResponse>(responseContent);
+
+            if (apiResponse != null)
+            {
+                var finalResponse = new ApiResponse<SalidaLineaDeRiego>
+                {
+                    Success = apiResponse.Success,
+                    Message = apiResponse.Mensaje,
+                };
+
+                // 5. Si el envío masivo fue exitoso, eliminar TODOS los registros enviados de la BD local.
+                if (finalResponse.Success && _databaseService != null)
+                {
+                    // Iteramos sobre la lista y eliminamos cada elemento individualmente
+                    // Asegúrate de que tu DatabaseService tenga un método DeleteAsync que acepte el modelo.
+                    foreach (var entry in entries)
+                    {
+                        // Solo eliminamos si tiene un ID válido, asumiendo que el ID local es > 0
+                        if (entry.Id > 0)
+                        {
+                            await _databaseService.DeleteAsync(entry);
+                        }
+                    }
+                }
+
+                return finalResponse;
+            }
+
+            return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = "Respuesta inválida o nula de la API al intentar la sincronización masiva." };
+        }
+        catch (Exception ex)
+        {
+            // 6. Manejo de errores de conexión o servicio
+            return new ApiResponse<SalidaLineaDeRiego> { Success = false, Message = $"Fallo de conexión o servicio: {ex.Message}" };
+        }
+    }
     #endregion
 
     #region Rodenticide Operations (CON TOKEN BEARER)
