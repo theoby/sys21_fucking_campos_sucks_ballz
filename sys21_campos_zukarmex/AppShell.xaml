@@ -94,7 +94,7 @@
 
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Pluvial"
+                        <Button Text="Captura"
                             CommandParameter="//rainfall"
                             Clicked="OnGeneralNavClicked"
                             BackgroundColor="Transparent"
@@ -128,7 +128,7 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                    <Button Text="Trampeo de Ratas"
+                    <Button Text="Captura"
                             CommandParameter="//ratTrapping"
                             Clicked="OnGeneralNavClicked"
                             BackgroundColor="Transparent"
@@ -162,7 +162,7 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Rodenticida"
+                        <Button Text="Captura"
                                 CommandParameter="//rodenticideConsumption"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
@@ -185,7 +185,7 @@
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
-                            <Label Text="MUESTRO DE DAÑO"
+                            <Label Text="MUESTREO DE DAÑO"
                                    FontSize="18"
                                    FontAttributes="Bold"
                                    TextColor="{DynamicResource Primary}" />
@@ -193,7 +193,7 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Forma"
+                        <Button Text="Captura"
                                 CommandParameter="//damageAssessment"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
@@ -225,18 +225,17 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Forma"
+                        <Button Text="Captura"
                                 CommandParameter="//irrigationLine"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        
+
                         <Button Text="Por Enviar"
                                 CommandParameter="//irrigationLinePending"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        
                         <Button Text="Historial"
                                  CommandParameter="//irrigationLineHistory"
                                  Clicked="OnGeneralNavClicked"

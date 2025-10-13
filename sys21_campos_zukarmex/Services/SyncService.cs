@@ -61,7 +61,7 @@ public class SyncService
     public async Task<List<SyncStatus>> SyncAllCatalogsAsync(IProgress<SyncStatus>? progress = null)
     {
         var syncStatuses = new List<SyncStatus>();
-        var totalCatalogs = 12; // Incrementado para incluir Recetas
+        var totalCatalogs = 13; // Incrementado para incluir Recetas
         var currentCatalog = 0;
 
         // Sync Empresas first (needed for login)

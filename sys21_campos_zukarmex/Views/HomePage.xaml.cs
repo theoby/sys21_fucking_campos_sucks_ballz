@@ -77,4 +77,32 @@ public partial class HomePage : ScrollablePage
             System.Diagnostics.Debug.WriteLine($"Error navigating to config: {ex.Message}");
         }
     }
+
+    private async void OnGeneralNavClicked(object sender, EventArgs e)
+    {
+        // 1. Verificar si el remitente es un Botón
+        if (sender is Button button)
+        {
+            // 2. Intentar obtener el CommandParameter, que contiene la ruta de navegación
+            if (button.CommandParameter is string route)
+            {
+                // 3. Verificar que la ruta no esté vacía
+                if (!string.IsNullOrWhiteSpace(route))
+                {
+                    try
+                    {
+                        // Ejecuta la navegación a la ruta definida en el CommandParameter
+                        await Shell.Current.GoToAsync(route);
+                        Console.WriteLine($"Navegación exitosa a: {route}");
+                    }
+                    catch (Exception ex)
+                    {
+                        // Muestra un error si la ruta no existe o no se puede navegar
+                        Console.WriteLine($"ERROR DE NAVEGACIÓN: No se pudo navegar a {route}. Mensaje: {ex.Message}");
+                        // Aquí podrías mostrar un aviso al usuario si quieres
+                    }
+                }
+            }
+        }
+    }
 }

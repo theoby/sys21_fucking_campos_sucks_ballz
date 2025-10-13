@@ -21,58 +21,83 @@
                            FontSize="22" 
                            FontAttributes="Bold"
                            TextColor="White" />
-                    <Label Text="Administracion de Tareas en Campos Zucarmex" 
-                           FontSize="16" 
+                    <Label Text="Administracion de Tareas en Campos Zucarmex"
+                           FontSize="16"
                            TextColor="White"
                            Opacity="0.9" />
-                    
-                    <!-- Navigation Help -->
-                    <StackLayout Orientation="Horizontal" Spacing="8" Margin="0,10,0,0">
-                        <Label Text="Toca el menu o desliza desde el borde izquierdo." 
-                               FontSize="12" 
-                               TextColor="White"
-                               Opacity="0.8" />
-                    </StackLayout>
                 </StackLayout>
             </Frame>
 
             <!-- Quick Actions -->
             <Frame BackgroundColor="White" CornerRadius="15" Padding="25" HasShadow="True">
                 <StackLayout Spacing="15">
-                    <Label Text="Acciones Rapidas" 
+                    <Label Text="Capturas" 
                            FontSize="20" 
                            FontAttributes="Bold"
                            TextColor="{DynamicResource Primary}" />
 
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="15" RowSpacing="15">
-                        
-                        <Button Grid.Row="0" Grid.Column="0"
-                                Text="Nuevo Vale"
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="15" RowSpacing="15">
+
+                        <Button Grid.Row="0"
+                                Grid.Column="0"
+                                Text="Uso Maquinaria"
                                 BackgroundColor="{DynamicResource Primary}"
                                 TextColor="White"
+                                FontSize="12"
                                 CornerRadius="10"
-                                Clicked="OnNewValeClicked" />
+                                CommandParameter="//machineryUsage"
+                                Clicked="OnGeneralNavClicked" />
 
-                        <Button Grid.Row="0" Grid.Column="1"
-                                Text="Ver Estado"
+                        <Button Grid.Row="0"
+                                Grid.Column="1"
+                                Text="Precip. Pluvial"
+                                FontSize="12"
                                 BackgroundColor="{DynamicResource Secondary}"
                                 TextColor="White"
                                 CornerRadius="10"
-                                Clicked="OnStatusClicked" />
+                                CommandParameter="//rainfall"
+                                Clicked="OnGeneralNavClicked" />
 
-                        <Button Grid.Row="1" Grid.Column="0"
-                                Text="Maquinaria"
-                                BackgroundColor="Green"
+                        <Button Grid.Row="1"
+                                Grid.Column="0"
+                                Text="Rodenticida"
+                                FontSize="12"
+                                BackgroundColor="#4CAF50"
                                 TextColor="White"
                                 CornerRadius="10"
-                                Clicked="OnMaquinariaClicked" />
-
-                        <Button Grid.Row="1" Grid.Column="1"
-                                Text="Configuracion"
-                                BackgroundColor="Purple"
+                                CommandParameter="//rodenticideConsumption"
+                                Clicked="OnGeneralNavClicked" />
+                        
+                        <Button Grid.Row="1"
+                                Grid.Column="1"
+                                Text="Muestreo Daño"
+                                FontSize="12"
+                                BackgroundColor="Red"
                                 TextColor="White"
                                 CornerRadius="10"
-                                Clicked="OnConfigClicked" />
+                                CommandParameter="//damageAssessment"
+                                Clicked="OnGeneralNavClicked" />
+                        
+                        <Button Grid.Row="2"
+                                Grid.Column="0"
+                                Text="Trampeo Rata"
+                                FontSize="12"
+                                BackgroundColor="#B97A57"
+                                TextColor="White"
+                                CornerRadius="10"
+                                CommandParameter="//ratTrapping"
+                                Clicked="OnGeneralNavClicked" />
+                        
+                        <Button Grid.Row="2"
+                                Grid.Column="1"
+                                Text="Línea de Riego"
+                                FontSize="12"
+                                BackgroundColor="#2196F3"
+                                TextColor="White"
+                                CornerRadius="10"
+                                CommandParameter="//irrigationLine"
+                                Clicked="OnGeneralNavClicked" />
+                       
 
                     </Grid>
                 </StackLayout>

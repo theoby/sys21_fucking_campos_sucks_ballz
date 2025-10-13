@@ -23,15 +23,15 @@
                     <DataTemplate x:DataType="models:SalidaPrecipitacion">
                         <Frame Padding="15" Margin="0,5" CornerRadius="10" HasShadow="True">
                             <StackLayout Spacing="5">
-                                <Label FontAttributes="Bold" TextColor="{DynamicResource Primary}">
+                                <Label FontAttributes="Bold"
+                                       TextColor="{DynamicResource Primary}">
                                     <Label.FormattedText>
                                         <FormattedString>
-                                            <Span Text="Registro ID: "/>
-                                            <Span Text="{Binding Id}"/>
+                                            <Span Text="Registro  " />
+                                            <Span Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy}'}" />
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy}'}" />
                                 <Label Text="{Binding Precipitacion, StringFormat='Precipitación: {0} mm'}" />
                                 <Label Text="{Binding IdPluviometro, StringFormat='Pluviómetro ID: {0}'}" TextColor="{StaticResource Gray600}" FontSize="12"/>
                             </StackLayout>

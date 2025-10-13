@@ -7,6 +7,7 @@
              x:DataType="viewmodels:RodenticideConsumptionHistoryViewModel"
              Title="{Binding Title}">
 
+
     <Grid RowDefinitions="Auto,*">
         <Label Grid.Row="0" Text="Historial de Registros Enviados" FontSize="20" FontAttributes="Bold" Padding="20" HorizontalTextAlignment="Center"/>
         <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadHistoryCommand}">

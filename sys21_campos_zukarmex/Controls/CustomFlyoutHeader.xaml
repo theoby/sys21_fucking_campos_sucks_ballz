@@ -52,15 +52,6 @@
                    
         </StackLayout>
         
-        <!-- Swipe indicator -->
-        <Label Text="Desliza para navegar"
-               FontSize="10"
-               TextColor="White"
-               Opacity="0.6"
-               HorizontalOptions="Start"
-               VerticalOptions="End"
-               Margin="20,0,0,10" />
-               
     </Grid>
     
 </ContentView>

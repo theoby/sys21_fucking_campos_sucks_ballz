@@ -27,8 +27,8 @@
                              Opacity="0.3"
                             />
 
-                    <Label Text="Afer Green"
-                            FontSize="32"
+                    <Label Text="Modulo de Campos"
+                            FontSize="20"
                             FontAttributes="Bold"
                             TextColor="White"
                             HorizontalOptions="Center"
