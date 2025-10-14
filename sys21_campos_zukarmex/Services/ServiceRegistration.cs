@@ -125,10 +125,10 @@ public static class ServiceRegistration
         // F. Consumo de Rodenticida (Rodenticide Consumption)
         services.AddTransient<RodenticideConsumptionViewModel>();
         services.AddTransient<RodenticideConsumptionPage>();
-        //services.AddTransient<RodenticideConsumptionPendingViewModel>();
-        //services.AddTransient<RodenticideConsumptionPendingPage>();
-        //services.AddTransient<RodenticideConsumptionHistoryViewModel>();
-        //services.AddTransient<RodenticideConsumptionHistoryPage>();
+        services.AddTransient<RodenticideConsumptionPendingViewModel>();
+        services.AddTransient<RodenticideConsumptionPendingPage>();
+        services.AddTransient<RodenticideConsumptionHistoryViewModel>();
+        services.AddTransient<RodenticideConsumptionHistoryPage>();
 
 
         return services;

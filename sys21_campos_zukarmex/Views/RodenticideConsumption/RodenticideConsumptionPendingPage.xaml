@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="sys21_campos_zukarmex.Views.RodenticideConsumption.RodenticideConsumptionPendingPage"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:models="clr-namespace:sys21_campos_zukarmex.Models"
+             x:DataType="viewmodels:RodenticideConsumptionPendingViewModel"
+             Title="Consumos Pendientes">
+
+    <Grid RowDefinitions="Auto,*">
+        <Frame Grid.Row="0" Padding="20" Margin="10" CornerRadius="15" HasShadow="True">
+            <StackLayout Spacing="15">
+                <Label Text="Consumos Pendientes de Envío" FontSize="22" FontAttributes="Bold" TextColor="{DynamicResource Primary}" HorizontalOptions="Center" />
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
+                    <Label Text="Total Pendientes:" FontSize="18" TextColor="{DynamicResource Gray700}" VerticalOptions="Center" />
+                    <Label Text="{Binding PendingCount}" FontSize="30" FontAttributes="Bold" TextColor="{DynamicResource Orange}" VerticalOptions="Center" />
+                </StackLayout>
+                <Button Text="Enviar Todos Ahora" Command="{Binding SendAllPendingCommand}" BackgroundColor="{DynamicResource Success}" TextColor="White" CornerRadius="10" HeightRequest="50" FontSize="16" />
+            </StackLayout>
+        </Frame>
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadPendingCommand}">
+            <CollectionView ItemsSource="{Binding PendingConsumptions}" Margin="10,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SalidaRodenticida">
+                        <Frame Padding="15" Margin="0,5" CornerRadius="10">
+                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                <StackLayout Grid.Row="0" Grid.Column="0">
+                                    <Label Text="{Binding Id, StringFormat='Registro Local ID: {0}'}" FontSize="18" FontAttributes="Bold" TextColor="{DynamicResource Primary}" />
+                                    <Label Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy}'}" FontSize="14" TextColor="{DynamicResource Gray700}" />
+                                </StackLayout>
+                                <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="2" Margin="0,10">
+                                    <Label Text="{Binding CantidadComederos, StringFormat='Comederos: {0}'}" />
+                                    <Label Text="{Binding CantidadPastillas, StringFormat='Pastillas: {0}'}" />
+                                    <Label Text="{Binding CantidadConsumos, StringFormat='Consumo: {0}'}" />
+                                </StackLayout>
+                                <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Eliminar"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RodenticideConsumptionPendingViewModel}}, Path=DeleteCommand}"
+                                        CommandParameter="{Binding .}" BackgroundColor="{DynamicResource Danger}" TextColor="White"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No hay registros pendientes." Padding="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

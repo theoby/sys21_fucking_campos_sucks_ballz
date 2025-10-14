@@ -887,6 +887,74 @@ public class ApiService : IDisposable
             return new ApiResponse<SalidaRodenticida> { Success = false, Message = ex.Message };
         }
     }
+
+    public async Task<ApiResponse<object>> SendPendingRodenticideConsumptionsAsync(List<SalidaRodenticida> consumptions)
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var dtoList = consumptions.Select(c => new RodenticideApiRequest
+            {
+                IdTemporada = c.IdTemporada,
+                IdCampo = c.IdCampo,
+                Fecha = c.Fecha,
+                CantidadComederos = c.CantidadComederos,
+                CantidadPastillas = c.CantidadPastillas,
+                CantidadConsumo = c.CantidadConsumos,
+                Lat = c.Lat,
+                Lng = c.Lng
+            }).ToList();
+
+            if (!dtoList.Any())
+                return new ApiResponse<object> { Success = true, Message = "No hay registros para enviar." };
+
+            var json = JsonConvert.SerializeObject(dtoList);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var fullUrl = GetFullUrl(AppConfigService.RodenticideConsumptionEndpoint);
+
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+                return new ApiResponse<object> { Success = false, Message = "Sesion caducada" };
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<RodenticideApiResponse>(responseContent);
+
+            return new ApiResponse<object> { Success = apiResponse?.Success ?? false, Message = apiResponse?.Mensaje ?? "Respuesta inválida." };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<object> { Success = false, Message = ex.Message };
+        }
+    }
+
+    public async Task<List<SalidaRodenticida>> GetRodenticideHistoryAsync()
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var fullUrl = GetFullUrl(AppConfigService.RodenticideConsumptionHistoryEndpoint);
+            var response = await httpClient.GetAsync(fullUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonConvert.DeserializeObject<StandardApiResponse<SalidaRodenticida>>(json);
+                return apiResponse?.Datos ?? new List<SalidaRodenticida>();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Excepción en GetRodenticideHistoryAsync: {ex.Message}");
+        }
+        return new List<SalidaRodenticida>();
+    }
+
+
     #endregion
 
     #region Maquinaria Operations (CON TOKEN BEARER)

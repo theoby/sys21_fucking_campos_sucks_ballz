@@ -1,21 +1,22 @@
 using sys21_campos_zukarmex.ViewModels;
 
-namespace sys21_campos_zukarmex.Views.RodenticideConsumption;
-
-public partial class RodenticideConsumptionPage : ContentPage
+namespace sys21_campos_zukarmex.Views.RodenticideConsumption
 {
-    public RodenticideConsumptionPage(RodenticideConsumptionViewModel viewModel)
+    public partial class RodenticideConsumptionPage : ContentPage
     {
-        InitializeComponent();
-        BindingContext = viewModel;
-    }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        if (BindingContext is RodenticideConsumptionViewModel viewModel)
+        public RodenticideConsumptionPage(RodenticideConsumptionViewModel viewModel)
         {
-            await viewModel.InitializeAsync();
+            InitializeComponent();
+            BindingContext = viewModel;
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            if (BindingContext is RodenticideConsumptionViewModel viewModel)
+            {
+                await viewModel.InitializeAsync();
+            }
         }
     }
 }

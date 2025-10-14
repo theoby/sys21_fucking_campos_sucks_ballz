@@ -142,6 +142,16 @@
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
+                        <Button Text="Por Enviar"
+                                CommandParameter="//rodenticidePending"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />          
+                        <Button Text="Historial"
+                                CommandParameter="//rodenticideHistory"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
                     </VerticalStackLayout>
                 </toolkit:Expander>
 
@@ -291,6 +301,13 @@
     
     <ShellContent Route="rodenticideConsumption"
                   ContentTemplate="{DataTemplate rodenticide:RodenticideConsumptionPage}" />
+
+    <ShellContent Route="rodenticidePending"
+                  ContentTemplate="{DataTemplate rodenticide:RodenticideConsumptionPendingPage}" />
+
+    <ShellContent Route="rodenticideHistory"
+                  ContentTemplate="{DataTemplate rodenticide:RodenticideConsumptionHistoryPage}" />
+    
     <ShellContent Route="damageAssessment"
                   ContentTemplate="{DataTemplate damageassessment:DamageAssessmentPage}" />
     <ShellContent Route="damageAssessmentPending"

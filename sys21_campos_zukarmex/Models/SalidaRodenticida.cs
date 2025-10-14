@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace sys21_campos_zukarmex.Models
 {
     public class SalidaRodenticida
     {
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public int IdTemporada { get; set; } = 0;
         public int IdCampo { get; set; } = 0;

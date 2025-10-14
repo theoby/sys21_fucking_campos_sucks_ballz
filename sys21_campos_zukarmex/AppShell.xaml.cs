@@ -19,8 +19,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(Views.Rainfall.RainfallPage), typeof(Views.Rainfall.RainfallPage));
         Routing.RegisterRoute(nameof(Views.MachineryUsage.MachineryUsagePage), typeof(Views.MachineryUsage.MachineryUsagePage));
         Routing.RegisterRoute(nameof(Views.RatTrapping.RatTrappingPage), typeof(Views.RatTrapping.RatTrappingPage));
-        Routing.RegisterRoute(nameof(Views.RodenticideConsumption.RodenticideConsumptionPage), typeof(Views.RodenticideConsumption.RodenticideConsumptionPage));
-        Routing.RegisterRoute(nameof(Views.DamageAssessment.DamageAssessmentPage), typeof(Views.DamageAssessment.DamageAssessmentPage));
+        Routing.RegisterRoute(nameof(Views.RodenticideConsumption.RodenticideConsumptionPage), typeof(Views.RodenticideConsumption.RodenticideConsumptionPage)); Routing.RegisterRoute(nameof(Views.DamageAssessment.DamageAssessmentPage), typeof(Views.DamageAssessment.DamageAssessmentPage));
         Routing.RegisterRoute(nameof(Views.IrrigationLine.IrrigationLinePage), typeof(Views.IrrigationLine.IrrigationLinePage));
         Routing.RegisterRoute("navigationdemo", typeof(NavigationDemoPage));
 
