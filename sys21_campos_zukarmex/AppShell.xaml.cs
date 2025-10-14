@@ -26,7 +26,6 @@ public partial class AppShell : Shell
         // Configure flyout behavior
         ConfigureFlyoutBehavior();
     }
-
     private void ConfigureFlyoutBehavior()
     {
         // Configure flyout to close after selection
@@ -35,7 +34,6 @@ public partial class AppShell : Shell
         // Add gesture support for flyout
         this.PropertyChanged += OnShellPropertyChanged;
     }
-
     private void OnShellNavigated(object? sender, ShellNavigatedEventArgs e)
     {
         // Auto-close flyout after navigation

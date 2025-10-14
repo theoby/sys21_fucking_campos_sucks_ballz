@@ -205,10 +205,12 @@
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
+                        
                         <Button Text="Por Enviar"
                                 CommandParameter="//irrigationLinePending"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent" />
+                        
                         <Button Text="Historial"
                                  CommandParameter="//irrigationLineHistory"
                                  Clicked="OnGeneralNavClicked"

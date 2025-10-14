@@ -1,18 +1,20 @@
 using sys21_campos_zukarmex.ViewModels;
 
-namespace sys21_campos_zukarmex.Views.IrrigationLine;
-
-public partial class IrrigationLinePendingPage : ContentPage
+namespace sys21_campos_zukarmex.Views.IrrigationLine
 {
-
-    public IrrigationLinePendingPage(IrrigationLinePendingViewModel viewModel)
+    public partial class IrrigationLinePendingPage : ContentPage
     {
-       InitializeComponent();
-        BindingContext = viewModel;
-    }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
+        private readonly IrrigationLinePendingViewModel _viewModel;
+        public IrrigationLinePendingPage(IrrigationLinePendingViewModel viewModel)
+        {
+            InitializeComponent();
+            _viewModel = viewModel;
+            BindingContext = _viewModel;
+        }
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await _viewModel.LoadPendingCommand.ExecuteAsync(null);
+        }
     }
 }
