@@ -1142,6 +1142,99 @@ public class ApiService : IDisposable
 
     #endregion
 
+    #region RatTrapping Operations (CON TOKERN BEARER)
+
+    public async Task<ApiResponse<object>> SendPendingRatCapturesAsync(List<SalidaTrampeoRatas> captures)
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            // 1. Convertir la lista de modelos locales a una lista de DTOs para la API
+            var dtoList = captures.Select(c => new RatCaptureApiRequest
+            {
+                IdTemporada = c.IdTemporada,
+                IdCampo = c.IdCampo,
+                Fecha = c.Fecha,
+                CantidadTrampas = c.CantidadTrampas,
+                CantidadMachos = c.CantidadMachos,
+                CantidadHembras = c.CantidadHembras,
+                Lat = c.Lat,
+                Lng = c.Lng
+            }).ToList();
+
+            // Si no hay nada que enviar, retornar éxito
+            if (!dtoList.Any())
+            {
+                return new ApiResponse<object> { Success = true, Message = "No hay registros para enviar." };
+            }
+
+            var json = JsonConvert.SerializeObject(dtoList);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var fullUrl = GetFullUrl(AppConfigService.RatCapturesEndpoint);
+
+            System.Diagnostics.Debug.WriteLine($"Enviando {dtoList.Count} registros de Trampeo de Ratas a: {fullUrl}");
+            System.Diagnostics.Debug.WriteLine($"JSON: {json}");
+
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<object> { Success = false, Message = "Sesion caducada" };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Respuesta de la API (Envío Pendientes): {responseContent}");
+
+            var apiResponse = JsonConvert.DeserializeObject<RatCaptureApiResponse>(responseContent);
+
+            if (apiResponse != null)
+            {
+                return new ApiResponse<object> { Success = apiResponse.Success, Message = apiResponse.Mensaje };
+            }
+
+            return new ApiResponse<object> { Success = false, Message = "Respuesta inválida de la API." };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<object> { Success = false, Message = ex.Message };
+        }
+    }
+
+    public async Task<List<SalidaTrampeoRatas>> GetRatTrappingHistoryAsync()
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var fullUrl = GetFullUrl(AppConfigService.RatTrappingHistoryEndpoint);
+
+            var response = await httpClient.GetAsync(fullUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonConvert.DeserializeObject<StandardApiResponse<SalidaTrampeoRatas>>(json);
+                return apiResponse?.Datos ?? new List<SalidaTrampeoRatas>();
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al obtener historial de trampeo. Status: {response.StatusCode}");
+                return new List<SalidaTrampeoRatas>();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Excepción en GetRatTrappingHistoryAsync: {ex.Message}");
+            return new List<SalidaTrampeoRatas>();
+        }
+    }
+
+    #endregion
+
     #region Other Catalog Operations (CON TOKEN BEARER)
 
     public async Task<List<SalidaMuestroDaños>> GetDamageAssessmentHistoryAsync()

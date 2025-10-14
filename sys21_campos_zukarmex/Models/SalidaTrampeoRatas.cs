@@ -8,6 +8,7 @@ using SQLite;
 namespace sys21_campos_zukarmex.Models;
 public class SalidaTrampeoRatas
 {
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
     public int IdTemporada { get; set; } = 0;
     public int IdCampo { get; set; } = 0;
@@ -15,8 +16,8 @@ public class SalidaTrampeoRatas
     public int CantidadTrampas { get; set; } = 0;
     public int CantidadMachos { get; set; } = 0;
     public int CantidadHembras { get; set; } = 0;
-    public int Lng { get; set; } = 0;
-    public int Lat { get; set; } = 0;
+    public string Lng { get; set; } = "0";
+    public string Lat { get; set; } = "0";
     public string Dispositivo { get; set; } = string.Empty;
 
 }

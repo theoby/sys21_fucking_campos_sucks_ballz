@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="sys21_campos_zukarmex.Views.RatTrapping.RatTrappingHistoryPage"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:models="clr-namespace:sys21_campos_zukarmex.Models"
+             x:DataType="viewmodels:RatTrappingHistoryViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource Gray100}">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <Frame Grid.Row="0" Padding="20" Margin="10" CornerRadius="15" HasShadow="True">
+            <StackLayout Spacing="15">
+                <Label Text="Historial de Trampeos" FontSize="22" FontAttributes="Bold" TextColor="{DynamicResource Primary}" HorizontalOptions="Center" />
+                <Button Text="Actualizar Historial" Command="{Binding LoadHistoryAsyncCommand}" BackgroundColor="{DynamicResource Primary}" TextColor="White" CornerRadius="10" HeightRequest="40" />
+            </StackLayout>
+        </Frame>
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadHistoryAsyncCommand}">
+            <CollectionView ItemsSource="{Binding HistoryCaptures}" Margin="10,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SalidaTrampeoRatas">
+                        <Frame Padding="15" Margin="0,5" CornerRadius="10">
+                            <StackLayout>
+                                <Label Text="{Binding Id, StringFormat='Registro ID: {0}'}" FontAttributes="Bold" TextColor="{DynamicResource Primary}"/>
+                                <Label Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy}'}"/>
+                                <Label Text="{Binding CantidadTrampas, StringFormat='Trampas: {0}'}"/>
+                                <Label Text="{Binding CantidadMachos, StringFormat='Machos: {0}'}"/>
+                                <Label Text="{Binding CantidadHembras, StringFormat='Hembras: {0}'}"/>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No hay registros en el historial." HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Padding="50"/>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{DynamicResource Primary}" VerticalOptions="Center" HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>

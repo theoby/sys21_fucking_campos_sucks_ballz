@@ -102,11 +102,26 @@
                         </Grid>
                     </toolkit:Expander.Header>
 
+                    <VerticalStackLayout Padding="10,5">
                     <Button Text="Trampeo de Ratas"
                             CommandParameter="//ratTrapping"
                             Clicked="OnGeneralNavClicked"
                             BackgroundColor="Transparent"
                             TextColor="{DynamicResource Gray900}" />
+                    
+                    <Button Text="Por Enviar"
+                             CommandParameter="//ratTrappingPending"
+                             Clicked="OnGeneralNavClicked"
+                             BackgroundColor="Transparent"
+                             TextColor="{DynamicResource Gray900}" />
+                    
+                    <Button Text="Historial"
+                             CommandParameter="//ratTrappingHistory"
+                             Clicked="OnGeneralNavClicked"
+                             BackgroundColor="Transparent"
+                             TextColor="{DynamicResource Gray900}" />
+                    </VerticalStackLayout>
+                    
                 </toolkit:Expander>
 
                 <!-- Expander CONSUMO DE RODENTICIDA -->
@@ -264,8 +279,16 @@
                   ContentTemplate="{DataTemplate machinery:MachineryUsagePage}" />
     <ShellContent Route="rainfall"
                   ContentTemplate="{DataTemplate rainfall:RainfallPage}" />
+    
     <ShellContent Route="ratTrapping"
                   ContentTemplate="{DataTemplate rattrapping:RatTrappingPage}" />
+
+    <ShellContent Route="ratTrappingPending"
+                  ContentTemplate="{DataTemplate rattrapping:RatTrappingPendingPage}" />
+    
+    <ShellContent Route="ratTrappingHistory"
+                  ContentTemplate="{DataTemplate rattrapping:RatTrappingHistoryPage}" />
+    
     <ShellContent Route="rodenticideConsumption"
                   ContentTemplate="{DataTemplate rodenticide:RodenticideConsumptionPage}" />
     <ShellContent Route="damageAssessment"

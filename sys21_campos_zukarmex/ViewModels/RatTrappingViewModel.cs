@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,55 +11,35 @@ namespace sys21_campos_zukarmex.ViewModels
     public partial class RatTrappingViewModel : BaseViewModel
     {
         private readonly DatabaseService _databaseService;
-        private readonly ApiService _apiService;
         private readonly SessionService _sessionService;
-        private readonly ConnectivityService _connectivityService;
-        public ConnectivityService ConnectivitySvc => _connectivityService;
-
         private bool isInitialized = false;
 
-        [ObservableProperty]
-        private ObservableCollection<Zafra> zafras;
+        [ObservableProperty] private ObservableCollection<Zafra> zafras = new();
+        [ObservableProperty] private ObservableCollection<Campo> campos = new();
 
-        [ObservableProperty]
-        private ObservableCollection<Campo> campos;
+        [ObservableProperty] private Zafra? selectedZafra;
+        [ObservableProperty] private Campo? selectedCampo;
+        [ObservableProperty] private DateTime fecha = DateTime.Now;
+        [ObservableProperty] private string numeroDeTrampas = string.Empty;
+        [ObservableProperty] private string machosCapturados = string.Empty;
+        [ObservableProperty] private string hembrasCapturadas = string.Empty;
 
-        [ObservableProperty]
-        private Zafra? selectedZafra;
-
-        [ObservableProperty]
-        private Campo? selectedCampo;
-
-        [ObservableProperty]
-        private DateTime fecha = DateTime.Now;
-
-        [ObservableProperty]
-        private string numeroDeTrampas = string.Empty;
-
-        [ObservableProperty]
-        private string machosCapturados = string.Empty;
-
-        [ObservableProperty]
-        private string hembrasCapturadas = string.Empty;
-
-        public RatTrappingViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
+        public RatTrappingViewModel(DatabaseService databaseService, SessionService sessionService)
         {
             _databaseService = databaseService;
-            _apiService = apiService;
             _sessionService = sessionService;
-            _connectivityService = connectivityService;
             Title = "Trampeo de Ratas";
-
-            zafras = new ObservableCollection<Zafra>();
-            campos = new ObservableCollection<Campo>();
-            _ = LoadCatalogsAsync();
         }
 
-
+        public async Task InitializeAsync()
+        {
+            if (isInitialized) return;
+            await LoadCatalogsAsync();
+            isInitialized = true;
+        }
 
         private async Task LoadCatalogsAsync()
         {
-            Debug.WriteLine("Inicio LoadCatalogs");
             if (IsBusy) return;
             try
             {
@@ -72,36 +51,15 @@ namespace sys21_campos_zukarmex.ViewModels
                     return;
                 }
 
-                // Cargar todas las zafras
+                // Cargar catálogos desde la base de datos local
                 var zafraList = await _databaseService.GetAllAsync<Zafra>();
                 Zafras.Clear();
-                Debug.WriteLine("Zafras a cargar");
-                Debug.WriteLine($"ZafraList.Count = {zafraList?.Count ?? 0}");
-                foreach (var zafra in zafraList.OrderBy(z => z.Nombre))
-                {
-                    Debug.WriteLine("Zafras:");
-                    Debug.WriteLine(zafra);
-                    Zafras.Add(zafra);
-                }
+                foreach (var zafra in zafraList.OrderBy(z => z.Nombre)) Zafras.Add(zafra);
 
                 var allCamposFromDb = await _databaseService.GetAllAsync<Campo>();
-                List<Campo> filteredCampos;
-
-                if (session.TipoUsuario == 1) 
-                {
-                    filteredCampos = allCamposFromDb;
-                }
-                else 
-                {
-                    filteredCampos = allCamposFromDb.Where(c => c.IdInspector == session.IdInspector).ToList();
-                }
-
-                // Poblar la lista de Campos en la UI
+                var filteredCampos = session.TipoUsuario == 1 ? allCamposFromDb : allCamposFromDb.Where(c => c.IdInspector == session.IdInspector).ToList();
                 Campos.Clear();
-                foreach (var campo in filteredCampos.OrderBy(c => c.Nombre))
-                {
-                    Campos.Add(campo);
-                }
+                foreach (var campo in filteredCampos.OrderBy(c => c.Nombre)) Campos.Add(campo);
             }
             catch (Exception ex)
             {
@@ -123,62 +81,47 @@ namespace sys21_campos_zukarmex.ViewModels
             }
 
             if (IsBusy) return;
-
             SetBusy(true);
+
             try
             {
                 var newCapture = new SalidaTrampeoRatas
                 {
-                    IdTemporada = SelectedZafra.Id, 
+                    IdTemporada = SelectedZafra.Id,
                     IdCampo = SelectedCampo.Id,
                     Fecha = this.Fecha,
                     CantidadTrampas = int.TryParse(NumeroDeTrampas, out var nt) ? nt : 0,
                     CantidadMachos = int.TryParse(MachosCapturados, out var m) ? m : 0,
                     CantidadHembras = int.TryParse(HembrasCapturadas, out var h) ? h : 0,
-
                     Dispositivo = $"{DeviceInfo.Current.Manufacturer} {DeviceInfo.Current.Model}"
                 };
 
                 try
                 {
-                    var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
+                    var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium));
                     if (location != null)
                     {
-                        newCapture.Lat = (int)(location.Latitude * 1000000); 
-                        newCapture.Lng = (int)(location.Longitude * 1000000);
+                        newCapture.Lat = location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        newCapture.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
                     }
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"No se pudo obtener la geolocalización: {ex.Message}");
+                    newCapture.Lat = "0";
+                    newCapture.Lng = "0";
                 }
 
+                // Guardar únicamente en la base de datos local
+                await _databaseService.SaveAsync(newCapture);
 
-                if (ConnectivitySvc.IsConnected)
-                {
-
-                    var apiResponse = await _apiService.SaveRatCaptureAsync(newCapture);
-                    if (apiResponse.Success)
-                    {
-                        await Shell.Current.DisplayAlert("Éxito", "Captura enviada correctamente.", "OK");
-                    }
-                    else
-                    {
-                        await _databaseService.SaveAsync(newCapture);
-                        await Shell.Current.DisplayAlert("Guardado Localmente", "La API no respondió. La captura se guardó localmente.", "OK");
-                    }
-                }
-                else
-                {
-                    await _databaseService.SaveAsync(newCapture);
-                    await Shell.Current.DisplayAlert("Guardado Localmente", "Sin conexión. La captura se guardó localmente.", "OK");
-                }
+                await Shell.Current.DisplayAlert("Guardado Localmente", "La captura de trampeo se guardó en el dispositivo.", "OK");
 
                 ClearForm();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar la captura: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar la captura localmente: {ex.Message}", "OK");
             }
             finally
             {
@@ -188,7 +131,7 @@ namespace sys21_campos_zukarmex.ViewModels
 
         private void ClearForm()
         {
-            SelectedCampo = null; // CAMBIO
+            SelectedCampo = null;
             Fecha = DateTime.Now;
             NumeroDeTrampas = string.Empty;
             MachosCapturados = string.Empty;

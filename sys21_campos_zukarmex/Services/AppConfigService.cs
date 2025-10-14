@@ -51,7 +51,7 @@ public static class AppConfigService
     public const string MachineryUsageHistoryEndpoint = "DescargaUsoMaquinaria/obtener";
     public const string RainfallHistoryEndpoint = "Pluvial/obtener";
     public const string RodenticideConsumptionHistoryEndpoint = "Rodenticida/obtener";
-    public const string RatTrappingHistoryEndpoint = "rampeoRatas/obtener";
+    public const string RatTrappingHistoryEndpoint = "TrampeoRatas/obtener";
 
 
     // User Types

@@ -109,10 +109,10 @@ public static class ServiceRegistration
         // D. Trampeo de Ratas (Rat Trapping)
         services.AddTransient<RatTrappingViewModel>();
         services.AddTransient<RatTrappingPage>();
-        //services.AddTransient<RatTrappingPendingViewModel>();
-        //services.AddTransient<RatTrappingPendingPage>();
-        //services.AddTransient<RatTrappingHistoryViewModel>();
-        //services.AddTransient<RatTrappingHistoryPage>();
+        services.AddTransient<RatTrappingPendingViewModel>();
+        services.AddTransient<RatTrappingPendingPage>();
+        services.AddTransient<RatTrappingHistoryViewModel>();
+        services.AddTransient<RatTrappingHistoryPage>();
 
         // E. Línea de Riego (Irrigation Line)
         services.AddTransient<IrrigationLineViewModel>();
