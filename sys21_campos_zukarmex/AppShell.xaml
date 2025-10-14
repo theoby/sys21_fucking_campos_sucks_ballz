@@ -209,7 +209,8 @@
                         <Button Text="Por Enviar"
                                 CommandParameter="//irrigationLinePending"
                                 Clicked="OnGeneralNavClicked"
-                                BackgroundColor="Transparent" />
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
                         
                         <Button Text="Historial"
                                  CommandParameter="//irrigationLineHistory"
