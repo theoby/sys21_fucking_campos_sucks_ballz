@@ -1108,6 +1108,59 @@ public class ApiService : IDisposable
             return new ApiResponse<SalidaPrecipitacion> { Success = false, Message = ex.Message };
         }
     }
+
+    public async Task<ApiResponse<object>> SendPendingRainfallsAsync(List<SalidaPrecipitacion> rainfalls)
+    {
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var dtoList = rainfalls.Select(r => new RainfallApiRequest
+            {
+                IdPluviometro = r.IdPluviometro,
+                Fecha = r.Fecha,
+                Precipitacion = r.Precipitacion,
+                Lat = r.Lat,
+                Lng = r.Lng
+            }).ToList();
+
+            if (!dtoList.Any()) return new ApiResponse<object> { Success = true, Message = "Nada que enviar." };
+
+            var json = JsonConvert.SerializeObject(dtoList);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var fullUrl = GetFullUrl(AppConfigService.RainfallEndpoint);
+
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+                return new ApiResponse<object> { Success = false, Message = "Sesión caducada." };
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<RainfallApiResponse>(responseContent);
+
+            return new ApiResponse<object> { Success = apiResponse?.Success ?? false, Message = apiResponse?.Mensaje ?? "Respuesta inválida." };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<object> { Success = false, Message = ex.Message };
+        }
+    }
+
+    public async Task<List<SalidaPrecipitacion>> GetRainfallHistoryAsync()
+    {
+        try
+        {
+            var fullUrl = GetFullUrl(AppConfigService.RainfallHistoryEndpoint);
+            var response = await GetCatalogAsync<SalidaPrecipitacion>(fullUrl);
+            return response ?? new List<SalidaPrecipitacion>();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Excepción en GetRainfallHistoryAsync: {ex.Message}");
+            return new List<SalidaPrecipitacion>();
+        }
+    }
     #endregion
 
     #region DAMAGE Operations (CON TOKEN BEARER)

@@ -101,10 +101,10 @@ public static class ServiceRegistration
         // C. Precipitación (Rainfall)
         services.AddTransient<RainfallViewModel>();
         services.AddTransient<RainfallPage>();
-        //services.AddTransient<RainfallPendingViewModel>();
-       // services.AddTransient<RainfallPendingPage>();
-        //services.AddTransient<RainfallHistoryViewModel>();
-        //services.AddTransient<RainfallHistoryPage>();
+        services.AddTransient<RainfallPendingViewModel>();
+        services.AddTransient<RainfallPendingPage>();
+        services.AddTransient<RainfallHistoryViewModel>();
+        services.AddTransient<RainfallHistoryPage>();
 
         // D. Trampeo de Ratas (Rat Trapping)
         services.AddTransient<RatTrappingViewModel>();

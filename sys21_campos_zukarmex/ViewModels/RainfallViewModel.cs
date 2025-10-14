@@ -10,37 +10,23 @@ namespace sys21_campos_zukarmex.ViewModels
     public partial class RainfallViewModel : BaseViewModel
     {
         private readonly DatabaseService _databaseService;
-        private readonly ApiService _apiService;
-        private readonly SessionService _sessionService;
+        private readonly ApiService _apiService; // Lo mantenemos para cargar el catálogo
         private readonly ConnectivityService _connectivityService;
         public ConnectivityService ConnectivitySvc => _connectivityService;
 
         private bool isInitialized = false;
 
-        [ObservableProperty]
-        private ObservableCollection<Empresa> empresas = new();
+        [ObservableProperty] private ObservableCollection<Empresa> empresas = new();
+        [ObservableProperty] private ObservableCollection<Pluviometro> pluviometros = new();
+        [ObservableProperty] private Empresa? selectedEmpresa;
+        [ObservableProperty] private Pluviometro? selectedPluviometro;
+        [ObservableProperty] private DateTime fecha = DateTime.Now.AddDays(-1);
+        [ObservableProperty] private string precipitacion = string.Empty;
 
-        [ObservableProperty]
-        private ObservableCollection<Pluviometro> pluviometros = new();
-
-        [ObservableProperty]
-        private Empresa? selectedEmpresa;
-
-        [ObservableProperty]
-        private Pluviometro? selectedPluviometro;
-
-        [ObservableProperty]
-        private DateTime fecha = DateTime.Now.AddDays(-1); 
-
-        [ObservableProperty]
-        private string precipitacion = string.Empty;
-
-
-        public RainfallViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
+        public RainfallViewModel(DatabaseService databaseService, ApiService apiService, ConnectivityService connectivityService)
         {
             _databaseService = databaseService;
             _apiService = apiService;
-            _sessionService = sessionService;
             _connectivityService = connectivityService;
             Title = "Precipitación Pluvial";
         }
@@ -58,13 +44,10 @@ namespace sys21_campos_zukarmex.ViewModels
             try
             {
                 SetBusy(true);
-
-                // Cargar Empresas desde la base de datos local
                 var empresaList = await _databaseService.GetAllAsync<Empresa>();
                 Empresas.Clear();
                 foreach (var empresa in empresaList) Empresas.Add(empresa);
 
-                // NUEVO: Cargar Pluviómetros desde la API
                 if (ConnectivitySvc.IsConnected)
                 {
                     var pluviometrosFromApi = await _apiService.GetPluviometrosAsync();
@@ -73,17 +56,11 @@ namespace sys21_campos_zukarmex.ViewModels
                 }
                 else
                 {
-                    await Shell.Current.DisplayAlert("Sin Conexión", "Se necesita conexión a internet para cargar el catálogo de pluviómetros.", "OK");
+                    await Shell.Current.DisplayAlert("Sin Conexión", "Se necesita conexión para cargar el catálogo de pluviómetros.", "OK");
                 }
             }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar los catálogos: {ex.Message}", "OK");
-            }
-            finally
-            {
-                SetBusy(false);
-            }
+            catch (Exception ex) { await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar catálogos: {ex.Message}", "OK"); }
+            finally { SetBusy(false); }
         }
 
         [RelayCommand]
@@ -117,37 +94,15 @@ namespace sys21_campos_zukarmex.ViewModels
                         newRainfall.Lng = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
                     }
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"No se pudo obtener la geolocalización: {ex.Message}");
-                    newRainfall.Lat = "0";
-                    newRainfall.Lng = "0";
-                }
+                catch (Exception) { /* Ignorar error */ }
 
-
-                if (ConnectivitySvc.IsConnected)
-                {
-                    var apiResponse = await _apiService.SaveRainfallAsync(newRainfall);
-                    if (apiResponse.Success)
-                    {
-                        await Shell.Current.DisplayAlert("Éxito", "Registro de precipitación enviado.", "OK");
-                    }
-                    else
-                    {
-                        await _databaseService.SaveAsync(newRainfall);
-                        await Shell.Current.DisplayAlert("Guardado Localmente", $"La API no respondió ({apiResponse.Message}). Se guardó localmente.", "OK");
-                    }
-                }
-                else
-                {
-                    await _databaseService.SaveAsync(newRainfall);
-                    await Shell.Current.DisplayAlert("Guardado Localmente", "Sin conexión. Se guardó localmente.", "OK");
-                }
+                await _databaseService.SaveAsync(newRainfall);
+                await Shell.Current.DisplayAlert("Guardado Localmente", "El registro de precipitación se guardó en el dispositivo.", "OK");
                 ClearForm();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudo guardar localmente: {ex.Message}", "OK");
             }
             finally
             {

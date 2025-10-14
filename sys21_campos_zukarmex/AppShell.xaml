@@ -92,11 +92,26 @@
                         </Grid>
                     </toolkit:Expander.Header>
 
-                    <Button Text="Pluvial"
+
+                    <VerticalStackLayout Padding="10,5">
+                        <Button Text="Pluvial"
                             CommandParameter="//rainfall"
                             Clicked="OnGeneralNavClicked"
                             BackgroundColor="Transparent"
                             TextColor="{DynamicResource Gray900}" />
+                        <Button Text="Por Enviar"
+                                CommandParameter="//rainfallPending"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+
+                        <Button Text="Historial"
+                                CommandParameter="//rainfallHistory"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+               
+                    </VerticalStackLayout>
                 </toolkit:Expander>
 
 
@@ -304,8 +319,15 @@
                   ContentTemplate="{DataTemplate machinery:MachineryUsagePendingPage}" />
     <ShellContent Route="machineryUsageHistory"
                   ContentTemplate="{DataTemplate machinery:MachineryUsageHistoryPage}" />
+    
     <ShellContent Route="rainfall"
                   ContentTemplate="{DataTemplate rainfall:RainfallPage}" />
+    
+    <ShellContent Route="rainfallPending"
+              ContentTemplate="{DataTemplate rainfall:RainfallPendingPage}" />
+    
+    <ShellContent Route="rainfallHistory"
+              ContentTemplate="{DataTemplate rainfall:RainfallHistoryPage}" />
     
     <ShellContent Route="ratTrapping"
                   ContentTemplate="{DataTemplate rattrapping:RatTrappingPage}" />

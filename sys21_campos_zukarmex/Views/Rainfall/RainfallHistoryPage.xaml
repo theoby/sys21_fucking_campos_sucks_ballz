@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="sys21_campos_zukarmex.Views.Rainfall.RainfallHistoryPage"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:models="clr-namespace:sys21_campos_zukarmex.Models"
+             x:DataType="viewmodels:RainfallHistoryViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource Gray100}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Frame Grid.Row="0" Padding="20" Margin="10" CornerRadius="15" HasShadow="True">
+            <StackLayout Spacing="15">
+                <Label Text="Historial de Precipitaciones" FontSize="22" FontAttributes="Bold" TextColor="{DynamicResource Primary}" HorizontalOptions="Center" />
+                <Button Text="Actualizar Historial" Command="{Binding LoadHistoryCommand}" BackgroundColor="{DynamicResource Primary}" TextColor="White" CornerRadius="10" HeightRequest="40" />
+            </StackLayout>
+        </Frame>
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadHistoryCommand}">
+            <CollectionView ItemsSource="{Binding HistoryRainfalls}" Margin="10,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SalidaPrecipitacion">
+                        <Frame Padding="15" Margin="0,5" CornerRadius="10" HasShadow="True">
+                            <StackLayout Spacing="5">
+                                <Label FontAttributes="Bold" TextColor="{DynamicResource Primary}">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Registro ID: "/>
+                                            <Span Text="{Binding Id}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy}'}" />
+                                <Label Text="{Binding Precipitacion, StringFormat='Precipitación: {0} mm'}" />
+                                <Label Text="{Binding IdPluviometro, StringFormat='Pluviómetro ID: {0}'}" TextColor="{StaticResource Gray600}" FontSize="12"/>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No hay registros en el historial." Padding="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{DynamicResource Primary}" VerticalOptions="Center" HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>
