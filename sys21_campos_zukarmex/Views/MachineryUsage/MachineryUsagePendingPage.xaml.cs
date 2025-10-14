@@ -1,18 +1,26 @@
 using sys21_campos_zukarmex.ViewModels;
 
-namespace sys21_campos_zukarmex.Views.MachineryUsage;
-
-public partial class MachineryUsagePendingPage : ContentPage
+namespace sys21_campos_zukarmex.Views.MachineryUsage 
 {
-    public MachineryUsagePendingPage(MachineryUsagePendingViewModel viewModel)
+    public partial class MachineryUsagePendingPage : ContentPage
     {
-        InitializeComponent();
-        BindingContext = viewModel;
-    }
+        private readonly MachineryUsagePendingViewModel _viewModel;
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        
+        public MachineryUsagePendingPage(MachineryUsagePendingViewModel viewModel)
+        {
+            InitializeComponent();
+            _viewModel = viewModel;
+            BindingContext = _viewModel;
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            if (_viewModel.LoadPendingMachineryUsagesCommand.CanExecute(null))
+            {
+                await _viewModel.LoadPendingMachineryUsagesCommand.ExecuteAsync(null);
+            }
+        }
     }
 }
