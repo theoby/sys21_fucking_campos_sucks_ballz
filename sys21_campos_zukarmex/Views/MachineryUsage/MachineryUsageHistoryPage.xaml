@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="sys21_campos_zukarmex.Views.MachineryUsage.MachineryUsageHistoryPage"
+             xmlns:viewmodels="clr-namespace:sys21_campos_zukarmex.ViewModels"
+             xmlns:behaviors="clr-namespace:sys21_campos_zukarmex.Behaviors"
+             xmlns:models="clr-namespace:sys21_campos_zukarmex.Models"
+             x:DataType="viewmodels:MachineryUsageHistoryViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="{Binding Title}">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing"
+                                        Command="{Binding PageAppearingAsyncCommand}" />
+    </ContentPage.Behaviors>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="10">
+
+        <Frame Grid.Row="0"
+               BackgroundColor="White"
+               CornerRadius="10"
+               Padding="20"
+               Margin="10">
+            <StackLayout Spacing="15">
+
+                <Label Text="Historial de Muestreos"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource Primary}"
+                       HorizontalOptions="Center" />
+
+                <Button Text="Actualizar Historial"
+                        Command="{Binding RefreshAsyncCommand}"
+                        BackgroundColor="{DynamicResource Primary}"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40" />
+
+            </StackLayout>
+        </Frame> 
+
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding HistorialMachineryUsage}"
+                            BackgroundColor="Transparent"
+                            Margin="10,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SalidaMaquinaria">
+                        <Frame BackgroundColor="White"
+                               CornerRadius="15"
+                               Padding="15"
+                               Margin="5"
+                               HasShadow="True">
+
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MachineryUsagePendingViewModel}}, Path=ViewUsageDetailsCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+
+                            <StackLayout Spacing="10">
+
+                                <Grid ColumnDefinitions="*,Auto">
+
+                                    <StackLayout Grid.Column="0">
+                                        <Label Text="{Binding IdMaquinaria, StringFormat='Uso Maquinaria ID: {0}'}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource Primary}" />
+
+                                        <Label Text="{Binding IdCampo, StringFormat='Predio ID: {0}'}"
+                                               FontSize="14"
+                                               TextColor="Gray" />
+                                    </StackLayout>
+
+                                    <Frame Grid.Column="1"
+                                           BackgroundColor="{DynamicResource Secondary}"
+                                           CornerRadius="12"
+                                           Padding="8,4"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Center">
+                                        <Label Text="PENDIENTE"
+                                               FontSize="10"
+                                               TextColor="White"
+                                               FontAttributes="Bold" />
+                                    </Frame>
+                                </Grid>
+
+                                <BoxView HeightRequest="1"
+                                         Color="LightGray" />
+
+                                <Grid ColumnDefinitions="*,*">
+
+                                    <StackLayout Grid.Column="0"
+                                                 Spacing="2">
+                                        <Label Text="IDENTIFICACIÓN"
+                                               FontSize="10"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource Primary}" />
+
+                                        <Label Text="{Binding IdGrupo, StringFormat='Grupo ID: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Black" />
+
+                                        <Label Text="{Binding IdMaquinaria, StringFormat='Máquina ID: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Black" />
+
+                                    </StackLayout>
+
+                                    <StackLayout Grid.Column="1"
+                                                 Spacing="2">
+                                        <Label Text="MÉTRICAS DE USO"
+                                               FontSize="10"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource Primary}" />
+
+                                        <Label Text="{Binding HorasTrabajadas, StringFormat='Horas: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Black" />
+
+                                        <Label Text="{Binding KilometrajeOdometro, StringFormat='Odómetro: {0}'}"
+                                               FontSize="12"
+                                               TextColor="Black" />
+
+                                        <Label FontSize="12">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="GPS: "
+                                                          TextColor="Gray" />
+                                                    <Span Text="{Binding Lat}"
+                                                          TextColor="Black"
+                                                          FontSize="12" />
+                                                    <Span Text=", "
+                                                          TextColor="Gray" />
+                                                    <Span Text="{Binding Lng}"
+                                                          TextColor="Black"
+                                                          FontSize="12" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </StackLayout>
+                                </Grid>
+
+                                <Button Text="Eliminar de la BD Local"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MachineryUsagePendingViewModel}}, Path=DeleteUsageCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="{DynamicResource Danger}"
+                                        TextColor="White"
+                                        CornerRadius="5"
+                                        Margin="0,10,0,0"
+                                        HeightRequest="40"
+                                        FontSize="14" />
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding IsRefreshing}"
+                           IsVisible="{Binding IsRefreshing}"
+                           Color="{DynamicResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>

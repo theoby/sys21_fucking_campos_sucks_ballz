@@ -2,9 +2,9 @@ using sys21_campos_zukarmex.ViewModels;
 
 namespace sys21_campos_zukarmex.Views.MachineryUsage;
 
-public partial class MachineryUsageHistoryPage : ContentPage
+public partial class MachineryUsagePendingPage : ContentPage
 {
-    public MachineryUsageHistoryPage(MachineryUsageHistoryViewModel viewModel)
+    public MachineryUsagePendingPage(MachineryUsagePendingViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
@@ -13,6 +13,6 @@ public partial class MachineryUsageHistoryPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-      
+        
     }
 }

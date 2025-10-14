@@ -1,10 +1,10 @@
 using sys21_campos_zukarmex.ViewModels;
 
-namespace sys21_campos_zukarmex.Views.MachineryUsage;
+namespace sys21_campos_zukarmex.Views.DamageAssessment;
 
-public partial class MachineryUsageHistoryPage : ContentPage
+public partial class DamageAssessmentHistoryPage : ContentPage
 {
-    public MachineryUsageHistoryPage(MachineryUsageHistoryViewModel viewModel)
+    public DamageAssessmentHistoryPage(DamageAssessmentHistoryViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

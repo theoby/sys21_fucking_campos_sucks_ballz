@@ -939,7 +939,7 @@ public class ApiService : IDisposable
             var maquinaria = await _databaseService.GetByIdAsync<Maquinaria>(usage.IdMaquinaria);
 
 
-            var apiRequest = new MachineryUsageApiRequest
+            var apiRequest = new SalidaMaquinaria
             {
                 
                 IdGrupo = maquinaria?.IdGrupo ?? 0,
@@ -949,9 +949,9 @@ public class ApiService : IDisposable
                 KilometrajeOdometro = usage.KilometrajeOdometro,
                 Lat = usage.Lat,
                 Lng = usage.Lng
-            };
+            };  
 
-            var requestBody = new List<MachineryUsageApiRequest> { apiRequest };
+            var requestBody = new List<SalidaMaquinaria> { apiRequest };
             var json = JsonConvert.SerializeObject(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -992,6 +992,70 @@ public class ApiService : IDisposable
         catch (Exception ex)
         {
             return new ApiResponse<SalidaMaquinaria> { Success = false, Message = ex.Message };
+        }
+    }
+
+    public async Task<ApiResponse<List<SalidaMaquinaria>>> SendPendingMachineryUsageAsync(List<SalidaMaquinaria> usages)
+    {
+        if (usages == null || usages.Count == 0)
+        {
+            return new ApiResponse<List<SalidaMaquinaria>> { Success = true, Message = "No hay registros de uso de maquinaria para enviar." };
+        }
+
+        try
+        {
+            var httpClient = await GetConfiguredHttpClientAsync();
+            await EnsureAuthTokenAsync();
+
+            var apiRequests = new List<SalidaMaquinaria>();
+
+            foreach (var usage in usages)
+            {
+                var maquinaria = await _databaseService.GetByIdAsync<Maquinaria>(usage.IdMaquinaria);
+
+                var apiRequest = new SalidaMaquinaria
+                {
+                    IdGrupo = maquinaria?.IdGrupo ?? 0,
+                    IdMaquinaria = usage.IdMaquinaria,
+                    IdCampo = usage.IdCampo,
+                    HorasTrabajadas = usage.HorasTrabajadas,
+                    KilometrajeOdometro = usage.KilometrajeOdometro,
+                    Lat = usage.Lat,
+                    Lng = usage.Lng
+                };
+                apiRequests.Add(apiRequest);
+            }
+
+            var json = JsonConvert.SerializeObject(apiRequests);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var fullUrl = GetFullUrl(AppConfigService.MachineryUsageEndpoint);
+
+            var response = await httpClient.PostAsync(fullUrl, content);
+
+            if (!await ValidateHttpResponseAsync(response))
+            {
+                return new ApiResponse<List<SalidaMaquinaria>> { Success = false, Message = "Sesión caducada o error HTTP general." };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<MachineryUsageApiResponse>(responseContent);
+
+            if (apiResponse != null)
+            {
+                return new ApiResponse<List<SalidaMaquinaria>>
+                {
+                    Success = apiResponse.Success,
+                    Message = apiResponse.Mensaje,
+                    Data = apiResponse.Success ? usages : null
+                };
+            }
+
+            return new ApiResponse<List<SalidaMaquinaria>> { Success = false, Message = "Respuesta inválida de la API." };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<List<SalidaMaquinaria>> { Success = false, Message = ex.Message };
         }
     }
     #endregion
@@ -1283,6 +1347,10 @@ public class ApiService : IDisposable
     public async Task<List<SalidaLineaDeRiego>> GetIrrigationLineHistoryAsync()
     {
         return await GetCatalogAsync<SalidaLineaDeRiego>(AppConfigService.IrrigationLineHistoryEndpoint);
+    }
+    public async Task<List<SalidaMaquinaria>> GetMachineryUsageHistoryAsync()
+    {
+        return await GetCatalogAsync<SalidaMaquinaria>(AppConfigService.MachineryUsageHistoryEndpoint);
     }
 
     public async Task<List<Almacen>> GetAlmacenesAsync()

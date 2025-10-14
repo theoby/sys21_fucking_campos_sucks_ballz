@@ -61,8 +61,18 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Maquinaria"
+                        <Button Text="Captura"
                                 CommandParameter="//machineryUsage"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                        <Button Text="Por Enviar"
+                                CommandParameter="//machineryUsagePending"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                        <Button Text="Historial"
+                                CommandParameter="//machineryUsageHistory"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
@@ -290,6 +300,10 @@
                   ContentTemplate="{DataTemplate local:HomePage}" />
     <ShellContent Route="machineryUsage"
                   ContentTemplate="{DataTemplate machinery:MachineryUsagePage}" />
+    <ShellContent Route="machineryUsagePending"
+                  ContentTemplate="{DataTemplate machinery:MachineryUsagePendingPage}" />
+    <ShellContent Route="machineryUsageHistory"
+                  ContentTemplate="{DataTemplate machinery:MachineryUsageHistoryPage}" />
     <ShellContent Route="rainfall"
                   ContentTemplate="{DataTemplate rainfall:RainfallPage}" />
     
