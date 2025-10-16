@@ -255,6 +255,12 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
+                       
+                        <Button Text="OneClick UPLOAD"
+                                CommandParameter="//oneClickUpload"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
                         <Button Text="OneClick SYNC"
                                 CommandParameter="//oneClickSync"
                                 Clicked="OnGeneralNavClicked"
@@ -333,6 +339,8 @@
                   ContentTemplate="{DataTemplate local:HomePage}" />
     <ShellContent Route="oneClickSync"
                 ContentTemplate="{DataTemplate local:OneClickSyncPage}" />
+    <ShellContent Route="oneClickUpload"
+             ContentTemplate="{DataTemplate local:OneClickUploadPage}" />
     <ShellContent Route="machineryUsage"
                   ContentTemplate="{DataTemplate machinery:MachineryUsagePage}" />
     <ShellContent Route="machineryUsagePending"

@@ -74,6 +74,9 @@ public static class ServiceRegistration
         services.AddTransient<OneClickSyncPage>();
         services.AddTransient<OneClickSyncViewModel>();
 
+        services.AddTransient<OneClickUploadPage>();
+        services.AddTransient<OneClickUploadViewModel>();
+
         // Registros misceláneos o de utilidad
         services.AddTransient<StatusViewModel>();
         services.AddTransient<SyncViewModel>();
