@@ -71,6 +71,9 @@ public static class ServiceRegistration
         services.AddTransient<LoadingViewModel>();
         services.AddTransient<LoadingPage>();
 
+        services.AddTransient<OneClickSyncPage>();
+        services.AddTransient<OneClickSyncViewModel>();
+
         // Registros misceláneos o de utilidad
         services.AddTransient<StatusViewModel>();
         services.AddTransient<SyncViewModel>();

@@ -79,7 +79,6 @@
                     </VerticalStackLayout>
                 </toolkit:Expander>
 
-
                 <!-- Expander PRECIPITACION PLUVIAL -->
                 <toolkit:Expander>
                     <toolkit:Expander.Header>
@@ -113,7 +112,6 @@
                
                     </VerticalStackLayout>
                 </toolkit:Expander>
-
 
                 <!-- Expander TRAMPEO DE RATA -->
                 <toolkit:Expander>
@@ -243,7 +241,28 @@
                                  TextColor="{DynamicResource Gray900}" />
                     </VerticalStackLayout>
                 </toolkit:Expander>
+                
+                <!-- Expander SYNC -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="10"
+                              BackgroundColor="{DynamicResource Gray200}">
+                        <Label Text="SYNC"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                TextColor="{DynamicResource Primary}" />
+                        </Grid>
+                    </toolkit:Expander.Header>
 
+                    <VerticalStackLayout Padding="10,5">
+                        <Button Text="OneClick SYNC"
+                                CommandParameter="//oneClickSync"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                    </VerticalStackLayout>
+                    
+                </toolkit:Expander>
 
                 <!-- Opcional: puedes añadir separadores u otros enlaces aquí -->
             </VerticalStackLayout>
@@ -312,6 +331,8 @@
     <!-- Registro de páginas accesibles por ruta (puedes mantenerlos aunque el menú principal sea el Expander) -->
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate local:HomePage}" />
+    <ShellContent Route="oneClickSync"
+                ContentTemplate="{DataTemplate local:OneClickSyncPage}" />
     <ShellContent Route="machineryUsage"
                   ContentTemplate="{DataTemplate machinery:MachineryUsagePage}" />
     <ShellContent Route="machineryUsagePending"
