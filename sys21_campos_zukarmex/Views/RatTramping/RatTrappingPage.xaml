@@ -31,7 +31,8 @@
                                         SelectedItem="{Binding SelectedZafra}"
                                         ItemDisplayBinding="{Binding Nombre}"  Title="Seleccione una zafra"
                                         FontSize="16"
-                                        BackgroundColor="Transparent" />
+                                        BackgroundColor="Transparent"
+                                        TitleColor="{StaticResource Gray600}" />
                             </Frame>
                         </StackLayout>
 
@@ -43,7 +44,8 @@
                                         ItemDisplayBinding="{Binding Nombre}"
                                         Title="Seleccione un predio"
                                         FontSize="16"
-                                        BackgroundColor="Transparent" />
+                                        BackgroundColor="Transparent"
+                                        TitleColor="{StaticResource Gray600}" />
                             </Frame>
                         </StackLayout>
 
@@ -64,7 +66,8 @@
                                        Placeholder="Ingrese el número total de trampas"
                                        Keyboard="Numeric"
                                        FontSize="16"
-                                       BackgroundColor="Transparent">           
+                                       BackgroundColor="Transparent"
+                                       PlaceholderColor="{StaticResource Gray600}">           
                                     <Entry.Behaviors>
                                         <behaviors:NumericValidationBehavior />
                                     </Entry.Behaviors>
@@ -80,7 +83,8 @@
                                            Placeholder="0"
                                            Keyboard="Numeric"
                                            FontSize="16"
-                                           BackgroundColor="Transparent">
+                                           BackgroundColor="Transparent"
+                                           PlaceholderColor="{StaticResource Gray600}">
                                         <Entry.Behaviors>
                                             <behaviors:NumericValidationBehavior />
                                         </Entry.Behaviors>
@@ -95,7 +99,8 @@
                                            Placeholder="0"
                                            Keyboard="Numeric"
                                            FontSize="16"
-                                           BackgroundColor="Transparent">
+                                           BackgroundColor="Transparent"
+                                           PlaceholderColor="{StaticResource Gray600}">
                                         <Entry.Behaviors>
                                             <behaviors:NumericValidationBehavior />
                                         </Entry.Behaviors>

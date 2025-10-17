@@ -177,15 +177,13 @@ namespace sys21_campos_zukarmex.ViewModels
                     System.Diagnostics.Debug.WriteLine($"- Lat/Lng: {savedAssessment.Lat}, {savedAssessment.Lng}");
                     System.Diagnostics.Debug.WriteLine("-------------------------------------------");
 
-                    await Shell.Current.DisplayAlert("Guardado Localmente", $"El muestreo se guardó exitosamente en el dispositivo con ID: {savedAssessment.Id}.", "OK");
+                    await Shell.Current.DisplayAlert("Guardado Localmente", "El registro se guardó en el dispositivo.", "OK");
                 }
                 else
                 {
                     // Si falla la recuperación, pero sabemos que la inserción (rowsAffected=1) fue exitosa
                     // y que el ID (realAssignedId) fue asignado, mostramos el ID asignado para referencia.
-                    System.Diagnostics.Debug.WriteLine($"[DB VERIFICATION FAILED]: Falló la recuperación por ID {realAssignedId}.");
-                    await Shell.Current.DisplayAlert("Guardado Localmente (Verificación Pendiente)", $"El muestreo se insertó con ID {realAssignedId}, pero falló la recuperación inmediata para verificación. Es probable que se haya guardado correctamente.", "OK");
-                }
+                    System.Diagnostics.Debug.WriteLine($"[DB VERIFICATION FAILED]: Falló la recuperación por ID {realAssignedId}.");                }
 
                 ClearForm();
             }

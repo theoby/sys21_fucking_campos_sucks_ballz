@@ -37,12 +37,12 @@
 
                 <!-- App Title -->
                 <StackLayout Grid.Row="2" Spacing="10" Margin="0,30,0,0">
-                    <Label Text="Vales Almacen" 
+                    <Label Text="Campos" 
                        FontSize="32" 
                        FontAttributes="Bold"
                        TextColor="White"
                        HorizontalOptions="Center" />
-                    <Label Text="Sistema de Gestion de Vales de Salida" 
+                    <Label Text="Sistema de Gestion de Campos" 
                        FontSize="16" 
                        TextColor="White"
                        Opacity="0.9"
@@ -74,7 +74,7 @@
 
                 <!-- Footer -->
                 <StackLayout Grid.Row="4" VerticalOptions="End" HorizontalOptions="Center">
-                    <Label Text="2025 Vales Almacen v1.0 - SYS21 Mexico" 
+                    <Label Text="2025 Campo v1.0 - SYS21 Mexico" 
                        FontSize="12" 
                        TextColor="White"
                        Opacity="0.7" />

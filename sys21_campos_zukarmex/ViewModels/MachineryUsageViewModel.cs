@@ -158,12 +158,11 @@ namespace sys21_campos_zukarmex.ViewModels
                     System.Diagnostics.Debug.WriteLine($"- Lat/Lng: {savedUsage.Lat}, {savedUsage.Lng}");
                     System.Diagnostics.Debug.WriteLine("-------------------------------------------");
 
-                    await Shell.Current.DisplayAlert("Guardado Localmente", $"El registro de uso de maquinaria se guardó exitosamente en el dispositivo con ID: {savedUsage.Id}. Se sincronizará más tarde.", "OK");
+                    await Shell.Current.DisplayAlert("Guardado Localmente", "El registro se guardó en el dispositivo.", "OK");
                 }
                 else
                 {
                     System.Diagnostics.Debug.WriteLine($"[DB VERIFICATION FAILED]: Falló la recuperación por ID {realAssignedId}.");
-                    await Shell.Current.DisplayAlert("Guardado Localmente (Verificación Pendiente)", $"El registro se insertó con ID {realAssignedId}, pero falló la recuperación inmediata para verificación. Es probable que se haya guardado correctamente.", "OK");
                 }
 
                 ClearForm();
