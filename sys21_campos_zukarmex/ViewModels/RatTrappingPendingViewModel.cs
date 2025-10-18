@@ -18,6 +18,8 @@ namespace sys21_campos_zukarmex.ViewModels
         [NotifyPropertyChangedFor(nameof(PendingCount))]
         private ObservableCollection<SalidaTrampeoRatas> pendingCaptures;
 
+        [ObservableProperty]
+        private bool isRefreshing;
         public int PendingCount => PendingCaptures?.Count ?? 0;
         public bool HasPendingItems => PendingCaptures?.Any() ?? false;
 
@@ -147,6 +149,22 @@ namespace sys21_campos_zukarmex.ViewModels
             finally
             {
                 SetBusy(false);
+            }
+        }
+
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadPendingCapturesAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
             }
         }
     }

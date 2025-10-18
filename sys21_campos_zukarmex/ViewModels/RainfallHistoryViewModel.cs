@@ -66,5 +66,21 @@ namespace sys21_campos_zukarmex.ViewModels
                 IsRefreshing = false;
             }
         }
+
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadHistoryAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
     }
 }

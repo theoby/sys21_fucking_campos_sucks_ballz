@@ -77,7 +77,17 @@ namespace sys21_campos_zukarmex.ViewModels
         [RelayCommand]
         public async Task RefreshAsync()
         {
-            await LoadHistorialMachineryUsageAsync();
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadHistorialMachineryUsageAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
     }
 }

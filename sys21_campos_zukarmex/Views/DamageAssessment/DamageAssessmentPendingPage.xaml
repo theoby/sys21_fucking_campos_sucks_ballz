@@ -58,8 +58,8 @@
         </Frame>
 
         <RefreshView Grid.Row="1"
-                     IsRefreshing="{Binding IsBusy}"
-                     Command="{Binding LoadPendingAssessmentsAsyncCommand}">
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
             <CollectionView ItemsSource="{Binding PendingAssessments}"
                             BackgroundColor="Transparent"
                             Margin="10,0">

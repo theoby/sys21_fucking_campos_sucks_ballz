@@ -17,6 +17,8 @@ namespace sys21_campos_zukarmex.ViewModels
         [NotifyPropertyChangedFor(nameof(HasPendingItems), nameof(PendingCount))]
         private ObservableCollection<SalidaLineaDeRiego> pendingEntries = new();
 
+        [ObservableProperty]
+        private bool isRefreshing;
         public int PendingCount => PendingEntries.Count;
         public bool HasPendingItems => PendingEntries.Any();
 
@@ -94,6 +96,22 @@ namespace sys21_campos_zukarmex.ViewModels
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Error", $"No se pudo eliminar: {ex.Message}", "OK"); }
             finally { SetBusy(false); }
+        }
+
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadPendingAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
     }
 }

@@ -10,7 +10,7 @@
 
     <Grid RowDefinitions="Auto,*">
         <Label Grid.Row="0" Text="Historial de Registros Enviados" FontSize="20" FontAttributes="Bold" Padding="20" HorizontalTextAlignment="Center"/>
-        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadHistoryCommand}">
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
             <CollectionView ItemsSource="{Binding HistoryConsumptions}" Margin="10,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:SalidaRodenticida">

@@ -30,14 +30,14 @@
                        HorizontalOptions="Center" />
 
                 <Button Text="Actualizar Historial"
-                        Command="{Binding RefreshAsyncCommand}"
+                        Command="{Binding RefreshCommand}"
                         BackgroundColor="{DynamicResource Primary}"
                         TextColor="White"
                         CornerRadius="10"
                         HeightRequest="40" />
 
             </StackLayout>
-        </Frame> 
+        </Frame>
 
         <RefreshView Grid.Row="2"
                      IsRefreshing="{Binding IsRefreshing}"

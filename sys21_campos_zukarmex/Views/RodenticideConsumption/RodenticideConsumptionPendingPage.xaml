@@ -18,7 +18,7 @@
                 <Button Text="Enviar Todos Ahora" Command="{Binding SendAllPendingCommand}" BackgroundColor="{DynamicResource Success}" TextColor="White" CornerRadius="10" HeightRequest="50" FontSize="16" />
             </StackLayout>
         </Frame>
-        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadPendingCommand}">
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
             <CollectionView ItemsSource="{Binding PendingConsumptions}" Margin="10,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:SalidaRodenticida">

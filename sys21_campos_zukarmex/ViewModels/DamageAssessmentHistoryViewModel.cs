@@ -82,12 +82,6 @@ namespace sys21_campos_zukarmex.ViewModels
             }
         }
 
-        // Comando para refrescar
-        [RelayCommand]
-        public async Task RefreshAsync()
-        {
-            await LoadHistorialAssessmentsAsync();
-        }
 
         // --- Lógica de Filtrado de Búsqueda ---
         private void ApplySearchFilter()
@@ -137,6 +131,22 @@ namespace sys21_campos_zukarmex.ViewModels
             await Shell.Current.DisplayAlert("Detalle de Muestreo",
                                              $"ID: {assessment.Id}\nFecha: {assessment.Fecha:dd/MM/yyyy HH:mm}\nUsuario: Tallos: {assessment.NumeroTallos}",
                                              "OK");
+        }
+
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadHistorialAssessmentsAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
     }
 }

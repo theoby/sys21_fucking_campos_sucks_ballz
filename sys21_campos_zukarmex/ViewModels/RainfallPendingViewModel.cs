@@ -3,8 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
+
+
 
 namespace sys21_campos_zukarmex.ViewModels
 {
@@ -16,6 +16,9 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasPendingItems), nameof(PendingCount))]
         private ObservableCollection<SalidaPrecipitacion> pendingRainfalls = new();
+
+        [ObservableProperty]
+        private bool isRefreshing;
 
         public int PendingCount => PendingRainfalls.Count;
         public bool HasPendingItems => PendingRainfalls.Any();
@@ -94,6 +97,22 @@ namespace sys21_campos_zukarmex.ViewModels
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Error", $"No se pudo eliminar: {ex.Message}", "OK"); }
             finally { SetBusy(false); }
+        }
+
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadPendingAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
     }
 }

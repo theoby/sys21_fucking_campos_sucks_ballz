@@ -17,6 +17,8 @@ namespace sys21_campos_zukarmex.ViewModels
         [NotifyPropertyChangedFor(nameof(HasPendingItems), nameof(PendingCount))]
         private ObservableCollection<SalidaRodenticida> pendingConsumptions = new();
 
+        [ObservableProperty]
+        private bool isRefreshing;
         public int PendingCount => PendingConsumptions.Count;
         public bool HasPendingItems => PendingConsumptions.Any();
 
@@ -104,6 +106,21 @@ namespace sys21_campos_zukarmex.ViewModels
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Error", $"No se pudo eliminar: {ex.Message}", "OK"); }
             finally { SetBusy(false); }
+        }
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadPendingAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
     }
 }

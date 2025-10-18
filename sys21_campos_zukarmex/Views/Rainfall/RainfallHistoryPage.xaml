@@ -10,18 +10,37 @@
 
     <Grid RowDefinitions="Auto,*">
 
-        <Frame Grid.Row="0" Padding="20" Margin="10" CornerRadius="15" HasShadow="True">
+        <Frame Grid.Row="0"
+               Padding="20"
+               Margin="10"
+               CornerRadius="15"
+               HasShadow="True">
             <StackLayout Spacing="15">
-                <Label Text="Historial de Precipitaciones" FontSize="22" FontAttributes="Bold" TextColor="{DynamicResource Primary}" HorizontalOptions="Center" />
-                <Button Text="Actualizar Historial" Command="{Binding LoadHistoryCommand}" BackgroundColor="{DynamicResource Primary}" TextColor="White" CornerRadius="10" HeightRequest="40" />
+                <Label Text="Historial de Precipitaciones"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource Primary}"
+                       HorizontalOptions="Center" />
+                <Button Text="Actualizar Historial"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="{DynamicResource Primary}"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40" />
             </StackLayout>
         </Frame>
 
-        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadHistoryCommand}">
-            <CollectionView ItemsSource="{Binding HistoryRainfalls}" Margin="10,0">
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding HistoryRainfalls}"
+                            Margin="10,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:SalidaPrecipitacion">
-                        <Frame Padding="15" Margin="0,5" CornerRadius="10" HasShadow="True">
+                        <Frame Padding="15"
+                               Margin="0,5"
+                               CornerRadius="10"
+                               HasShadow="True">
                             <StackLayout Spacing="5">
                                 <Label FontAttributes="Bold"
                                        TextColor="{DynamicResource Primary}">
@@ -33,17 +52,27 @@
                                     </Label.FormattedText>
                                 </Label>
                                 <Label Text="{Binding Precipitacion, StringFormat='Precipitación: {0} mm'}" />
-                                <Label Text="{Binding IdPluviometro, StringFormat='Pluviómetro ID: {0}'}" TextColor="{StaticResource Gray600}" FontSize="12"/>
+                                <Label Text="{Binding IdPluviometro, StringFormat='Pluviómetro ID: {0}'}"
+                                       TextColor="{StaticResource Gray600}"
+                                       FontSize="12" />
                             </StackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>
-                    <Label Text="No hay registros en el historial." Padding="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                    <Label Text="No hay registros en el historial."
+                           Padding="50"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" />
                 </CollectionView.EmptyView>
             </CollectionView>
         </RefreshView>
 
-        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{DynamicResource Primary}" VerticalOptions="Center" HorizontalOptions="Center" />
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="{DynamicResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
     </Grid>
 </ContentPage>

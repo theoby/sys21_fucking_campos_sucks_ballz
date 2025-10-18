@@ -19,6 +19,8 @@ namespace sys21_campos_zukarmex.ViewModels
         [NotifyPropertyChangedFor(nameof(PendingCount))]
         private ObservableCollection<SalidaMuestroDaños> pendingAssessments;
 
+        [ObservableProperty]
+        private bool isRefreshing;
         public int PendingCount => PendingAssessments?.Count ?? 0;
         public bool HasPendingItems => PendingAssessments?.Any() ?? false;
 
@@ -164,6 +166,22 @@ namespace sys21_campos_zukarmex.ViewModels
             finally
             {
                 SetBusy(false);
+            }
+        }
+
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadPendingAssessmentsAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
             }
         }
     }

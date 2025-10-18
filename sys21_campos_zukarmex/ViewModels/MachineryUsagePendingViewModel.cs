@@ -17,6 +17,11 @@ namespace sys21_campos_zukarmex.ViewModels
         [NotifyPropertyChangedFor(nameof(HasPendingItems), nameof(PendingCount))]
         private ObservableCollection<SalidaMaquinaria> pendingMachineryUsages = new();
 
+
+        [ObservableProperty]
+        private bool isRefreshing;
+
+
         public int PendingCount => PendingMachineryUsages.Count;
         public bool HasPendingItems => PendingMachineryUsages.Any();
 
@@ -132,5 +137,24 @@ namespace sys21_campos_zukarmex.ViewModels
                 SetBusy(false);
             }
         }
+
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            // si ya está ocupado no hacemos nada
+            if (IsBusy) return;
+
+            try
+            {
+                IsRefreshing = true;
+                await LoadPendingMachineryUsagesAsync();
+            }
+            finally
+            {
+                // Garantizar que se apague el indicador aunque falle
+                IsRefreshing = false;
+            }
+        }
     }
+
 }

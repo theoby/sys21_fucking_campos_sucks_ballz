@@ -83,13 +83,6 @@ namespace sys21_campos_zukarmex.ViewModels
             }
         }
 
-        // Comando para refrescar (usado por el RefreshView)
-        [RelayCommand]
-        public async Task RefreshAsync()
-        {
-            await LoadHistoryDataAsync();
-        }
-
         // --- Lógica de Filtrado de Búsqueda ---
 
         // Este método parcial se llama automáticamente cuando cambia SearchText
@@ -127,6 +120,20 @@ namespace sys21_campos_zukarmex.ViewModels
             OnPropertyChanged(nameof(HistoryCount));
             OnPropertyChanged(nameof(HasHistoryItems));
         }
+        [RelayCommand]
+        public async Task RefreshAsync()
+        {
+            if (IsBusy) return;
 
+            try
+            {
+                IsRefreshing = true;
+                await LoadHistoryDataAsync();
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
     }
 }
