@@ -39,23 +39,51 @@
                     <DataTemplate x:DataType="models:SalidaPrecipitacion">
                         <Frame Padding="15"
                                Margin="0,5"
-                               CornerRadius="10"
-                               HasShadow="True">
-                            <StackLayout Spacing="5">
-                                <Label FontAttributes="Bold"
-                                       TextColor="{DynamicResource Primary}">
-                                    <Label.FormattedText>
-                                        <FormattedString>
-                                            <Span Text="Registro  " />
-                                            <Span Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy}'}" />
-                                        </FormattedString>
-                                    </Label.FormattedText>
-                                </Label>
-                                <Label Text="{Binding Precipitacion, StringFormat='Precipitación: {0} mm'}" />
-                                <Label Text="{Binding IdPluviometro, StringFormat='Pluviómetro ID: {0}'}"
-                                       TextColor="{StaticResource Gray600}"
-                                       FontSize="12" />
-                            </StackLayout>
+                               CornerRadius="10">
+                            <Grid ColumnDefinitions="*, Auto"
+                                  RowDefinitions="Auto, Auto, Auto, Auto"
+                                  RowSpacing="12">
+
+                                <StackLayout>
+                                    <Label Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource Gray600}" />
+                                    <Label Text="{Binding IdEmpresa, StringFormat='Empresa: {0}'}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource Gray400}" />
+                                </StackLayout>
+
+                                <BoxView Grid.Row="1"
+                                         Grid.ColumnSpan="2"
+                                         HeightRequest="1"
+                                         Color="LightGray" />
+
+                                <Grid Grid.Row="2"
+                                      Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,*"
+                                      RowSpacing="5">
+
+                                    <StackLayout Grid.Column="0"
+                                                 Spacing="2">
+                                        <Label Text="{Binding IdPluviometro, StringFormat='Pluviometro: {0}'}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource Gray900}" />
+                                    </StackLayout>
+
+                                    <StackLayout Grid.Column="1"
+                                                 Spacing="2">
+                                        <Label Text="{Binding Precipitacion, StringFormat='Precipitacion: {0:N2}'}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource Gray900}" />
+
+                                    </StackLayout>
+
+
+                                </Grid>
+
+                            </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

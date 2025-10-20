@@ -14,7 +14,7 @@
     </ContentPage.Behaviors>
 
     <Grid RowDefinitions="Auto,Auto,*"
-          RowSpacing="10">
+          RowSpacing="1">
 
         <Frame Grid.Row="0"
                BackgroundColor="White"
@@ -53,81 +53,61 @@
                                Margin="5"
                                HasShadow="True">
 
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MachineryUsagePendingViewModel}}, Path=ViewUsageDetailsCommand}"
-                                                      CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
-
                             <StackLayout Spacing="10">
 
-                                <Grid ColumnDefinitions="*,Auto">
+                                <Grid ColumnDefinitions="*, Auto"
+                                      RowDefinitions="Auto, Auto, Auto, Auto"
+                                      RowSpacing="12">
 
-                                    <StackLayout Grid.Column="0">
-                                        <Label Text="{Binding IdMaquinaria, StringFormat='Uso Maquinaria ID: {0}'}"
+                                    <StackLayout>
+                                        <Label Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
                                                FontSize="18"
                                                FontAttributes="Bold"
-                                               TextColor="{DynamicResource Primary}" />
-
-                                        <Label Text="{Binding IdCampo, StringFormat='Predio ID: {0}'}"
-                                               FontSize="14"
-                                               TextColor="Gray" />
-                                    </StackLayout>
-                                </Grid>
-
-                                <BoxView HeightRequest="1"
-                                         Color="LightGray" />
-
-                                <Grid ColumnDefinitions="*,*">
-
-                                    <StackLayout Grid.Column="0"
-                                                 Spacing="2">
-                                        <Label Text="IDENTIFICACIÓN"
-                                               FontSize="10"
+                                               TextColor="{DynamicResource Gray600}" />
+                                        <Label Text="{Binding IdCampo, StringFormat='Predio: {0}'}"
+                                               FontSize="13"
                                                FontAttributes="Bold"
-                                               TextColor="{DynamicResource Primary}" />
+                                               TextColor="{DynamicResource Gray400}" />
 
-                                        <Label Text="{Binding IdGrupo, StringFormat='Grupo ID: {0}'}"
-                                               FontSize="12"
-                                               TextColor="Black" />
 
-                                        <Label Text="{Binding IdMaquinaria, StringFormat='Máquina ID: {0}'}"
-                                               FontSize="12"
-                                               TextColor="Black" />
 
                                     </StackLayout>
 
-                                    <StackLayout Grid.Column="1"
-                                                 Spacing="2">
-                                        <Label Text="MÉTRICAS DE USO"
-                                               FontSize="10"
-                                               FontAttributes="Bold"
-                                               TextColor="{DynamicResource Primary}" />
+                                    <BoxView Grid.Row="1"
+                                             Grid.ColumnSpan="2"
+                                             HeightRequest="1"
+                                             Color="LightGray" />
 
-                                        <Label Text="{Binding HorasTrabajadas, StringFormat='Horas: {0}'}"
-                                               FontSize="12"
-                                               TextColor="Black" />
+                                    <Grid Grid.Row="2"
+                                          Grid.ColumnSpan="2"
+                                          ColumnDefinitions="*,*"
+                                          RowSpacing="5">
 
-                                        <Label Text="{Binding KilometrajeOdometro, StringFormat='Odómetro: {0}'}"
-                                               FontSize="12"
-                                               TextColor="Black" />
+                                        <StackLayout Grid.Column="0"
+                                                     Spacing="2">
+                                            <Label Text="{Binding IdGrupo, StringFormat='Empresa: {0}'}"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource Gray900}" />
 
-                                        <Label FontSize="12">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="GPS: "
-                                                          TextColor="Gray" />
-                                                    <Span Text="{Binding Lat}"
-                                                          TextColor="Black"
-                                                          FontSize="12" />
-                                                    <Span Text=", "
-                                                          TextColor="Gray" />
-                                                    <Span Text="{Binding Lng}"
-                                                          TextColor="Black"
-                                                          FontSize="12" />
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
-                                    </StackLayout>
+                                            <Label Text="{Binding IdMaquinaria, StringFormat='Equipo: {0}'}"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource Gray900}" />
+                                        </StackLayout>
+
+                                        <StackLayout Grid.Column="1"
+                                                     Spacing="2">
+                                            <Label Text="{Binding HorasTrabajadas, StringFormat='Horas: {0}'}"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource Gray900}" />
+
+                                            <Label Text="{Binding KilometrajeOdometro, StringFormat='Kilometraje: {0}'}"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource Gray900}" />
+                                        </StackLayout>
+
+
+                                    </Grid>
+
                                 </Grid>
 
                             </StackLayout>
