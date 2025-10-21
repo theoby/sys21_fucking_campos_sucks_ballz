@@ -85,12 +85,10 @@
                                            FontSize="18"
                                            FontAttributes="Bold"
                                            TextColor="{DynamicResource Gray600}" />
-                                    <Label Text="{Binding IdCampo, StringFormat='Campo: {0}'}"
+                                    <Label Text="{Binding CampoNombre, StringFormat='Campo: {0}'}"
                                            FontSize="13"
                                            FontAttributes="Bold"
                                            TextColor="{DynamicResource Gray400}" />
-
-
 
                                 </StackLayout>
 
@@ -106,11 +104,11 @@
 
                                     <StackLayout Grid.Column="0"
                                                  Spacing="2">
-                                        <Label Text="{Binding IdGrupo, StringFormat='Empresa: {0}'}"
+                                        <Label Text="{Binding EmpresaNombre, StringFormat='Empresa: {0}'}"
                                                FontSize="12"
                                                TextColor="{DynamicResource Gray900}" />
 
-                                        <Label Text="{Binding IdMaquinaria, StringFormat='Equipo: {0}'}"
+                                        <Label Text="{Binding MaquinariaNombre, StringFormat='Equipo: {0}'}"
                                                FontSize="12"
                                                TextColor="{DynamicResource Gray900}" />
                                     </StackLayout>

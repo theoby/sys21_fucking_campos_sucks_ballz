@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace sys21_campos_zukarmex.ViewModels
     {
         private readonly DatabaseService _databaseService;
         private readonly ApiService _apiService;
+        private readonly SessionService _sessionService;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasPendingItems), nameof(PendingCount))]
@@ -25,10 +27,11 @@ namespace sys21_campos_zukarmex.ViewModels
         public int PendingCount => PendingMachineryUsages.Count;
         public bool HasPendingItems => PendingMachineryUsages.Any();
 
-        public MachineryUsagePendingViewModel(DatabaseService databaseService, ApiService apiService)
+        public MachineryUsagePendingViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService)
         {
             _databaseService = databaseService;
             _apiService = apiService;
+            _sessionService = sessionService;
             Title = "Usos Pendientes";
         }
 
@@ -39,7 +42,21 @@ namespace sys21_campos_zukarmex.ViewModels
             SetBusy(true);
             try
             {
+                var session = await _sessionService.GetCurrentSessionAsync();
+                var empresaList = await _databaseService.GetAllAsync<Empresa>();
+                var equipoList = await _databaseService.GetAllAsync<Maquinaria>();
+                var allCampos = await _databaseService.GetAllAsync<Campo>();
+                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
+
                 var list = await _databaseService.GetAllAsync<SalidaMaquinaria>();
+
+                foreach (var item in list)
+                {
+                    item.CampoNombre = filteredCampos.FirstOrDefault(c => c.Id == item.IdCampo)?.Nombre ?? "Predio N/D";
+                    item.MaquinariaNombre = equipoList.FirstOrDefault(m => m.IdPk == item.IdMaquinaria)?.Nombre ?? "Equipo N/D";
+                    var equipo = equipoList.FirstOrDefault(m => m.IdPk == item.IdMaquinaria);
+                    item.EmpresaNombre = empresaList.FirstOrDefault(e => e.Id == equipo?.IdGrupo)?.Nombre ?? "Empresa N/D";
+                }
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {

@@ -3,12 +3,15 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
+using System.Collections.Generic;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
     public partial class MachineryUsageHistoryViewModel : BaseViewModel
     {
         private readonly ApiService _apiService;
+        private readonly DatabaseService _databaseService;
+        private readonly SessionService _sessionService;
 
         // Lista completa para el filtro
         private List<SalidaMaquinaria> _allAssessments = new List<SalidaMaquinaria>();
@@ -26,13 +29,20 @@ namespace sys21_campos_zukarmex.ViewModels
         public bool HasHistoryItems => HistorialMachineryUsage?.Any() ?? false;
 
         // Sólo necesita ApiService, sin DatabaseService.
-        public MachineryUsageHistoryViewModel(ApiService apiService)
+        public MachineryUsageHistoryViewModel(ApiService apiService, DatabaseService databaseService, SessionService sessionService)
         {
             _apiService = apiService;
+            _databaseService = databaseService;
+            _sessionService = sessionService;
             HistorialMachineryUsage = new ObservableCollection<SalidaMaquinaria>();
             Title = "Historial de Muestreos";
 
-            _ = LoadHistorialMachineryUsageAsync();
+        }
+
+        [RelayCommand]
+        public async Task PageAppearingAsync()
+        {
+            await LoadHistorialMachineryUsageAsync();
         }
 
         // --- Comando para cargar los datos de la API (Similar a LoadPending) ---
@@ -45,32 +55,45 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
-                var list = await _apiService.GetMachineryUsageHistoryAsync();
+                var session = await _sessionService.GetCurrentSessionAsync();
+                var empresaList = await _databaseService.GetAllAsync<Empresa>();
+                var equipoList = await _databaseService.GetAllAsync<Maquinaria>();
+                var allCampos = await _databaseService.GetAllAsync<Campo>();
+                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
 
-                _allAssessments = list.OrderByDescending(d => d.Fecha).ToList();
+                var listFromApi = await _apiService.GetMachineryUsageHistoryAsync();
 
-                if (!_allAssessments.Any() && IsConnected)
+                foreach (var item in listFromApi)
                 {
-                    // Usa IsConnected de BaseViewModel
-                    await Shell.Current.DisplayAlert("Información",
-                        "No se encontraron registros en el historial de usos.", "OK");
+                    item.CampoNombre = filteredCampos.FirstOrDefault(c => c.Id == item.IdCampo)?.Nombre ?? "Predio N/D";
+                    item.MaquinariaNombre = equipoList.FirstOrDefault(m => m.IdPk == item.IdMaquinaria)?.Nombre ?? "Equipo N/D";
+                    var equipo = equipoList.FirstOrDefault(m => m.IdPk == item.IdMaquinaria);
+                    item.EmpresaNombre = empresaList.FirstOrDefault(e => e.Id == equipo?.IdGrupo)?.Nombre ?? "Empresa N/D";
                 }
-                HistorialMachineryUsage.Clear();
-                foreach (var item in _allAssessments)
+
+                _allAssessments = listFromApi.OrderByDescending(d => d.Fecha).ToList();
+
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    HistorialMachineryUsage.Add(item);
-                }
+                    HistorialMachineryUsage.Clear();
+                    foreach (var item in _allAssessments)
+                    {
+                        HistorialMachineryUsage.Add(item);
+                    }
+                    OnPropertyChanged(nameof(HistoryCount));
+                    OnPropertyChanged(nameof(HasHistoryItems));
+                });
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error de Carga",
-                    $"No se pudo cargar el historial: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudo cargar el historial: {ex.Message}", "OK");
             }
             finally
             {
                 SetBusy(false);
                 IsRefreshing = false;
             }
+
         }
 
         // Comando para refrescar

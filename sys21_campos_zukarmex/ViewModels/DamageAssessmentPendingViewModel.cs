@@ -13,6 +13,7 @@ namespace sys21_campos_zukarmex.ViewModels
     {
         private readonly DatabaseService _databaseService;
         private readonly ApiService _apiService;
+        private readonly SessionService _sessionService;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasPendingItems))]
@@ -24,10 +25,11 @@ namespace sys21_campos_zukarmex.ViewModels
         public int PendingCount => PendingAssessments?.Count ?? 0;
         public bool HasPendingItems => PendingAssessments?.Any() ?? false;
 
-        public DamageAssessmentPendingViewModel(DatabaseService databaseService, ApiService apiService)
+        public DamageAssessmentPendingViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService)
         {
             _databaseService = databaseService;
             _apiService = apiService;
+            _sessionService = sessionService;
             PendingAssessments = new ObservableCollection<SalidaMuestroDaños>();
             Title = "Muestreos Pendientes";
             // La corrección: Llamar a la carga al iniciar el ViewModel
@@ -43,11 +45,25 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
+                var session = await _sessionService.GetCurrentSessionAsync();
+
+                var zafraList = await _databaseService.GetAllAsync<Zafra>();
+                var cicloList = await _databaseService.GetAllAsync<Ciclo>();
+                var allCampos = await _databaseService.GetAllAsync<Campo>();
+
+                var filteredCampos = session.TipoUsuario == 1
+                    ? allCampos
+                    : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
+
                 var list = await _databaseService.GetAllAsync<SalidaMuestroDaños>();
                 PendingAssessments.Clear();
 
-                foreach (var item in list)
+                foreach (var item in list.OrderByDescending(i => i.Fecha))
                 {
+                    item.ZafraNombre = zafraList.FirstOrDefault(z => z.Id == item.IdTemporada)?.Nombre ?? "Zafra N/D";
+                    item.CampoNombre = filteredCampos.FirstOrDefault(c => c.Id == item.IdCampo)?.Nombre ?? "Predio N/D";
+                    item.CicloNombre = cicloList.FirstOrDefault(c => c.Id == item.IdCiclo)?.Nombre ?? "Ciclo N/D";
+
                     PendingAssessments.Add(item);
                 }
                 OnPropertyChanged(nameof(PendingCount)); 

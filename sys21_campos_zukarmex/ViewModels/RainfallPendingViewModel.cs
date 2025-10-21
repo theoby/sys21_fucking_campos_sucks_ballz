@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 
@@ -37,7 +38,17 @@ namespace sys21_campos_zukarmex.ViewModels
             SetBusy(true);
             try
             {
+                var empresaList = await _databaseService.GetAllAsync<Empresa>();
+                var pluviometroList = await _databaseService.GetAllAsync<Pluviometro>();
+
                 var list = await _databaseService.GetAllAsync<SalidaPrecipitacion>();
+
+                foreach (var item in list)
+                {
+                    item.EmpresaNombre = empresaList.FirstOrDefault(e => e.Id == item.IdEmpresa)?.Nombre ?? "Empresa N/D";
+                    item.PluviometroNombre = pluviometroList.FirstOrDefault(p => p.Id == item.IdPluviometro)?.Nombre ?? "Pluviómetro N/D";
+                }
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     PendingRainfalls.Clear();

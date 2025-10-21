@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Collections.Generic; 
 using System.Threading.Tasks;
 
 namespace sys21_campos_zukarmex.ViewModels
@@ -11,6 +13,7 @@ namespace sys21_campos_zukarmex.ViewModels
     public partial class RainfallHistoryViewModel : BaseViewModel
     {
         private readonly ApiService _apiService;
+        private readonly DatabaseService _databaseService;
 
         [ObservableProperty]
         private ObservableCollection<SalidaPrecipitacion> historyRainfalls = new();
@@ -18,16 +21,16 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty]
         private bool isRefreshing;
 
-        public RainfallHistoryViewModel(ApiService apiService)
+        public RainfallHistoryViewModel(ApiService apiService, DatabaseService databaseService)
         {
             _apiService = apiService;
+            _databaseService = databaseService;
             Title = "Historial Pluvial";
         }
 
         [RelayCommand]
         private async Task PageAppearingAsync()
         {
-            // Llama al método de carga para evitar duplicar código
             await LoadHistoryAsync();
         }
 
@@ -40,18 +43,27 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
-                var list = await _apiService.GetRainfallHistoryAsync();
+                var empresaList = await _databaseService.GetAllAsync<Empresa>();
+                var pluviometroList = await _databaseService.GetAllAsync<Pluviometro>();
+
+                var listFromApi = await _apiService.GetRainfallHistoryAsync();
+
+                foreach (var item in listFromApi)
+                {
+                    item.EmpresaNombre = empresaList.FirstOrDefault(e => e.Id == item.IdEmpresa)?.Nombre ?? "Empresa N/D";
+                    item.PluviometroNombre = pluviometroList.FirstOrDefault(p => p.Id == item.IdPluviometro)?.Nombre ?? "Pluviómetro N/D";
+                }
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     HistoryRainfalls.Clear();
-                    foreach (var item in list)
+                    foreach (var item in listFromApi)
                     {
                         HistoryRainfalls.Add(item);
                     }
                 });
 
-                if (!list.Any())
+                if (!listFromApi.Any())
                 {
                     await Shell.Current.DisplayAlert("Información", "No se encontraron registros en el historial.", "OK");
                 }
@@ -70,17 +82,7 @@ namespace sys21_campos_zukarmex.ViewModels
         [RelayCommand]
         public async Task RefreshAsync()
         {
-            if (IsBusy) return;
-
-            try
-            {
-                IsRefreshing = true;
-                await LoadHistoryAsync();
-            }
-            finally
-            {
-                IsRefreshing = false;
-            }
+            await LoadHistoryAsync();
         }
     }
 }

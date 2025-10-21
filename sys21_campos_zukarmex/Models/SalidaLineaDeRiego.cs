@@ -22,4 +22,10 @@ public class SalidaLineaDeRiego
     public string Lat { get; set; } = string.Empty;
     public string Dispositivo { get; set; } = string.Empty;
 
+    [Ignore]
+    public string CampoNombre { get; set; } = "N/D";
+
+    [Ignore]
+    public string LineaRiegoNombre { get; set; } = "N/D";
+
 }

@@ -20,4 +20,10 @@ public class SalidaTrampeoRatas
     public string Lat { get; set; } = "0";
     public string Dispositivo { get; set; } = string.Empty;
 
+    [Ignore]
+    public string ZafraNombre { get; set; } = "N/D";
+
+    [Ignore]
+    public string CampoNombre { get; set; } = "N/D";
+
 }

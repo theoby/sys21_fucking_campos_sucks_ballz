@@ -20,5 +20,11 @@ namespace sys21_campos_zukarmex.Models
         public string Lng { get; set; } = string.Empty;
         public string Lat { get; set; } = string.Empty;
         public string Dispositivo { get; set; } = string.Empty;
+
+        [Ignore]
+        public string ZafraNombre { get; set; } = "N/D";
+
+        [Ignore]
+        public string CampoNombre { get; set; } = "N/D";
     }
 }

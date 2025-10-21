@@ -10,6 +10,8 @@ namespace sys21_campos_zukarmex.ViewModels
     public partial class RodenticideConsumptionHistoryViewModel : BaseViewModel
     {
         private readonly ApiService _apiService;
+        private readonly DatabaseService _databaseService;
+        private readonly SessionService _sessionService;
 
         [ObservableProperty]
         private ObservableCollection<SalidaRodenticida> historyConsumptions = new();
@@ -17,10 +19,18 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty]
         private bool isRefreshing;
 
-        public RodenticideConsumptionHistoryViewModel(ApiService apiService)
+        public RodenticideConsumptionHistoryViewModel(ApiService apiService, DatabaseService databaseService, SessionService sessionService)
         {
             _apiService = apiService;
+            _databaseService = databaseService; // <-- AÑADIDO
+            _sessionService = sessionService;
             Title = "Historial de Consumos";
+        }
+
+        [RelayCommand]
+        private async Task PageAppearingAsync()
+        {
+            await LoadHistoryAsync();
         }
 
         [RelayCommand]
@@ -32,12 +42,33 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
-                var list = await _apiService.GetRodenticideHistoryAsync();
+
+                var session = await _sessionService.GetCurrentSessionAsync();
+                var zafraList = await _databaseService.GetAllAsync<Zafra>();
+                var allCampos = await _databaseService.GetAllAsync<Campo>();
+                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
+
+                var listFromApi = await _apiService.GetRodenticideHistoryAsync();
+
+                foreach (var item in listFromApi)
+                {
+                    item.ZafraNombre = zafraList.FirstOrDefault(z => z.Id == item.IdTemporada)?.Nombre ?? "Zafra N/D";
+                    item.CampoNombre = filteredCampos.FirstOrDefault(c => c.Id == item.IdCampo)?.Nombre ?? "Predio N/D";
+                }
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     HistoryConsumptions.Clear();
-                    foreach (var item in list) HistoryConsumptions.Add(item);
+                    foreach (var item in listFromApi.OrderByDescending(i => i.Fecha))
+                    {
+                        HistoryConsumptions.Add(item);
+                    }
                 });
+
+                if (!listFromApi.Any())
+                {
+                    await Shell.Current.DisplayAlert("Información", "No se encontraron registros en el historial.", "OK");
+                }
             }
             catch (Exception ex)
             {
@@ -49,20 +80,11 @@ namespace sys21_campos_zukarmex.ViewModels
                 IsRefreshing = false;
             }
         }
+
         [RelayCommand]
         public async Task RefreshAsync()
         {
-            if (IsBusy) return;
-
-            try
-            {
-                IsRefreshing = true;
-                await LoadHistoryAsync();
-            }
-            finally
-            {
-                IsRefreshing = false;
-            }
+            await LoadHistoryAsync();
         }
     }
 }

@@ -8,7 +8,7 @@ using sys21_campos_zukarmex.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-using System.Collections.Generic; // Para List<T>
+using System.Collections.Generic;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
@@ -16,6 +16,8 @@ namespace sys21_campos_zukarmex.ViewModels
     public partial class IrrigationLineHistoryViewModel : BaseViewModel
     {
         private readonly ApiService _apiService;
+        private readonly DatabaseService _databaseService; 
+        private readonly SessionService _sessionService;
 
         // Lista completa para la fuente de datos y el filtro
         private List<SalidaLineaDeRiego> _allEntries = new List<SalidaLineaDeRiego>();
@@ -36,9 +38,11 @@ namespace sys21_campos_zukarmex.ViewModels
         public int HistoryCount => HistorialEntries?.Count ?? 0;
         public bool HasHistoryItems => HistorialEntries?.Any() ?? false;
 
-        public IrrigationLineHistoryViewModel(ApiService apiService)
+        public IrrigationLineHistoryViewModel(ApiService apiService, DatabaseService databaseService, SessionService sessionService)
         {
             _apiService = apiService;
+            _databaseService = databaseService; 
+            _sessionService = sessionService;
             HistorialEntries = new ObservableCollection<SalidaLineaDeRiego>();
             Title = "Historial Línea de Riego";
 
@@ -57,24 +61,46 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
-                // Se asume que GetIrrigationLineHistoryAsync existe y trae List<SalidaIrrigationLine>
-                var list = await _apiService.GetIrrigationLineHistoryAsync();
 
-                _allEntries = list.OrderByDescending(d => d.Fecha).ToList();
+                var session = await _sessionService.GetCurrentSessionAsync();
+                var allCampos = await _databaseService.GetAllAsync<Campo>();
+                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
 
-                // Actualiza la lista observable usando la lógica de filtrado
-                ApplySearchFilter();
-
-                if (!_allEntries.Any() && IsConnected) // Usa IsConnected de BaseViewModel
+                var lineasPredefinidas = new List<LineaDeRiego>
                 {
-                    await Shell.Current.DisplayAlert("Información",
-                        "No se encontraron registros de Línea de Riego en el historial del servidor.", "OK");
+                    new LineaDeRiego { Id = 1, Nombre = "Principal Norte" },
+                    new LineaDeRiego { Id = 2, Nombre = "Secundaria A-1" },
+                    new LineaDeRiego { Id = 3, Nombre = "Secundaria A-2" },
+                    new LineaDeRiego { Id = 4, Nombre = "Principal Sur" },
+                    new LineaDeRiego { Id = 5, Nombre = "Terciaria B-3 (Goteo)" }
+                };
+
+                var listFromApi = await _apiService.GetIrrigationLineHistoryAsync();
+
+                foreach (var item in listFromApi)
+                {
+                    item.CampoNombre = filteredCampos.FirstOrDefault(c => c.Id == item.IdCampo)?.Nombre ?? "Predio N/D";
+                    item.LineaRiegoNombre = lineasPredefinidas.FirstOrDefault(l => l.Id == item.IdLineaRiego)?.Nombre ?? "Línea N/D";
+                }
+
+                _allEntries = listFromApi.OrderByDescending(d => d.Fecha).ToList();
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    HistorialEntries.Clear();
+                    foreach (var item in _allEntries) HistorialEntries.Add(item);
+                    OnPropertyChanged(nameof(HistoryCount));
+                    OnPropertyChanged(nameof(HasHistoryItems));
+                });
+
+                if (!_allEntries.Any())
+                {
+                    await Shell.Current.DisplayAlert("Información", "No se encontraron registros en el historial.", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error de Carga",
-                    $"No se pudo cargar el historial de líneas de riego: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudo cargar el historial: {ex.Message}", "OK");
             }
             finally
             {
@@ -83,9 +109,6 @@ namespace sys21_campos_zukarmex.ViewModels
             }
         }
 
-        // --- Lógica de Filtrado de Búsqueda ---
-
-        // Este método parcial se llama automáticamente cuando cambia SearchText
         partial void OnSearchTextChanged(string oldValue, string newValue)
         {
             // Opcional: Solo busca si la cadena es vacía (para borrar el filtro) o tiene 2+ caracteres
@@ -120,20 +143,11 @@ namespace sys21_campos_zukarmex.ViewModels
             OnPropertyChanged(nameof(HistoryCount));
             OnPropertyChanged(nameof(HasHistoryItems));
         }
+
         [RelayCommand]
         public async Task RefreshAsync()
         {
-            if (IsBusy) return;
-
-            try
-            {
-                IsRefreshing = true;
-                await LoadHistoryDataAsync();
-            }
-            finally
-            {
-                IsRefreshing = false;
-            }
+            await LoadHistoryDataAsync();
         }
     }
 }

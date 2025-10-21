@@ -3,10 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-// Se asume que este using es necesario para MVVM Toolkit
 using CommunityToolkit.Mvvm.ComponentModel.__Internals;
 
 namespace sys21_campos_zukarmex.ViewModels
@@ -15,6 +15,8 @@ namespace sys21_campos_zukarmex.ViewModels
     public partial class DamageAssessmentHistoryViewModel : BaseViewModel
     {
         private readonly ApiService _apiService;
+        private readonly DatabaseService _databaseService;
+        private readonly SessionService _sessionService;
 
         // Lista completa para el filtro
         private List<SalidaMuestroDaños> _allAssessments = new List<SalidaMuestroDaños>();
@@ -22,7 +24,6 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HistoryCount))]
         [NotifyPropertyChangedFor(nameof(HasHistoryItems))]
-        // El campo privado 'historialAssessments' genera la propiedad pública 'HistorialAssessments'
         private ObservableCollection<SalidaMuestroDaños> historialAssessments;
 
         [ObservableProperty]
@@ -36,16 +37,23 @@ namespace sys21_campos_zukarmex.ViewModels
         public bool HasHistoryItems => HistorialAssessments?.Any() ?? false;
 
         // Sólo necesita ApiService, sin DatabaseService.
-        public DamageAssessmentHistoryViewModel(ApiService apiService)
+        public DamageAssessmentHistoryViewModel(ApiService apiService, SessionService sessionService, DatabaseService databaseService)
         {
             _apiService = apiService;
+            _databaseService = databaseService;
+            _sessionService = sessionService;
             HistorialAssessments = new ObservableCollection<SalidaMuestroDaños>();
             Title = "Historial de Muestreos";
 
             _ = LoadHistorialAssessmentsAsync();
         }
 
-        // --- Comando para cargar los datos de la API (Similar a LoadPending) ---
+        [RelayCommand]
+        public async Task PageAppearingAsync()
+        {
+            await LoadHistorialAssessmentsAsync();
+        }
+
         [RelayCommand]
         public async Task LoadHistorialAssessmentsAsync()
         {
@@ -55,12 +63,26 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
-                // Se asume que GetDamageAssessmentHistoryAsync existe y usa GetCatalogAsync
-                var list = await _apiService.GetDamageAssessmentHistoryAsync();
+                var session = await _sessionService.GetCurrentSessionAsync();
+                var zafraList = await _databaseService.GetAllAsync<Zafra>();
+                var cicloList = await _databaseService.GetAllAsync<Ciclo>();
+                var allCampos = await _databaseService.GetAllAsync<Campo>();
 
-                _allAssessments = list.OrderByDescending(d => d.Fecha).ToList();
+                var filteredCampos = session.TipoUsuario == 1
+                    ? allCampos
+                    : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
 
-                // Actualiza la lista observable usando la lógica de filtrado
+                var listFromApi = await _apiService.GetDamageAssessmentHistoryAsync();
+
+                foreach (var item in listFromApi)
+                {
+                    item.ZafraNombre = zafraList.FirstOrDefault(z => z.Id == item.IdTemporada)?.Nombre ?? "Zafra N/D";
+                    item.CampoNombre = filteredCampos.FirstOrDefault(c => c.Id == item.IdCampo)?.Nombre ?? "Predio N/D";
+                    item.CicloNombre = cicloList.FirstOrDefault(c => c.Id == item.IdCiclo)?.Nombre ?? "Ciclo N/D";
+                }
+
+                _allAssessments = listFromApi.OrderByDescending(d => d.Fecha).ToList();
+
                 ApplySearchFilter();
 
                 if (!_allAssessments.Any() && IsConnected)
@@ -83,21 +105,19 @@ namespace sys21_campos_zukarmex.ViewModels
         }
 
 
-        // --- Lógica de Filtrado de Búsqueda ---
         private void ApplySearchFilter()
         {
             HistorialAssessments.Clear(); // Usa la propiedad pública generada
 
             IEnumerable<SalidaMuestroDaños> filtered = _allAssessments;
 
-            // Usa la propiedad pública generada: SearchText
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 var searchLower = SearchText.ToLower();
                 filtered = _allAssessments.Where(d =>
                     // El error de 'int a char' desaparece con .ToString()
-                    d.Id.ToString().Contains(searchLower) ||
-                    d.IdCampo.ToString().Contains(searchLower) 
+                    (d.CampoNombre != null && d.CampoNombre.ToLower().Contains(searchLower)) || 
+                    (d.ZafraNombre != null && d.ZafraNombre.ToLower().Contains(searchLower)) 
                 );
             }
 
@@ -106,47 +126,41 @@ namespace sys21_campos_zukarmex.ViewModels
                 HistorialAssessments.Add(item);
             }
 
-            // Usa OnPropertyChanged de BaseViewModel
             OnPropertyChanged(nameof(HistoryCount));
             OnPropertyChanged(nameof(HasHistoryItems));
         }
 
-        // Corrección: Método parcial para el cambio de 'SearchText'. 
-        // ¡La firma debe ser (oldValue, newValue)!
+        
         partial void OnSearchTextChanged(string oldValue, string newValue)
         {
-            // Busca automáticamente al escribir o borrar (si la longitud es >= 2)
             if (string.IsNullOrWhiteSpace(newValue) || newValue.Length >= 2)
             {
                 ApplySearchFilter();
             }
         }
 
-        // Comando para ver detalles
         [RelayCommand]
         public async Task ViewAssessmentDetailsAsync(SalidaMuestroDaños assessment)
         {
             if (assessment == null) return;
 
-            await Shell.Current.DisplayAlert("Detalle de Muestreo",
-                                             $"ID: {assessment.Id}\nFecha: {assessment.Fecha:dd/MM/yyyy HH:mm}\nUsuario: Tallos: {assessment.NumeroTallos}",
-                                             "OK");
+            // Mensaje de alerta actualizado para mostrar nombres
+            string details = $"ID: {assessment.Id}\n" +
+                             $"Fecha: {assessment.Fecha:dd/MM/yyyy HH:mm}\n" +
+                             $"Zafra: {assessment.ZafraNombre}\n" +
+                             $"Predio: {assessment.CampoNombre}\n" +
+                             $"Ciclo: {assessment.CicloNombre}\n\n" +
+                             $"Tallos: {assessment.NumeroTallos}\n" +
+                             $"Daño Viejo: {assessment.DañoViejo}\n" +
+                             $"Daño Nuevo: {assessment.DañoNuevo}";
+
+            await Shell.Current.DisplayAlert("Detalle de Muestreo", details, "OK");
         }
 
         [RelayCommand]
         public async Task RefreshAsync()
         {
-            if (IsBusy) return;
-
-            try
-            {
-                IsRefreshing = true;
-                await LoadHistorialAssessmentsAsync();
-            }
-            finally
-            {
-                IsRefreshing = false;
-            }
+            await LoadHistorialAssessmentsAsync();
         }
     }
 }

@@ -17,4 +17,13 @@ public class SalidaMaquinaria
     public decimal? KilometrajeOdometro { get; set; }
     public string? Lng { get; set; } = string.Empty;
     public string? Lat { get; set; } = string.Empty;
+
+    [Ignore]
+    public string CampoNombre { get; set; } = "N/D";
+
+    [Ignore]
+    public string MaquinariaNombre { get; set; } = "N/D";
+
+    [Ignore]
+    public string EmpresaNombre { get; set; } = "N/D";
 }

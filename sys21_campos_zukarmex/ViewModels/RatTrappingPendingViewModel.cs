@@ -5,6 +5,7 @@ using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
@@ -12,21 +13,23 @@ namespace sys21_campos_zukarmex.ViewModels
     {
         private readonly DatabaseService _databaseService;
         private readonly ApiService _apiService;
+        private readonly SessionService _sessionService;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasPendingItems))]
         [NotifyPropertyChangedFor(nameof(PendingCount))]
-        private ObservableCollection<SalidaTrampeoRatas> pendingCaptures;
+        private ObservableCollection<SalidaTrampeoRatas> pendingCaptures = new();
 
         [ObservableProperty]
         private bool isRefreshing;
         public int PendingCount => PendingCaptures?.Count ?? 0;
         public bool HasPendingItems => PendingCaptures?.Any() ?? false;
 
-        public RatTrappingPendingViewModel(DatabaseService databaseService, ApiService apiService)
+        public RatTrappingPendingViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService)
         {
             _databaseService = databaseService;
             _apiService = apiService;
+            _sessionService = sessionService;
             PendingCaptures = new ObservableCollection<SalidaTrampeoRatas>();
             Title = "Trampeos Pendientes";
         }
@@ -38,7 +41,20 @@ namespace sys21_campos_zukarmex.ViewModels
             SetBusy(true);
             try
             {
+                var session = await _sessionService.GetCurrentSessionAsync();
+
+                var zafraList = await _databaseService.GetAllAsync<Zafra>();
+                var allCampos = await _databaseService.GetAllAsync<Campo>();
+                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
+
                 var list = await _databaseService.GetAllAsync<SalidaTrampeoRatas>();
+
+                foreach (var item in list)
+                {
+                    item.ZafraNombre = zafraList.FirstOrDefault(z => z.Id == item.IdTemporada)?.Nombre ?? "Zafra N/D";
+                    item.CampoNombre = filteredCampos.FirstOrDefault(c => c.Id == item.IdCampo)?.Nombre ?? "Predio N/D";
+                }
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     PendingCaptures.Clear();
@@ -46,8 +62,6 @@ namespace sys21_campos_zukarmex.ViewModels
                     {
                         PendingCaptures.Add(item);
                     }
-
-                    // También notificamos explícitamente a las propiedades dependientes
                     OnPropertyChanged(nameof(PendingCount));
                     OnPropertyChanged(nameof(HasPendingItems));
                 });

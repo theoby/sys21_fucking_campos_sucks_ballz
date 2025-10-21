@@ -5,6 +5,7 @@ using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
@@ -12,6 +13,7 @@ namespace sys21_campos_zukarmex.ViewModels
     {
         private readonly DatabaseService _databaseService;
         private readonly ApiService _apiService;
+        private readonly SessionService _sessionService;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasPendingItems), nameof(PendingCount))]
@@ -22,10 +24,11 @@ namespace sys21_campos_zukarmex.ViewModels
         public int PendingCount => PendingEntries.Count;
         public bool HasPendingItems => PendingEntries.Any();
 
-        public IrrigationLinePendingViewModel(DatabaseService databaseService, ApiService apiService)
+        public IrrigationLinePendingViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService)
         {
             _databaseService = databaseService;
             _apiService = apiService;
+            _sessionService = sessionService;
             Title = "Riegos Pendientes";
         }
 
@@ -36,7 +39,28 @@ namespace sys21_campos_zukarmex.ViewModels
             SetBusy(true);
             try
             {
+                var session = await _sessionService.GetCurrentSessionAsync();
+
+                var allCampos = await _databaseService.GetAllAsync<Campo>();
+                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
+
+                var lineasPredefinidas = new List<LineaDeRiego>
+                {
+                    new LineaDeRiego { Id = 1, Nombre = "Principal Norte" },
+                    new LineaDeRiego { Id = 2, Nombre = "Secundaria A-1" },
+                    new LineaDeRiego { Id = 3, Nombre = "Secundaria A-2" },
+                    new LineaDeRiego { Id = 4, Nombre = "Principal Sur" },
+                    new LineaDeRiego { Id = 5, Nombre = "Terciaria B-3 (Goteo)" }
+                };
+
                 var list = await _databaseService.GetAllAsync<SalidaLineaDeRiego>();
+
+                foreach (var item in list)
+                {
+                    item.CampoNombre = filteredCampos.FirstOrDefault(c => c.Id == item.IdCampo)?.Nombre ?? "Predio N/D";
+                    item.LineaRiegoNombre = lineasPredefinidas.FirstOrDefault(l => l.Id == item.IdLineaRiego)?.Nombre ?? "Línea N/D";
+                }
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     PendingEntries.Clear();

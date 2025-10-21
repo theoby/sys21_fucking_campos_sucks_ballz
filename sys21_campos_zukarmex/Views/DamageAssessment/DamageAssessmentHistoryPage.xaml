@@ -67,21 +67,21 @@
 
                                         <StackLayout Grid.Column="0"
                                                      Spacing="2">
-                                            <Label Text="{Binding IdTemporada, StringFormat='Zafra: {0}'}"
+                                            <Label Text="{Binding ZafraNombre, StringFormat='Zafra: {0}'}"
                                                    FontSize="12"
                                                    TextColor="{DynamicResource Gray900}" />
                                         </StackLayout>
 
                                         <StackLayout Grid.Column="1"
                                                      Spacing="2">
-                                            <Label Text="{Binding IdCampo, StringFormat='Predio: {0}'}"
+                                            <Label Text="{Binding CampoNombre, StringFormat='Predio: {0}'}"
                                                    FontSize="12"
                                                    TextColor="{DynamicResource Gray900}" />
                                         </StackLayout>
 
                                         <StackLayout Grid.Column="2"
                                                      Spacing="2">
-                                            <Label Text="{Binding IdCiclo, StringFormat='Ciclo: {0}'}"
+                                            <Label Text="{Binding CicloNombre, StringFormat='Ciclo: {0}'}"
                                                    FontSize="12"
                                                    TextColor="{DynamicResource Gray900}" />
                                         </StackLayout>

@@ -64,7 +64,7 @@
                                                FontSize="18"
                                                FontAttributes="Bold"
                                                TextColor="{DynamicResource Gray600}" />
-                                        <Label Text="{Binding IdCampo, StringFormat='Predio: {0}'}"
+                                        <Label Text="{Binding CampoNombre, StringFormat='Predio: {0}'}"
                                                FontSize="13"
                                                FontAttributes="Bold"
                                                TextColor="{DynamicResource Gray400}" />
@@ -85,7 +85,7 @@
 
                                         <StackLayout Grid.Column="0"
                                                      Spacing="2">
-                                            <Label Text="{Binding IdGrupo, StringFormat='Empresa: {0}'}"
+                                            <Label Text="{Binding EmpresaNombre, StringFormat='Empresa: {0}'}"
                                                    FontSize="12"
                                                    TextColor="{DynamicResource Gray900}" />
 
@@ -96,7 +96,7 @@
 
                                         <StackLayout Grid.Column="1"
                                                      Spacing="2">
-                                            <Label Text="{Binding HorasTrabajadas, StringFormat='Horas: {0}'}"
+                                            <Label Text="{Binding MaquinariaNombre, StringFormat='Horas: {0}'}"
                                                    FontSize="12"
                                                    TextColor="{DynamicResource Gray900}" />
 

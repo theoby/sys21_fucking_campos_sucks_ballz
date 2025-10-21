@@ -19,5 +19,10 @@ namespace sys21_campos_zukarmex.Models;
     public string Lng { get; set; } = "0";
     public string Dispositivo { get; set; } = string.Empty;
 
+    [Ignore]
+    public string EmpresaNombre { get; set; } = "N/D";
+
+    [Ignore]
+    public string PluviometroNombre { get; set; } = "N/D";
 }
 
