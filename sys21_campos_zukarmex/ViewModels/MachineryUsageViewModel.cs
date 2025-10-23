@@ -18,11 +18,11 @@ namespace sys21_campos_zukarmex.ViewModels
         private bool isInitialized = false;
 
         [ObservableProperty] private ObservableCollection<Empresa> empresas = new();
-        [ObservableProperty] private ObservableCollection<Campo> campos = new();
+        [ObservableProperty] private ObservableCollection<Lote> campos = new();
         [ObservableProperty] private ObservableCollection<Maquinaria> equipos = new();
 
         [ObservableProperty] private Empresa? selectedEmpresa;
-        [ObservableProperty] private Campo? selectedCampo;
+        [ObservableProperty] private Lote? selectedCampo;
         [ObservableProperty] private Maquinaria? selectedEquipo;
         [ObservableProperty] private DateTime fecha = DateTime.Now;
 
@@ -63,10 +63,9 @@ namespace sys21_campos_zukarmex.ViewModels
                 Equipos.Clear();
                 foreach (var item in equipoList.OrderBy(e => e.Nombre)) Equipos.Add(item);
 
-                var allCampos = await _databaseService.GetAllAsync<Campo>();
-                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
+                var lotesList = await _databaseService.GetAllAsync<Lote>();
                 Campos.Clear();
-                foreach (var item in filteredCampos.OrderBy(c => c.Nombre)) Campos.Add(item);
+                foreach (var lote in lotesList.OrderBy(l => l.Nombre)) Campos.Add(lote);
             }
             catch (Exception ex) { /* ... error ... */ }
             finally { SetBusy(false); }

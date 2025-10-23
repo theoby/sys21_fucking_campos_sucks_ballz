@@ -20,10 +20,13 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty] private ObservableCollection<Campo> campos = new();
         [ObservableProperty] private ObservableCollection<Zafra> zafras = new();
         [ObservableProperty] private ObservableCollection<Ciclo> ciclos = new();
+        [ObservableProperty] private ObservableCollection<Lote> lotes = new();
+
 
         [ObservableProperty] private Campo? selectedCampo;
         [ObservableProperty] private Zafra? selectedZafra;
         [ObservableProperty] private Ciclo? selectedCiclo;
+        [ObservableProperty] private Lote? selectedLote;
 
         [ObservableProperty] private DateTime fecha = DateTime.Now;
         [ObservableProperty] private string superficie = string.Empty;
@@ -64,9 +67,14 @@ namespace sys21_campos_zukarmex.ViewModels
                 Campos.Clear();
                 foreach (var campo in filteredCampos.OrderBy(c => c.Nombre)) Campos.Add(campo);
 
+
                 var zafraList = await _databaseService.GetAllAsync<Zafra>();
                 Zafras.Clear();
                 foreach (var zafra in zafraList.OrderBy(z => z.Nombre)) Zafras.Add(zafra);
+
+                var lotesList = await _databaseService.GetAllAsync<Lote>();
+                Lotes.Clear();
+                foreach (var lote in lotesList.OrderBy(l => l.Nombre)) Lotes.Add(lote);
 
                 var cicloList = await _databaseService.GetAllAsync<Ciclo>();
                 Ciclos.Clear();
