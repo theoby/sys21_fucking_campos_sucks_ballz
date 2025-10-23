@@ -131,6 +131,7 @@ namespace sys21_campos_zukarmex.ViewModels
                     IdCampo = SelectedCampo.Id,
                     IdCiclo = SelectedCiclo.Id,
                     Fecha = this.Fecha,
+                    IdLote = SelectedLote.Id,
                     NumeroTallos = int.TryParse(NumeroTallos, out var t) ? t : 0,
                     DañoViejo = int.TryParse(DanoViejo, out var v) ? v : 0,
                     DañoNuevo = int.TryParse(DanoNuevo, out var n) ? n : 0,

@@ -14,6 +14,7 @@ namespace sys21_campos_zukarmex.Models
         public int IdTemporada { get; set; } = 0;
         public int IdCampo { get; set; } = 0;
         public int IdCiclo { get; set; } = 0;
+        public int IdLote { get; set; } = 0;
         public DateTime Fecha { get; set; } = DateTime.Now;
         public int NumeroTallos { get; set; } = 0;
         public int DañoViejo { get; set; } = 0;
