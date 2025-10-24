@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
+using sys21_campos_zukarmex.Models;
 
 namespace sys21_campos_zukarmex.Models.DTOs.Authentication;
+
 
 /// <summary>
 /// DTO para la solicitud de login
@@ -72,6 +74,9 @@ public class UserData
     [JsonProperty("idInspector")]
     public int IdInspector { get; set; }
 
+    [JsonProperty("permisos")]
+    public List<Permiso> Permisos { get; set; } = new();
+
     /// <summary>
     /// Convierte este DTO al modelo de Session que usa la app internamente
     /// </summary>
@@ -89,7 +94,19 @@ public class UserData
             Token = token,
             ExpirationDate = expiration,
             CreatedAt = DateTime.Now,
-            IsActive = true
+            IsActive = true,
+            PermisosJson = JsonConvert.SerializeObject(this.Permisos ?? new List<Permiso>())
         };
+    }
+    public class Permiso
+    {
+        [JsonProperty("idApp")]
+        public int IdApp { get; set; }
+
+        [JsonProperty("nombreApp")]
+        public string NombreApp { get; set; }
+
+        [JsonProperty("permiso")]
+        public bool TienePermiso { get; set; }
     }
 }

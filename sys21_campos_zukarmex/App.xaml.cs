@@ -40,7 +40,8 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var shell = new AppShell();
+        var sessionService = _serviceProvider.GetService<SessionService>();
+        var shell = new AppShell(sessionService);
         var window = new Window(shell);
         
         // Inicializar monitoreo de conectividad cuando se crea la ventana principal

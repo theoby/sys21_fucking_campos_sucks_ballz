@@ -20,10 +20,6 @@ public class Session
     public int TipoUsuario { get; set; }
     public int IdInspector { get; set; }
     public bool IsPromotora { get; set; }
-    
-    /// <summary>
-    /// Determina si el sistema debe funcionar en modo online (true) o offline (false)
-    /// Por defecto es true (online)
-    /// </summary>
     public bool IsOnline { get; set; } = true;
+    public string PermisosJson { get; set; } = string.Empty;
 }

@@ -1,6 +1,9 @@
+using Newtonsoft.Json;
 using sys21_campos_zukarmex.Models;
+using sys21_campos_zukarmex.Models.DTOs.Authentication;
 using sys21_campos_zukarmex.Services;
 using System.Text;
+using static sys21_campos_zukarmex.Models.DTOs.Authentication.UserData;
 
 public class SessionService
 {
@@ -14,44 +17,124 @@ public class SessionService
 
     public async Task<bool> IsLoggedInAsync()
     {
-        // Primero verificar sesión activa
+        // Primero verificar sesiï¿½n activa
         var session = await GetCurrentSessionAsync();
         if (session != null && session.ExpirationDate > DateTime.Now)
         {
             return true;
         }
 
-        // Si no hay sesión activa, verificar token en configuración
+        // Si no hay sesiï¿½n activa, verificar token en configuraciï¿½n
         return await HasValidTokenInConfigurationAsync();
     }
 
+    private readonly Dictionary<string, string> _routePermissionMap = new Dictionary<string, string>
+        {
+            // App de Campo
+            { "home", "App de Campo" },
+
+            // Uso de Maquinaria
+            { "machineryusage", "Uso de Maquinaria" },
+            { "machineryusagepending", "Uso de Maquinaria" },
+            { "machineryusagehistory", "Uso de Maquinaria" },
+
+            // PrecipitaciÃ³n Pluvial
+            { "rainfall", "PrecipitaciÃ³n Pluvial" },
+            { "rainfallpending", "PrecipitaciÃ³n Pluvial" },
+            { "rainfallhistory", "PrecipitaciÃ³n Pluvial" },
+
+            // Trampeo de Rata
+            { "rattrapping", "Trampeo de Rata" },
+            { "rattrappingpending", "Trampeo de Rata" },
+            { "rattrappinghistory", "Trampeo de Rata" },
+
+            // Consumo de Rodenticida
+            { "rodenticideconsumption", "Consumo de Rodenticida" },
+            { "rodenticidepending", "Consumo de Rodenticida" },
+            { "rodenticidehistory", "Consumo de Rodenticida" },
+
+            // Muestreo de DaÃ±o
+            { "damageassessment", "Muestreo de DaÃ±o" },
+            { "damageassessmentpending", "Muestreo de DaÃ±o" },
+            { "damageassessmenthistory", "Muestreo de DaÃ±o" },
+
+            // Captura de Linea de Riego
+            { "irrigationline", "Captura de Linea de Riego" },
+            { "irrigationlinepending", "Captura de Linea de Riego" },
+            { "irrigationlinehistory", "Captura de Linea de Riego" }
+        };
+
+    public async Task<bool> CheckPermissionForRouteAsync(string route)
+    {
+        try
+        {
+            // Limpiamos la ruta (ej. "//home" -> "home")
+            var cleanRoute = route.Replace("//", "").ToLower();
+
+            var session = await GetCurrentSessionAsync();
+
+            // El admin local (Token especial) o un usuario sin sesiÃ³n (aÃºn no logueado) siempre deben pasar
+            if (session == null)
+            {
+                return true;
+            }
+
+            // Si no hay permisos guardados, denegar acceso por seguridad.
+            if (string.IsNullOrWhiteSpace(session.PermisosJson))
+            {
+                return false;
+            }
+
+            // Si la ruta no estÃ¡ en nuestro mapa, la dejamos pasar (ej. Pendientes, Historial, Sync, etc.)
+            if (!_routePermissionMap.TryGetValue(cleanRoute, out var appName))
+            {
+                return true;
+            }
+
+            // Deserializa la lista de permisos
+            var permisos = JsonConvert.DeserializeObject<List<Permiso>>(session.PermisosJson);
+            if (permisos == null) return false;
+
+            // Busca el permiso especÃ­fico
+            var permiso = permisos.FirstOrDefault(p => p.NombreApp.Equals(appName, StringComparison.OrdinalIgnoreCase));
+
+            // Devuelve 'true' si el permiso se encontrÃ³ y TienePermiso es 'true'
+            return permiso?.TienePermiso ?? false;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error al chequear permisos: {ex.Message}");
+            return false;
+        }
+    }
+
     /// <summary>
-    /// Verifica si hay un token válido considerando tanto Session como Configuración
-    /// Prioridad: 1. Session activa, 2. Token en Configuración
+    /// Verifica si hay un token vï¿½lido considerando tanto Session como Configuraciï¿½n
+    /// Prioridad: 1. Session activa, 2. Token en Configuraciï¿½n
     /// </summary>
     public async Task<bool> HasValidTokenInConfigurationAsync()
     {
         try
         {
-            // Primero verificar si hay una sesión activa con token válido
+            // Primero verificar si hay una sesiï¿½n activa con token vï¿½lido
             var currentSession = await GetCurrentSessionAsync();
             if (currentSession != null && !string.IsNullOrEmpty(currentSession.Token) && currentSession.ExpirationDate > DateTime.Now)
             {
-                System.Diagnostics.Debug.WriteLine($"?? Token válido encontrado en Session - Exp: {currentSession.ExpirationDate}");
+                System.Diagnostics.Debug.WriteLine($"?? Token vï¿½lido encontrado en Session - Exp: {currentSession.ExpirationDate}");
                 return true;
             }
 
-            // Si no hay sesión activa, verificar token en configuración
+            // Si no hay sesiï¿½n activa, verificar token en configuraciï¿½n
             var configuraciones = await _databaseService.GetAllAsync<Configuracion>();
             var configActiva = configuraciones.OrderByDescending(c => c.Fecha).FirstOrDefault();
             
             if (configActiva != null && configActiva.HasValidToken)
             {
-                System.Diagnostics.Debug.WriteLine($"?? Token válido encontrado en Configuración - Exp: {configActiva.TokenExpiration}");
+                System.Diagnostics.Debug.WriteLine($"?? Token vï¿½lido encontrado en Configuraciï¿½n - Exp: {configActiva.TokenExpiration}");
                 return true;
             }
             
-            System.Diagnostics.Debug.WriteLine("? No hay token válido en Session ni en Configuración");
+            System.Diagnostics.Debug.WriteLine("? No hay token vï¿½lido en Session ni en Configuraciï¿½n");
             return false;
         }
         catch (Exception ex)
@@ -62,14 +145,14 @@ public class SessionService
     }
 
     /// <summary>
-    /// Obtiene el token válido considerando tanto Session como Configuración
-    /// Prioridad: 1. Session activa, 2. Token en Configuración
+    /// Obtiene el token vï¿½lido considerando tanto Session como Configuraciï¿½n
+    /// Prioridad: 1. Session activa, 2. Token en Configuraciï¿½n
     /// </summary>
     public async Task<string?> GetValidTokenFromConfigurationAsync()
     {
         try
         {
-            // Primero verificar si hay una sesión activa con token válido
+            // Primero verificar si hay una sesiï¿½n activa con token vï¿½lido
             var currentSession = await GetCurrentSessionAsync();
             if (currentSession != null && !string.IsNullOrEmpty(currentSession.Token) && currentSession.ExpirationDate > DateTime.Now)
             {
@@ -77,17 +160,17 @@ public class SessionService
                 return currentSession.Token;
             }
 
-            // Si no hay sesión activa, verificar token en configuración
+            // Si no hay sesiï¿½n activa, verificar token en configuraciï¿½n
             var configuraciones = await _databaseService.GetAllAsync<Configuracion>();
             var configActiva = configuraciones.OrderByDescending(c => c.Fecha).FirstOrDefault();
             
             if (configActiva != null && configActiva.HasValidToken)
             {
-                System.Diagnostics.Debug.WriteLine($"?? Usando token de Configuración");
+                System.Diagnostics.Debug.WriteLine($"?? Usando token de Configuraciï¿½n");
                 return configActiva.Token;
             }
             
-            System.Diagnostics.Debug.WriteLine("? No hay token válido disponible");
+            System.Diagnostics.Debug.WriteLine("? No hay token vï¿½lido disponible");
             return null;
         }
         catch (Exception ex)
@@ -99,11 +182,11 @@ public class SessionService
 
     public async Task<Session?> GetCurrentSessionAsync()
     {
-        // Si ya tenemos una sesión en memoria y sigue siendo válida, usarla
+        // Si ya tenemos una sesiï¿½n en memoria y sigue siendo vï¿½lida, usarla
         if (_currentSession != null && _currentSession.ExpirationDate > DateTime.Now && _currentSession.IsActive)
             return _currentSession;
 
-        // Buscar la sesión más reciente en la base de datos
+        // Buscar la sesiï¿½n mï¿½s reciente en la base de datos
         var sessions = await _databaseService.GetAllAsync<Session>();
         
         if (sessions == null || !sessions.Any())
@@ -112,7 +195,7 @@ public class SessionService
             return null;
         }
 
-        // Obtener la sesión más nueva (por CreatedAt) que esté activa y no expirada
+        // Obtener la sesiï¿½n mï¿½s nueva (por CreatedAt) que estï¿½ activa y no expirada
         _currentSession = sessions
             .Where(s => s.IsActive && s.ExpirationDate > DateTime.Now && !string.IsNullOrEmpty(s.Token))
             .OrderByDescending(s => s.CreatedAt)
@@ -134,35 +217,35 @@ public class SessionService
         Preferences.Set("LastUser", newSession.Username);
         Preferences.Set("LastEmpresaId", newSession.IdEmpresa);
 
-        // Asegurar que CreatedAt esté configurado correctamente
+        // Asegurar que CreatedAt estï¿½ configurado correctamente
         if (newSession.CreatedAt == default(DateTime))
         {
             newSession.CreatedAt = DateTime.Now;
         }
 
-        // Asegurar que IsActive esté en true
+        // Asegurar que IsActive estï¿½ en true
         newSession.IsActive = true;
 
-        System.Diagnostics.Debug.WriteLine($"?? Guardando nueva sesión:");
+        System.Diagnostics.Debug.WriteLine($"?? Guardando nueva sesiï¿½n:");
         System.Diagnostics.Debug.WriteLine($"   - Usuario: {newSession.Username} ({newSession.NombreCompleto})");
         System.Diagnostics.Debug.WriteLine($"   - Empresa: {newSession.IdEmpresa}");
         System.Diagnostics.Debug.WriteLine($"   - CreatedAt: {newSession.CreatedAt}");
         System.Diagnostics.Debug.WriteLine($"   - ExpirationDate: {newSession.ExpirationDate}");
         System.Diagnostics.Debug.WriteLine($"   - IsActive: {newSession.IsActive}");
-        System.Diagnostics.Debug.WriteLine($"   - Token presente: {(!string.IsNullOrEmpty(newSession.Token) ? "SÍ" : "NO")}");
+        System.Diagnostics.Debug.WriteLine($"   - Token presente: {(!string.IsNullOrEmpty(newSession.Token) ? "Sï¿½" : "NO")}");
 
         await _databaseService.ClearTableAsync<Session>();
         await _databaseService.SaveAsync(newSession);
         _currentSession = newSession;
 
-        System.Diagnostics.Debug.WriteLine("?? ? Sesión guardada exitosamente en la base de datos");
+        System.Diagnostics.Debug.WriteLine("?? ? Sesiï¿½n guardada exitosamente en la base de datos");
 
-        // Guardar también el token en la configuración
+        // Guardar tambiï¿½n el token en la configuraciï¿½n
         await SaveTokenToConfigurationAsync(newSession.Token, newSession.ExpirationDate);
     }
 
     /// <summary>
-    /// Guarda el token en la configuración activa
+    /// Guarda el token en la configuraciï¿½n activa
     /// </summary>
     private async Task SaveTokenToConfigurationAsync(string token, DateTime expiration)
     {
@@ -177,16 +260,16 @@ public class SessionService
                 configActiva.TokenExpiration = expiration;
                 await _databaseService.SaveAsync(configActiva);
                 
-                System.Diagnostics.Debug.WriteLine($"?? Token guardado en configuración - Exp: {expiration}");
+                System.Diagnostics.Debug.WriteLine($"?? Token guardado en configuraciï¿½n - Exp: {expiration}");
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("?? No se encontró configuración activa para guardar token");
+                System.Diagnostics.Debug.WriteLine("?? No se encontrï¿½ configuraciï¿½n activa para guardar token");
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? Error guardando token en configuración: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"? Error guardando token en configuraciï¿½n: {ex.Message}");
         }
     }
 
@@ -195,12 +278,12 @@ public class SessionService
         await _databaseService.ClearTableAsync<Session>();
         _currentSession = null;
 
-        // Limpiar también el token de la configuración
+        // Limpiar tambiï¿½n el token de la configuraciï¿½n
         await ClearTokenFromConfigurationAsync();
     }
 
     /// <summary>
-    /// Limpia el token de la configuración activa
+    /// Limpia el token de la configuraciï¿½n activa
     /// </summary>
     private async Task ClearTokenFromConfigurationAsync()
     {
@@ -215,17 +298,17 @@ public class SessionService
                 configActiva.TokenExpiration = null;
                 await _databaseService.SaveAsync(configActiva);
                 
-                System.Diagnostics.Debug.WriteLine("?? Token limpiado de configuración");
+                System.Diagnostics.Debug.WriteLine("?? Token limpiado de configuraciï¿½n");
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? Error limpiando token de configuración: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"? Error limpiando token de configuraciï¿½n: {ex.Message}");
         }
     }
 
     /// <summary>
-    /// Verifica si el token actual es diferente al almacenado en configuración
+    /// Verifica si el token actual es diferente al almacenado en configuraciï¿½n
     /// Usado para detectar cambios de token en respuestas 401
     /// </summary>
     public async Task<bool> IsTokenDifferentFromStoredAsync(string currentToken)
@@ -276,16 +359,16 @@ public class SessionService
     }
 
     /// <summary>
-    /// Método de diagnóstico para verificar el estado completo de la base de datos
+    /// Mï¿½todo de diagnï¿½stico para verificar el estado completo de la base de datos
     /// </summary>
     public async Task<string> GetDatabaseDiagnosticAsync()
     {
         try
         {
             var diagnostic = new StringBuilder();
-            diagnostic.AppendLine("=== DIAGNÓSTICO COMPLETO DE BASE DE DATOS ===");
+            diagnostic.AppendLine("=== DIAGNï¿½STICO COMPLETO DE BASE DE DATOS ===");
             diagnostic.AppendLine($"Tiempo: {DateTime.Now}");
-            diagnostic.AppendLine("?? LÓGICA ACTUAL: Verificando token en tabla Session únicamente");
+            diagnostic.AppendLine("?? Lï¿½GICA ACTUAL: Verificando token en tabla Session ï¿½nicamente");
             
             // Verificar si la base de datos existe
             var dbExists = await _databaseService.DatabaseExistsAsync();
@@ -294,12 +377,12 @@ public class SessionService
             if (dbExists)
             {
                 var dbSize = await _databaseService.GetDatabaseSizeAsync();
-                diagnostic.AppendLine($"Tamaño de base de datos: {dbSize} bytes");
+                diagnostic.AppendLine($"Tamaï¿½o de base de datos: {dbSize} bytes");
             }
             
             // === VERIFICAR SESSIONS (PRIORIDAD) ===
             diagnostic.AppendLine();
-            diagnostic.AppendLine("=== ANÁLISIS DE SESSIONS (LÓGICA PRINCIPAL) ===");
+            diagnostic.AppendLine("=== ANï¿½LISIS DE SESSIONS (Lï¿½GICA PRINCIPAL) ===");
             var allSessions = await _databaseService.GetAllAsync<Session>();
             diagnostic.AppendLine($"Total sessions en BD: {allSessions?.Count ?? 0}");
             
@@ -319,15 +402,15 @@ public class SessionService
                     diagnostic.AppendLine($"    Tiempo restante: {(session.ExpirationDate - DateTime.Now).TotalMinutes:F2} minutos");
                     diagnostic.AppendLine($"    CreatedAt: {session.CreatedAt}");
                     
-                    // Verificar si cumple todos los criterios para navegación automática
+                    // Verificar si cumple todos los criterios para navegaciï¿½n automï¿½tica
                     bool isValidForAutoNav = !string.IsNullOrEmpty(session.Token) && 
                                            session.ExpirationDate > DateTime.Now && 
                                            session.IsActive;
-                    diagnostic.AppendLine($"    ¿Válida para auto-navegación?: {(isValidForAutoNav ? "SÍ" : "NO")}");
+                    diagnostic.AppendLine($"    ï¿½Vï¿½lida para auto-navegaciï¿½n?: {(isValidForAutoNav ? "Sï¿½" : "NO")}");
                     diagnostic.AppendLine();
                 }
                 
-                // Analizar session activa para auto-navegación
+                // Analizar session activa para auto-navegaciï¿½n
                 var activeSession = allSessions.FirstOrDefault(s => 
                     !string.IsNullOrEmpty(s.Token) && 
                     s.ExpirationDate > DateTime.Now && 
@@ -335,7 +418,7 @@ public class SessionService
                     
                 if (activeSession != null)
                 {
-                    diagnostic.AppendLine($"*** SESSION ACTIVA PARA AUTO-NAVEGACIÓN: ID {activeSession.Id} ***");
+                    diagnostic.AppendLine($"*** SESSION ACTIVA PARA AUTO-NAVEGACIï¿½N: ID {activeSession.Id} ***");
                     diagnostic.AppendLine($"    Usuario: {activeSession.Username} ({activeSession.NombreCompleto})");
                     diagnostic.AppendLine($"    Empresa: {activeSession.IdEmpresa}");
                     diagnostic.AppendLine($"    Expira: {activeSession.ExpirationDate}");
@@ -343,7 +426,7 @@ public class SessionService
                 }
                 else
                 {
-                    diagnostic.AppendLine("*** NO HAY SESSION ACTIVA VÁLIDA PARA AUTO-NAVEGACIÓN ***");
+                    diagnostic.AppendLine("*** NO HAY SESSION ACTIVA Vï¿½LIDA PARA AUTO-NAVEGACIï¿½N ***");
                 }
             }
             else
@@ -351,9 +434,9 @@ public class SessionService
                 diagnostic.AppendLine("*** NO HAY SESSIONS EN LA BASE DE DATOS ***");
             }
             
-            // === VERIFICAR CONFIGURACIONES (INFORMACIÓN) ===
+            // === VERIFICAR CONFIGURACIONES (INFORMACIï¿½N) ===
             diagnostic.AppendLine();
-            diagnostic.AppendLine("=== ANÁLISIS DE CONFIGURACIONES (SOLO INFORMATIVO) ===");
+            diagnostic.AppendLine("=== ANï¿½LISIS DE CONFIGURACIONES (SOLO INFORMATIVO) ===");
             var allConfigs = await _databaseService.GetAllAsync<Configuracion>();
             diagnostic.AppendLine($"Total configuraciones en BD: {allConfigs?.Count ?? 0}");
             
@@ -361,7 +444,7 @@ public class SessionService
             {
                 foreach (var config in allConfigs.OrderByDescending(c => c.Fecha))
                 {
-                    diagnostic.AppendLine($"  Configuración ID: {config.Id}");
+                    diagnostic.AppendLine($"  Configuraciï¿½n ID: {config.Id}");
                     diagnostic.AppendLine($"    Dispositivo: '{config.Dispositivo}'");
                     diagnostic.AppendLine($"    Ruta: '{config.Ruta}'");
                     diagnostic.AppendLine($"    Fecha: {config.Fecha}");
@@ -378,34 +461,34 @@ public class SessionService
                 }
             }
             
-            diagnostic.AppendLine("=== FIN DIAGNÓSTICO ===");
+            diagnostic.AppendLine("=== FIN DIAGNï¿½STICO ===");
             return diagnostic.ToString();
         }
         catch (Exception ex)
         {
-            return $"ERROR EN DIAGNÓSTICO: {ex.Message}";
+            return $"ERROR EN DIAGNï¿½STICO: {ex.Message}";
         }
     }
 
     /// <summary>
-    /// Obtiene un diagnóstico específico del problema de navegación
+    /// Obtiene un diagnï¿½stico especï¿½fico del problema de navegaciï¿½n
     /// </summary>
     public async Task<string> GetNavigationDiagnosticAsync()
     {
         try
         {
             var diagnostic = new StringBuilder();
-            diagnostic.AppendLine("=== DIAGNÓSTICO DE NAVEGACIÓN ===");
+            diagnostic.AppendLine("=== DIAGNï¿½STICO DE NAVEGACIï¿½N ===");
             diagnostic.AppendLine($"Tiempo: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             diagnostic.AppendLine();
             
-            // Verificar sesión actual
-            diagnostic.AppendLine("1. VERIFICACIÓN DE SESIÓN ACTUAL:");
+            // Verificar sesiï¿½n actual
+            diagnostic.AppendLine("1. VERIFICACIï¿½N DE SESIï¿½N ACTUAL:");
             var currentSession = await GetCurrentSessionAsync();
             
             if (currentSession != null)
             {
-                diagnostic.AppendLine($"   ? Sesión encontrada - ID: {currentSession.Id}");
+                diagnostic.AppendLine($"   ? Sesiï¿½n encontrada - ID: {currentSession.Id}");
                 diagnostic.AppendLine($"   ?? Usuario: {currentSession.Username} ({currentSession.NombreCompleto})");
                 diagnostic.AppendLine($"   ?? Empresa ID: {currentSession.IdEmpresa}");
                 diagnostic.AppendLine($"   ?? Token: {(string.IsNullOrEmpty(currentSession.Token) ? "AUSENTE" : $"PRESENTE ({currentSession.Token.Length} chars)")}");
@@ -422,54 +505,54 @@ public class SessionService
                 bool isValid = hasToken && notExpired && isActive;
                 
                 diagnostic.AppendLine();
-                diagnostic.AppendLine("   EVALUACIÓN DE VALIDEZ:");
-                diagnostic.AppendLine($"   - Tiene token: {(hasToken ? "? SÍ" : "? NO")}");
-                diagnostic.AppendLine($"   - No expirada: {(notExpired ? "? SÍ" : "? NO")}");
-                diagnostic.AppendLine($"   - Está activa: {(isActive ? "? SÍ" : "? NO")}");
-                diagnostic.AppendLine($"   - RESULTADO: {(isValid ? "? VÁLIDA - DEBERÍA PERMITIR HOMEPAGE" : "? INVÁLIDA - DEBERÍA IR A LOGIN")}");
+                diagnostic.AppendLine("   EVALUACIï¿½N DE VALIDEZ:");
+                diagnostic.AppendLine($"   - Tiene token: {(hasToken ? "? Sï¿½" : "? NO")}");
+                diagnostic.AppendLine($"   - No expirada: {(notExpired ? "? Sï¿½" : "? NO")}");
+                diagnostic.AppendLine($"   - Estï¿½ activa: {(isActive ? "? Sï¿½" : "? NO")}");
+                diagnostic.AppendLine($"   - RESULTADO: {(isValid ? "? Vï¿½LIDA - DEBERï¿½A PERMITIR HOMEPAGE" : "? INVï¿½LIDA - DEBERï¿½A IR A LOGIN")}");
             }
             else
             {
-                diagnostic.AppendLine("   ? NO HAY SESIÓN ACTUAL");
+                diagnostic.AppendLine("   ? NO HAY SESIï¿½N ACTUAL");
                 diagnostic.AppendLine("   ?? RESULTADO: DEBE IR A LOGIN");
             }
             
             diagnostic.AppendLine();
-            diagnostic.AppendLine("2. VERIFICACIÓN DEL MÉTODO HasValidTokenInSessionAsync:");
+            diagnostic.AppendLine("2. VERIFICACIï¿½N DEL Mï¿½TODO HasValidTokenInSessionAsync:");
             bool hasValidToken = await HasValidTokenInSessionAsync();
             diagnostic.AppendLine($"   Resultado: {(hasValidToken ? "? TRUE - DEBE IR A HOMEPAGE" : "? FALSE - DEBE IR A LOGIN")}");
             
             diagnostic.AppendLine();
-            diagnostic.AppendLine("3. RECOMENDACIÓN:");
+            diagnostic.AppendLine("3. RECOMENDACIï¿½N:");
             if (currentSession != null && hasValidToken)
             {
-                diagnostic.AppendLine("   ?? La aplicación DEBE navegar al HOMEPAGE y PERMANECER ahí");
-                diagnostic.AppendLine("   ?? Si está regresando al login, hay un problema en el HomePage o posterior");
+                diagnostic.AppendLine("   ?? La aplicaciï¿½n DEBE navegar al HOMEPAGE y PERMANECER ahï¿½");
+                diagnostic.AppendLine("   ?? Si estï¿½ regresando al login, hay un problema en el HomePage o posterior");
             }
             else
             {
-                diagnostic.AppendLine("   ?? La aplicación DEBE navegar al LOGIN");
-                diagnostic.AppendLine("   ?? Verificar por qué no se detectó sesión válida");
+                diagnostic.AppendLine("   ?? La aplicaciï¿½n DEBE navegar al LOGIN");
+                diagnostic.AppendLine("   ?? Verificar por quï¿½ no se detectï¿½ sesiï¿½n vï¿½lida");
             }
             
             return diagnostic.ToString();
         }
         catch (Exception ex)
         {
-            return $"ERROR EN DIAGNÓSTICO DE NAVEGACIÓN: {ex.Message}\nStackTrace: {ex.StackTrace}";
+            return $"ERROR EN DIAGNï¿½STICO DE NAVEGACIï¿½N: {ex.Message}\nStackTrace: {ex.StackTrace}";
         }
     }
 
     /// <summary>
-    /// Verifica si hay un token válido específicamente en la tabla Session
-    /// Este método determina si la aplicación debe ir directamente al homepage
-    /// Solo verifica Session, no Configuración
+    /// Verifica si hay un token vï¿½lido especï¿½ficamente en la tabla Session
+    /// Este mï¿½todo determina si la aplicaciï¿½n debe ir directamente al homepage
+    /// Solo verifica Session, no Configuraciï¿½n
     /// </summary>
     public async Task<bool> HasValidTokenInSessionAsync()
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === Iniciando verificación de token en Session (LÓGICA PRINCIPAL) ===");
+            System.Diagnostics.Debug.WriteLine("?? === Iniciando verificaciï¿½n de token en Session (Lï¿½GICA PRINCIPAL) ===");
             
             var sessions = await _databaseService.GetAllAsync<Session>();
             System.Diagnostics.Debug.WriteLine($"?? Total de sessions encontradas en BD: {sessions?.Count ?? 0}");
@@ -486,7 +569,7 @@ public class SessionService
                 System.Diagnostics.Debug.WriteLine($"?? Session ID: {session.Id}");
                 System.Diagnostics.Debug.WriteLine($"   - Usuario: {session.Username} ({session.NombreCompleto})");
                 System.Diagnostics.Debug.WriteLine($"   - Empresa: {session.IdEmpresa}");
-                System.Diagnostics.Debug.WriteLine($"   - Token: {(string.IsNullOrEmpty(session.Token) ? "VACÍO" : "PRESENTE")}");
+                System.Diagnostics.Debug.WriteLine($"   - Token: {(string.IsNullOrEmpty(session.Token) ? "VACï¿½O" : "PRESENTE")}");
                 System.Diagnostics.Debug.WriteLine($"   - Token length: {session.Token?.Length ?? 0}");
                 System.Diagnostics.Debug.WriteLine($"   - CreatedAt: {session.CreatedAt}");
                 System.Diagnostics.Debug.WriteLine($"   - ExpirationDate: {session.ExpirationDate}");
@@ -496,7 +579,7 @@ public class SessionService
                 System.Diagnostics.Debug.WriteLine($"   - Tiempo restante: {(session.ExpirationDate - DateTime.Now).TotalMinutes:F2} minutos");
             }
 
-            // Buscar la sesión más reciente que tenga token válido
+            // Buscar la sesiï¿½n mï¿½s reciente que tenga token vï¿½lido
             var activeSession = sessions
                 .Where(s => !string.IsNullOrEmpty(s.Token) && 
                            s.ExpirationDate > DateTime.Now &&
@@ -506,7 +589,7 @@ public class SessionService
             
             if (activeSession != null)
             {
-                System.Diagnostics.Debug.WriteLine($"? TOKEN VÁLIDO ENCONTRADO EN SESSION MÁS RECIENTE - IR A HOMEPAGE:");
+                System.Diagnostics.Debug.WriteLine($"? TOKEN Vï¿½LIDO ENCONTRADO EN SESSION Mï¿½S RECIENTE - IR A HOMEPAGE:");
                 System.Diagnostics.Debug.WriteLine($"   - Session ID: {activeSession.Id}");
                 System.Diagnostics.Debug.WriteLine($"   - Usuario: {activeSession.Username} ({activeSession.NombreCompleto})");
                 System.Diagnostics.Debug.WriteLine($"   - Empresa ID: {activeSession.IdEmpresa}");
@@ -515,40 +598,40 @@ public class SessionService
                 System.Diagnostics.Debug.WriteLine($"   - Expira: {activeSession.ExpirationDate}");
                 System.Diagnostics.Debug.WriteLine($"   - IsActive: {activeSession.IsActive}");
                 System.Diagnostics.Debug.WriteLine($"   - Tiempo restante: {(activeSession.ExpirationDate - DateTime.Now).TotalMinutes:F2} minutos");
-                System.Diagnostics.Debug.WriteLine("?? RESULTADO: La aplicación irá directamente al HOMEPAGE");
+                System.Diagnostics.Debug.WriteLine("?? RESULTADO: La aplicaciï¿½n irï¿½ directamente al HOMEPAGE");
                 
-                // Cargar esta sesión en memoria para uso futuro
+                // Cargar esta sesiï¿½n en memoria para uso futuro
                 _currentSession = activeSession;
                 
                 return true;
             }
             
-            System.Diagnostics.Debug.WriteLine("? NO HAY TOKEN VÁLIDO EN SESSION - IR A LOGIN");
+            System.Diagnostics.Debug.WriteLine("? NO HAY TOKEN Vï¿½LIDO EN SESSION - IR A LOGIN");
             System.Diagnostics.Debug.WriteLine("   Razones posibles:");
             System.Diagnostics.Debug.WriteLine("   - No hay sessions con token");
-            System.Diagnostics.Debug.WriteLine("   - Todas las sessions están expiradas");
-            System.Diagnostics.Debug.WriteLine("   - Todas las sessions están inactivas (IsActive = false)");
-            System.Diagnostics.Debug.WriteLine("?? RESULTADO: La aplicación irá al LOGIN");
+            System.Diagnostics.Debug.WriteLine("   - Todas las sessions estï¿½n expiradas");
+            System.Diagnostics.Debug.WriteLine("   - Todas las sessions estï¿½n inactivas (IsActive = false)");
+            System.Diagnostics.Debug.WriteLine("?? RESULTADO: La aplicaciï¿½n irï¿½ al LOGIN");
             return false;
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"? Error verificando token en Session: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"? StackTrace: {ex.StackTrace}");
-            System.Diagnostics.Debug.WriteLine("?? RESULTADO: Error - La aplicación irá al LOGIN por seguridad");
+            System.Diagnostics.Debug.WriteLine("?? RESULTADO: Error - La aplicaciï¿½n irï¿½ al LOGIN por seguridad");
             return false;
         }
     }
 
     /// <summary>
-    /// Carga la sesión más reciente de la base de datos al inicializar la aplicación
-    /// Este método debe ser llamado al inicio para verificar si hay una sesión activa
+    /// Carga la sesiï¿½n mï¿½s reciente de la base de datos al inicializar la aplicaciï¿½n
+    /// Este mï¿½todo debe ser llamado al inicio para verificar si hay una sesiï¿½n activa
     /// </summary>
     public async Task<Session?> LoadMostRecentSessionAsync()
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === CARGANDO SESIÓN MÁS RECIENTE AL INICIAR APLICACIÓN ===");
+            System.Diagnostics.Debug.WriteLine("?? === CARGANDO SESIï¿½N Mï¿½S RECIENTE AL INICIAR APLICACIï¿½N ===");
             
             var sessions = await _databaseService.GetAllAsync<Session>();
             
@@ -561,67 +644,67 @@ public class SessionService
             
             System.Diagnostics.Debug.WriteLine($"?? Total de sesiones encontradas: {sessions.Count}");
             
-            // Obtener la sesión más reciente (ordenada por CreatedAt)
+            // Obtener la sesiï¿½n mï¿½s reciente (ordenada por CreatedAt)
             var mostRecentSession = sessions
                 .OrderByDescending(s => s.CreatedAt)
                 .FirstOrDefault();
             
             if (mostRecentSession != null)
             {
-                System.Diagnostics.Debug.WriteLine($"?? SESIÓN MÁS RECIENTE ENCONTRADA:");
+                System.Diagnostics.Debug.WriteLine($"?? SESIï¿½N Mï¿½S RECIENTE ENCONTRADA:");
                 System.Diagnostics.Debug.WriteLine($"   - ID: {mostRecentSession.Id}");
                 System.Diagnostics.Debug.WriteLine($"   - Usuario: {mostRecentSession.Username} ({mostRecentSession.NombreCompleto})");
                 System.Diagnostics.Debug.WriteLine($"   - Empresa: {mostRecentSession.IdEmpresa}");
                 System.Diagnostics.Debug.WriteLine($"   - Creada: {mostRecentSession.CreatedAt}");
                 System.Diagnostics.Debug.WriteLine($"   - Expira: {mostRecentSession.ExpirationDate}");
                 System.Diagnostics.Debug.WriteLine($"   - IsActive: {mostRecentSession.IsActive}");
-                System.Diagnostics.Debug.WriteLine($"   - Token presente: {(!string.IsNullOrEmpty(mostRecentSession.Token) ? "SÍ" : "NO")}");
+                System.Diagnostics.Debug.WriteLine($"   - Token presente: {(!string.IsNullOrEmpty(mostRecentSession.Token) ? "Sï¿½" : "NO")}");
                 
-                // Verificar si es válida para uso
+                // Verificar si es vï¿½lida para uso
                 bool isValidForUse = !string.IsNullOrEmpty(mostRecentSession.Token) && 
                                    mostRecentSession.ExpirationDate > DateTime.Now && 
                                    mostRecentSession.IsActive;
                 
-                System.Diagnostics.Debug.WriteLine($"   - Es válida para usar: {(isValidForUse ? "SÍ" : "NO")}");
+                System.Diagnostics.Debug.WriteLine($"   - Es vï¿½lida para usar: {(isValidForUse ? "Sï¿½" : "NO")}");
                 
                 if (isValidForUse)
                 {
                     System.Diagnostics.Debug.WriteLine($"   - Tiempo restante: {(mostRecentSession.ExpirationDate - DateTime.Now).TotalMinutes:F2} minutos");
                     _currentSession = mostRecentSession;
-                    System.Diagnostics.Debug.WriteLine("?? ? Sesión válida cargada en memoria");
+                    System.Diagnostics.Debug.WriteLine("?? ? Sesiï¿½n vï¿½lida cargada en memoria");
                 }
                 else
                 {
                     if (string.IsNullOrEmpty(mostRecentSession.Token))
-                        System.Diagnostics.Debug.WriteLine("   - Razón de invalidez: Token vacío");
+                        System.Diagnostics.Debug.WriteLine("   - Razï¿½n de invalidez: Token vacï¿½o");
                     else if (mostRecentSession.ExpirationDate <= DateTime.Now)
-                        System.Diagnostics.Debug.WriteLine("   - Razón de invalidez: Sesión expirada");
+                        System.Diagnostics.Debug.WriteLine("   - Razï¿½n de invalidez: Sesiï¿½n expirada");
                     else if (!mostRecentSession.IsActive)
-                        System.Diagnostics.Debug.WriteLine("   - Razón de invalidez: Sesión inactiva");
+                        System.Diagnostics.Debug.WriteLine("   - Razï¿½n de invalidez: Sesiï¿½n inactiva");
                     
                     _currentSession = null;
-                    System.Diagnostics.Debug.WriteLine("?? ? Sesión encontrada pero no es válida");
+                    System.Diagnostics.Debug.WriteLine("?? ? Sesiï¿½n encontrada pero no es vï¿½lida");
                 }
                 
                 return mostRecentSession;
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("?? No se pudo obtener la sesión más reciente (error inesperado)");
+                System.Diagnostics.Debug.WriteLine("?? No se pudo obtener la sesiï¿½n mï¿½s reciente (error inesperado)");
                 _currentSession = null;
                 return null;
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"?? ? Error cargando sesión más reciente: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"?? ? Error cargando sesiï¿½n mï¿½s reciente: {ex.Message}");
             _currentSession = null;
             return null;
         }
     }
 
     /// <summary>
-    /// Método de conveniencia para verificar rápidamente si hay una sesión activa válida
+    /// Mï¿½todo de conveniencia para verificar rï¿½pidamente si hay una sesiï¿½n activa vï¿½lida
     /// </summary>
     public async Task<bool> HasActiveSessionAsync()
     {
@@ -635,7 +718,7 @@ public class SessionService
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error verificando sesión activa: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Error verificando sesiï¿½n activa: {ex.Message}");
             return false;
         }
     }

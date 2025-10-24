@@ -272,8 +272,7 @@ public class ApiService : IDisposable
 
     #region Authentication
 
-    public async Task<LoginResponse> LoginAsync(LoginRequest request
-    )
+    public async Task<LoginResponse> LoginAsync(LoginRequest request)
     {
         try
         {

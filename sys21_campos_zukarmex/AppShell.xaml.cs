@@ -5,9 +5,13 @@ namespace sys21_campos_zukarmex;
 
 public partial class AppShell : Shell
 {
-    public AppShell()
+    private readonly SessionService _sessionService;
+    public AppShell(SessionService sessionService)
     {
         InitializeComponent();
+        _sessionService = sessionService;
+
+        this.Navigating += OnShellNavigating;
 
         // Register routes for navigation
         Routing.RegisterRoute("loading", typeof(LoadingPage));
@@ -26,6 +30,31 @@ public partial class AppShell : Shell
         // Configure flyout behavior
         ConfigureFlyoutBehavior();
     }
+
+    private async void OnShellNavigating(object sender, ShellNavigatingEventArgs e)
+    {
+        string targetRoute = e.Target.Location.OriginalString.ToLower();
+        if (targetRoute == "//login" ||
+            targetRoute == "//sync" ||
+            targetRoute == "//loading" ||
+            targetRoute == "//adminconfig")
+        {
+            return;
+        }
+
+        bool hasPermission = await _sessionService.CheckPermissionForRouteAsync(e.Target.Location.OriginalString);
+
+        if (!hasPermission)
+        {
+            e.Cancel();
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Shell.Current.DisplayAlert("Acceso Denegado", "No tiene permiso para acceder a esta sección.", "OK");
+            });
+        }
+    }
+
     private void ConfigureFlyoutBehavior()
     {
         // Configure flyout to close after selection
