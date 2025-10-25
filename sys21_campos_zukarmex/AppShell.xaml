@@ -28,7 +28,7 @@
                                  Spacing="0">
 
                 <!-- Expander GENERAL -->
-                <toolkit:Expander>
+                <toolkit:Expander x:Name="expGeneral">
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
@@ -40,7 +40,8 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Inicio"
+                        <Button x:Name="btnHome"
+                                Text="Inicio"
                                 CommandParameter="//home"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
@@ -49,7 +50,7 @@
                 </toolkit:Expander>
 
                 <!-- Expander USO DE MAQUINARIA -->
-                <toolkit:Expander>
+                <toolkit:Expander x:Name="expMachinery">
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
@@ -61,17 +62,20 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Captura"
+                        <Button x:Name="btnMachineryCapture"
+                                Text="Captura"
                                 CommandParameter="//machineryUsage"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        <Button Text="Por Enviar"
+                        <Button x:Name="btnMachineryPending"
+                                Text="Por Enviar"
                                 CommandParameter="//machineryUsagePending"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        <Button Text="Historial"
+                        <Button x:Name="btnMachineryHistory"
+                                Text="Historial"
                                 CommandParameter="//machineryUsageHistory"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
@@ -80,7 +84,7 @@
                 </toolkit:Expander>
 
                 <!-- Expander PRECIPITACION PLUVIAL -->
-                <toolkit:Expander>
+                <toolkit:Expander x:Name="expRainfall">
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
@@ -91,30 +95,30 @@
                         </Grid>
                     </toolkit:Expander.Header>
 
-
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Captura"
-                            CommandParameter="//rainfall"
-                            Clicked="OnGeneralNavClicked"
-                            BackgroundColor="Transparent"
-                            TextColor="{DynamicResource Gray900}" />
-                        <Button Text="Por Enviar"
+                        <Button x:Name="btnRainfallCapture"
+                                Text="Captura"
+                                CommandParameter="//rainfall"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                        <Button x:Name="btnRainfallPending"
+                                Text="Por Enviar"
                                 CommandParameter="//rainfallPending"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-
-                        <Button Text="Historial"
+                        <Button x:Name="btnRainfallHistory"
+                                Text="Historial"
                                 CommandParameter="//rainfallHistory"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-               
                     </VerticalStackLayout>
                 </toolkit:Expander>
 
                 <!-- Expander TRAMPEO DE RATA -->
-                <toolkit:Expander>
+                <toolkit:Expander x:Name="expRat">
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
@@ -126,29 +130,29 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                    <Button Text="Captura"
-                            CommandParameter="//ratTrapping"
-                            Clicked="OnGeneralNavClicked"
-                            BackgroundColor="Transparent"
-                            TextColor="{DynamicResource Gray900}" />
-                    
-                    <Button Text="Por Enviar"
-                             CommandParameter="//ratTrappingPending"
-                             Clicked="OnGeneralNavClicked"
-                             BackgroundColor="Transparent"
-                             TextColor="{DynamicResource Gray900}" />
-                    
-                    <Button Text="Historial"
-                             CommandParameter="//ratTrappingHistory"
-                             Clicked="OnGeneralNavClicked"
-                             BackgroundColor="Transparent"
-                             TextColor="{DynamicResource Gray900}" />
+                        <Button x:Name="btnRatCapture"
+                                Text="Captura"
+                                CommandParameter="//ratTrapping"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                        <Button x:Name="btnRatPending"
+                                Text="Por Enviar"
+                                CommandParameter="//ratTrappingPending"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
+                        <Button x:Name="btnRatHistory"
+                                Text="Historial"
+                                CommandParameter="//ratTrappingHistory"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
                     </VerticalStackLayout>
-                    
                 </toolkit:Expander>
 
                 <!-- Expander CONSUMO DE RODENTICIDA -->
-                <toolkit:Expander>
+                <toolkit:Expander x:Name="expRodenticide">
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
@@ -160,17 +164,20 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Captura"
+                        <Button x:Name="btnRodenticideCapture"
+                                Text="Captura"
                                 CommandParameter="//rodenticideConsumption"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        <Button Text="Por Enviar"
+                        <Button x:Name="btnRodenticidePending"
+                                Text="Por Enviar"
                                 CommandParameter="//rodenticidePending"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
-                                TextColor="{DynamicResource Gray900}" />          
-                        <Button Text="Historial"
+                                TextColor="{DynamicResource Gray900}" />
+                        <Button x:Name="btnRodenticideHistory"
+                                Text="Historial"
                                 CommandParameter="//rodenticideHistory"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
@@ -178,8 +185,8 @@
                     </VerticalStackLayout>
                 </toolkit:Expander>
 
-                <!-- Expander MUESTRO DE DAÑO -->
-                <toolkit:Expander>
+                <!-- Expander MUESTREO DE DAÑO -->
+                <toolkit:Expander x:Name="expDamage">
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
@@ -191,27 +198,29 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Captura"
+                        <Button x:Name="btnDamageCapture"
+                                Text="Captura"
                                 CommandParameter="//damageAssessment"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        <Button Text="Por Enviar"
+                        <Button x:Name="btnDamagePending"
+                                Text="Por Enviar"
                                 CommandParameter="//damageAssessmentPending"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        <Button Text="Historial"
+                        <Button x:Name="btnDamageHistory"
+                                Text="Historial"
                                 CommandParameter="//damageAssessmentHistory"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-
                     </VerticalStackLayout>
                 </toolkit:Expander>
 
                 <!-- Expander LINEA DE RIEGO -->
-                <toolkit:Expander>
+                <toolkit:Expander x:Name="expIrrigation">
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
@@ -223,51 +232,53 @@
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                        <Button Text="Captura"
+                        <Button x:Name="btnIrrigationCapture"
+                                Text="Captura"
                                 CommandParameter="//irrigationLine"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-
-                        <Button Text="Por Enviar"
+                        <Button x:Name="btnIrrigationPending"
+                                Text="Por Enviar"
                                 CommandParameter="//irrigationLinePending"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        <Button Text="Historial"
-                                 CommandParameter="//irrigationLineHistory"
-                                 Clicked="OnGeneralNavClicked"
-                                 BackgroundColor="Transparent"
-                                 TextColor="{DynamicResource Gray900}" />
+                        <Button x:Name="btnIrrigationHistory"
+                                Text="Historial"
+                                CommandParameter="//irrigationLineHistory"
+                                Clicked="OnGeneralNavClicked"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Gray900}" />
                     </VerticalStackLayout>
                 </toolkit:Expander>
-                
+
                 <!-- Expander SYNC -->
-                <toolkit:Expander>
+                <toolkit:Expander x:Name="expSync">
                     <toolkit:Expander.Header>
                         <Grid Padding="10"
                               BackgroundColor="{DynamicResource Gray200}">
-                        <Label Text="SYNC"
-                                FontSize="18"
-                                FontAttributes="Bold"
-                                TextColor="{DynamicResource Primary}" />
+                            <Label Text="SYNC"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}" />
                         </Grid>
                     </toolkit:Expander.Header>
 
                     <VerticalStackLayout Padding="10,5">
-                       
-                        <Button Text="OneClick UPLOAD"
+                        <Button x:Name="btnOneClickUpload"
+                                Text="OneClick UPLOAD"
                                 CommandParameter="//oneClickUpload"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
-                        <Button Text="OneClick SYNC"
+                        <Button x:Name="btnOneClickSync"
+                                Text="OneClick SYNC"
                                 CommandParameter="//oneClickSync"
                                 Clicked="OnGeneralNavClicked"
                                 BackgroundColor="Transparent"
                                 TextColor="{DynamicResource Gray900}" />
                     </VerticalStackLayout>
-                    
                 </toolkit:Expander>
 
                 <!-- Opcional: puedes añadir separadores u otros enlaces aquí -->
@@ -294,7 +305,8 @@
                        TextColor="{DynamicResource Gray500}" />
             </StackLayout>
 
-            <Button Grid.Column="1"
+            <Button x:Name="btnLogout"
+                    Grid.Column="1"
                     Text="Cerrar Sesion"
                     FontSize="15"
                     BackgroundColor="Transparent"

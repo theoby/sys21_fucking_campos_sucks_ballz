@@ -1,5 +1,6 @@
 using sys21_campos_zukarmex.Views;
 using sys21_campos_zukarmex.Services;
+using Microsoft.Maui.Controls;
 
 namespace sys21_campos_zukarmex;
 
@@ -12,6 +13,9 @@ public partial class AppShell : Shell
         _sessionService = sessionService;
 
         this.Navigating += OnShellNavigating;
+        this.Navigated += AppShell_Navigated;
+
+        _ = ApplyPermissionsAsync();
 
         // Register routes for navigation
         Routing.RegisterRoute("loading", typeof(LoadingPage));
@@ -30,6 +34,91 @@ public partial class AppShell : Shell
         // Configure flyout behavior
         ConfigureFlyoutBehavior();
     }
+
+    private void AppShell_Navigated(object? sender, ShellNavigatedEventArgs e)
+    {
+        // No bloqueamos la navegación, sólo actualizamos la UI asíncronamente
+        MainThread.BeginInvokeOnMainThread(async () => await ApplyPermissionsAsync());
+    }
+
+    private async Task ApplyPermissionsAsync()
+    {
+        try
+        {
+            // Mapa controlName -> route (ruta que checkea SessionService)
+            var controlsToRoute = new Dictionary<string, string>
+            {
+                // General
+                { "btnHome", "//home" },
+
+                // Maquinaria
+                { "expMachinery", "//machineryUsage" },
+                { "btnMachineryCapture", "//machineryUsage" },
+                { "btnMachineryPending", "//machineryUsagePending" },
+                { "btnMachineryHistory", "//machineryUsageHistory" },
+
+                // Precipitación
+                { "expRainfall", "//rainfall" },
+                { "btnRainfallCapture", "//rainfall" },
+                { "btnRainfallPending", "//rainfallPending" },
+                { "btnRainfallHistory", "//rainfallHistory" },
+
+                // Trampeo de rata
+                { "expRat", "//ratTrapping" },
+                { "btnRatCapture", "//ratTrapping" },
+                { "btnRatPending", "//ratTrappingPending" },
+                { "btnRatHistory", "//ratTrappingHistory" },
+
+                // Rodenticida
+                { "expRodenticide", "//rodenticideConsumption" },
+                { "btnRodenticideCapture", "//rodenticideConsumption" },
+                { "btnRodenticidePending", "//rodenticidePending" },
+                { "btnRodenticideHistory", "//rodenticideHistory" },
+
+                // Muestreo de daño
+                { "expDamage", "//damageAssessment" },
+                { "btnDamageCapture", "//damageAssessment" },
+                { "btnDamagePending", "//damageAssessmentPending" },
+                { "btnDamageHistory", "//damageAssessmentHistory" },
+
+                // Irrigación
+                { "expIrrigation", "//irrigationLine" },
+                { "btnIrrigationCapture", "//irrigationLine" },
+                { "btnIrrigationPending", "//irrigationLinePending" },
+                { "btnIrrigationHistory", "//irrigationLineHistory" },
+
+                // Sync
+                { "expSync", "//oneClickSync" },
+                { "btnOneClickSync", "//oneClickSync" },
+                { "btnOneClickUpload", "//oneClickUpload" }
+            };
+
+            foreach (var kv in controlsToRoute)
+            {
+                var controlName = kv.Key;
+                var route = kv.Value;
+
+                bool hasPermission = await _sessionService.CheckPermissionForRouteAsync(route);
+
+                var found = this.FindByName<object>(controlName);
+
+                if (found is VisualElement ve)
+                {
+                    // Si el permiso es false, ocultamos; si true mostramos
+                    ve.IsVisible = hasPermission;
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"ApplyPermissionsAsync: control no encontrado: {controlName}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"ApplyPermissionsAsync error: {ex.Message}");
+        }
+    }
+
 
     private async void OnShellNavigating(object sender, ShellNavigatingEventArgs e)
     {
@@ -91,56 +180,32 @@ public partial class AppShell : Shell
     {
         try
         {
-            bool confirm = await Shell.Current.DisplayAlert(
-                "Cerrar Sesi�n", 
-                "�Est� seguro que desea cerrar sesi�n?", 
-                "S�", 
-                "No");
-                
-            if (confirm)
+            bool confirm = await Shell.Current.DisplayAlert("Cerrar Sesión", "¿Estás seguro que desea cerrar sesión?", "Sí", "No");
+            if (!confirm) return;
+
+            FlyoutIsPresented = false;
+
+            // obtén los servicios como ya lo haces
+            var serviceProvider = Handler?.MauiContext?.Services;
+            var sessionSvc = serviceProvider?.GetService<SessionService>();
+            var connectivitySvc = serviceProvider?.GetService<ConnectivityService>();
+
+            if (sessionSvc != null)
             {
-                // Close flyout first
-                FlyoutIsPresented = false;
-                
-                try
-                {
-                    // Get services from DI container
-                    var serviceProvider = Handler?.MauiContext?.Services;
-                    if (serviceProvider != null)
-                    {
-                        var sessionService = serviceProvider.GetService<SessionService>();
-                        var connectivityService = serviceProvider.GetService<ConnectivityService>();
-                        
-                        // Clear session
-                        if (sessionService != null)
-                        {
-                            await sessionService.ClearSessionAsync();
-                            System.Diagnostics.Debug.WriteLine("? Sesi�n limpiada correctamente");
-                        }
-                        
-                        // Stop connectivity monitoring
-                        if (connectivityService != null)
-                        {
-                            connectivityService.StopMonitoring();
-                            System.Diagnostics.Debug.WriteLine("? Monitoreo de conectividad detenido");
-                        }
-                    }
-                }
-                catch (Exception serviceEx)
-                {
-                    System.Diagnostics.Debug.WriteLine($"?? Error accediendo a servicios durante logout: {serviceEx.Message}");
-                    // Continue with navigation even if service cleanup fails
-                }
-                
-                // Navigate to login
-                await Shell.Current.GoToAsync("//login");
-                System.Diagnostics.Debug.WriteLine("? Navegaci�n a login completada");
+                await sessionSvc.ClearSessionAsync();
             }
+            connectivitySvc?.StopMonitoring();
+
+            // Navegar al login
+            await Shell.Current.GoToAsync("//login");
+
+            // REFRESCAR VISIBILIDADES inmediatamente después del logout
+            await ApplyPermissionsAsync();
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? Error durante logout: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error", "Error al cerrar sesi�n", "OK");
+            System.Diagnostics.Debug.WriteLine($"Error OnLogoutClicked: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error", "Error al cerrar sesión", "OK");
         }
     }
 
