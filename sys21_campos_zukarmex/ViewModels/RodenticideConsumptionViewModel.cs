@@ -66,7 +66,34 @@ namespace sys21_campos_zukarmex.ViewModels
 
         partial void OnCantidadComederosChanged(string value) => RecalculateTotals();
         partial void OnCantidadPastillasChanged(string value) => RecalculateTotals();
-        partial void OnConsumoChanged(string value) => RecalculateTotals();
+        partial void OnConsumoChanged(string newValue)
+        {
+            if (!int.TryParse(newValue, out var consumoActual))
+            {
+                RecalculateTotals();
+                return;
+            }
+
+            int comederos = int.TryParse(CantidadComederos, out var c) ? c : 0;
+            int pastillas = int.TryParse(CantidadPastillas, out var p) ? p : 0;
+            int limiteCebo = comederos * pastillas;
+
+            if (limiteCebo > 0 && consumoActual > limiteCebo)
+            {
+                Shell.Current.DisplayAlert(
+                    "Límite Excedido",
+                    $"El consumo no puede ser mayor al total de cebo disponible ({limiteCebo}).",
+                    "OK");
+
+                this.Consumo = limiteCebo.ToString();
+
+                RecalculateTotals();
+                return;
+            }
+
+            // Si pasa la validación, recalcula los totales
+            RecalculateTotals();
+        }
 
         private void RecalculateTotals()
         {
@@ -75,7 +102,8 @@ namespace sys21_campos_zukarmex.ViewModels
             int consumoActual = int.TryParse(Consumo, out var con) ? con : 0;
 
             TotalCebo = comederos * pastillas;
-            PorcentajeConsumo = (TotalCebo > 0) ? (double)consumoActual / TotalCebo : 0;
+
+            PorcentajeConsumo = (TotalCebo > 0) ? (double)consumoActual / TotalCebo * 100 : 0;
         }
 
         [RelayCommand]
@@ -86,6 +114,7 @@ namespace sys21_campos_zukarmex.ViewModels
                 await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, seleccione Zafra y Predio.", "OK");
                 return;
             }
+
 
             if (IsBusy) return;
             SetBusy(true);

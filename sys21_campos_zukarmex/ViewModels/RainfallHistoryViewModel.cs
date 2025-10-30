@@ -43,14 +43,12 @@ namespace sys21_campos_zukarmex.ViewModels
 
             try
             {
-                var empresaList = await _databaseService.GetAllAsync<Empresa>();
                 var pluviometroList = await _databaseService.GetAllAsync<Pluviometro>();
 
                 var listFromApi = await _apiService.GetRainfallHistoryAsync();
 
                 foreach (var item in listFromApi)
                 {
-                    item.EmpresaNombre = empresaList.FirstOrDefault(e => e.Id == item.IdEmpresa)?.Nombre ?? "Empresa N/D";
                     item.PluviometroNombre = pluviometroList.FirstOrDefault(p => p.Id == item.IdPluviometro)?.Nombre ?? "Pluviómetro N/D";
                 }
 

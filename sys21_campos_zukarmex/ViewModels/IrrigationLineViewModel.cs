@@ -17,10 +17,11 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty] private ObservableCollection<LineaDeRiego> lineasDeRiego = new();
         [ObservableProperty] private Campo? selectedPredio;
         [ObservableProperty] private LineaDeRiego? selectedLineaDeRiego;
-        [ObservableProperty] private DateTime fecha = DateTime.Now;
+        [ObservableProperty] private DateTime fecha = DateTime.Today;
         [ObservableProperty] private string equipoDeBombeo = string.Empty;
         [ObservableProperty] private string equiposDeBombeoOperando = string.Empty;
         [ObservableProperty] private string observacion = string.Empty;
+        public DateTime MinDate { get; } = DateTime.Today.AddDays(-1);
 
         public IrrigationLineViewModel(DatabaseService databaseService, SessionService sessionService)
         {

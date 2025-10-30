@@ -16,9 +16,7 @@ namespace sys21_campos_zukarmex.ViewModels
 
         private bool isInitialized = false;
 
-        [ObservableProperty] private ObservableCollection<Empresa> empresas = new();
         [ObservableProperty] private ObservableCollection<Pluviometro> pluviometros = new();
-        [ObservableProperty] private Empresa? selectedEmpresa;
         [ObservableProperty] private Pluviometro? selectedPluviometro;
         [ObservableProperty] private DateTime fecha = DateTime.Now.AddDays(-1);
         [ObservableProperty] private string precipitacion = string.Empty;
@@ -43,10 +41,6 @@ namespace sys21_campos_zukarmex.ViewModels
             if (IsBusy) return;
             try
             {
-                SetBusy(true);
-                var empresaList = await _databaseService.GetAllAsync<Empresa>();
-                Empresas.Clear();
-                foreach (var empresa in empresaList) Empresas.Add(empresa);
 
                 if (ConnectivitySvc.IsConnected)
                 {
@@ -66,7 +60,7 @@ namespace sys21_campos_zukarmex.ViewModels
         [RelayCommand]
         private async Task AddRainfallAsync()
         {
-            if (SelectedEmpresa == null || SelectedPluviometro == null || string.IsNullOrWhiteSpace(Precipitacion))
+            if (SelectedPluviometro == null || string.IsNullOrWhiteSpace(Precipitacion))
             {
                 await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, complete todos los campos.", "OK");
                 return;
@@ -79,7 +73,6 @@ namespace sys21_campos_zukarmex.ViewModels
             {
                 var newRainfall = new SalidaPrecipitacion
                 {
-                    IdEmpresa = SelectedEmpresa.Id,
                     IdPluviometro = SelectedPluviometro.Id,
                     Fecha = this.Fecha,
                     Precipitacion = decimal.TryParse(Precipitacion, out var p) ? p : 0
@@ -112,7 +105,6 @@ namespace sys21_campos_zukarmex.ViewModels
 
         private void ClearForm()
         {
-            SelectedEmpresa = null;
             SelectedPluviometro = null;
             Precipitacion = string.Empty;
             Fecha = DateTime.Now.AddDays(-1);

@@ -5,6 +5,7 @@
              xmlns:behaviors="clr-namespace:sys21_campos_zukarmex.Behaviors"
              x:Class="sys21_campos_zukarmex.Views.IrrigationLine.IrrigationLinePage"
              x:DataType="viewmodels:IrrigationLineViewModel"
+             xmlns:system="clr-namespace:System;assembly=netstandard"
              Title="{Binding Title}"
              BackgroundColor="{DynamicResource Gray100}">
 
@@ -56,7 +57,10 @@
                                 <DatePicker Date="{Binding Fecha}" 
                                             Format="dd/MM/yyyy"
                                             FontSize="16"
-                                            BackgroundColor="Transparent" />
+                                            BackgroundColor="Transparent"
+                                            MaximumDate="{x:Static Member=system:DateTime.Today}"
+                                            MinimumDate="{Binding MinDate}"
+                                            x:Name="DateInput" />
                             </Frame>
                         </StackLayout>
 

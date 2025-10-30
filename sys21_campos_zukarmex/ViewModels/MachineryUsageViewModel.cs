@@ -17,11 +17,9 @@ namespace sys21_campos_zukarmex.ViewModels
         public ConnectivityService ConnectivitySvc => _connectivityService;
         private bool isInitialized = false;
 
-        [ObservableProperty] private ObservableCollection<Empresa> empresas = new();
         [ObservableProperty] private ObservableCollection<Lote> campos = new();
         [ObservableProperty] private ObservableCollection<Maquinaria> equipos = new();
 
-        [ObservableProperty] private Empresa? selectedEmpresa;
         [ObservableProperty] private Lote? selectedCampo;
         [ObservableProperty] private Maquinaria? selectedEquipo;
         [ObservableProperty] private DateTime fecha = DateTime.Now;
@@ -54,10 +52,6 @@ namespace sys21_campos_zukarmex.ViewModels
                 SetBusy(true);
                 var session = await _sessionService.GetCurrentSessionAsync();
                 if (session == null) { /* ... error ... */ return; }
-
-                var empresaList = await _databaseService.GetAllAsync<Empresa>();
-                Empresas.Clear();
-                foreach (var item in empresaList.OrderBy(e => e.Nombre)) Empresas.Add(item);
 
                 var equipoList = await _databaseService.GetAllAsync<Maquinaria>();
                 Equipos.Clear();
@@ -177,7 +171,6 @@ namespace sys21_campos_zukarmex.ViewModels
         }
         private void ClearForm()
         {
-            SelectedEmpresa = null;
             SelectedCampo = null;
             SelectedEquipo = null;
             Fecha = DateTime.Now;
