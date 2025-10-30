@@ -947,7 +947,8 @@ public class ApiService : IDisposable
                 HorasTrabajadas = usage.HorasTrabajadas,
                 KilometrajeOdometro = usage.KilometrajeOdometro,
                 Lat = usage.Lat,
-                Lng = usage.Lng
+                Lng = usage.Lng,
+                Fecha = usage.Fecha
             };  
 
             var requestBody = new List<SalidaMaquinaria> { apiRequest };
@@ -1020,7 +1021,8 @@ public class ApiService : IDisposable
                     HorasTrabajadas = usage.HorasTrabajadas,
                     KilometrajeOdometro = usage.KilometrajeOdometro,
                     Lat = usage.Lat,
-                    Lng = usage.Lng
+                    Lng = usage.Lng,
+                    Fecha = usage.Fecha
                 };
                 apiRequests.Add(apiRequest);
             }

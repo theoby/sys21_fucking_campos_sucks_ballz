@@ -8,12 +8,10 @@ public class SalidaMaquinaria
     public int Id { get; set; }
 
     public int? IdGrupo { get; set; }
-
     public int IdMaquinaria { get; set; } = 0;
     public int IdCampo { get; set; } = 0;
     public decimal? HorasTrabajadas { get; set; }
     public DateTime? Fecha { get; set; }
-
     public decimal? KilometrajeOdometro { get; set; }
     public string? Lng { get; set; } = string.Empty;
     public string? Lat { get; set; } = string.Empty;

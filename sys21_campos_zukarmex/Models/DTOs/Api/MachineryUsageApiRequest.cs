@@ -17,6 +17,9 @@ public class MachineryUsageApiRequest
     [JsonProperty("kilometrajeOdometro")]
     public decimal KilometrajeOdometro { get; set; }
 
+    [JsonProperty("fecha")]
+    public decimal Fecha { get; set; }
+
     [JsonProperty("lat")]
     public string Lat { get; set; }
 
