@@ -505,7 +505,7 @@ public class CatalogApiService : BaseApiService
     #region Lote Operations
 
     /// <summary>
-    /// Obtiene lotes desde la API con mapeo específico de DTOs
+    /// Obtiene lotes desde la API con mapeo especï¿½fico de DTOs
     /// </summary>
     public async Task<List<Lote>> GetLotesAsync()
     {
@@ -543,6 +543,53 @@ public class CatalogApiService : BaseApiService
     }
 
     public async Task<Lote?> GetLoteByIdAsync(int id)
+    {
+        return await GetByIdAsync<Lote>(AppConfigService.LotesEndpoint, id);
+    }
+
+    #endregion
+
+    #region Lote Operations
+
+    /// <summary>
+    /// Obtiene lotes desde la API con mapeo especï¿½fico de DTOs
+    /// </summary>
+    public async Task<List<LineaDeRiego>> GetLineasDeRiegoAsync()
+    {
+        try
+        {
+            UpdateBaseAddress();
+            var response = await _httpClient.GetAsync(AppConfigService.LineasDeRiegoEndpoint);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"Raw API Response - Lineas de Riego: {content}");
+
+                try
+                {
+                    var standardResponse = JsonConvert.DeserializeObject<StandardApiResponse<LineaDeRiegoApiDto>>(content);
+                    if (standardResponse != null && standardResponse.Success)
+                    {
+                        var LineaDeRiego = standardResponse.Datos.Select(dto => dto.ToLineaDeRiego()).ToList();
+                        System.Diagnostics.Debug.WriteLine($"Lotes convertidos: {LineaDeRiego.Count}");
+                        return LineaDeRiego;
+                    }
+                }
+                catch (JsonException)
+                {
+                    return await GetCatalogAsync<LineaDeRiego>(AppConfigService.LineasDeRiegoEndpoint);
+                }
+            }
+            return new List<LineaDeRiego>();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Exception en GetLineasDeRiegoAsync: {ex}");
+            return new List<LineaDeRiego>();
+        }
+    }
+
+    public async Task<Lote?> GetLineaDeRiegoByIdAsync(int id)
     {
         return await GetByIdAsync<Lote>(AppConfigService.LotesEndpoint, id);
     }

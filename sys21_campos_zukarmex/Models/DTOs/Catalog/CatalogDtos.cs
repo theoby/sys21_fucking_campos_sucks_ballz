@@ -384,3 +384,27 @@ public class LoteApiDto
 }
 
 #endregion
+
+#region LineaDeRiego
+
+public class LineaDeRiegoApiDto
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public int CantidadEquiposBombeo { get; set; } = 0;
+    public int CantidadLaminaRiego { get; set; } = 0;
+
+    public LineaDeRiego ToLineaDeRiego()
+    {
+        return new LineaDeRiego
+        {
+            Id = Id,
+            Nombre = Nombre,
+            CantidadEquiposBombeo = CantidadEquiposBombeo,
+            CantidadLaminaRiego = CantidadLaminaRiego
+        };
+    }
+}
+
+#endregion
+

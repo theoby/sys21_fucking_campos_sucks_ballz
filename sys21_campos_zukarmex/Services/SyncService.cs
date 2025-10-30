@@ -156,6 +156,12 @@ public class SyncService
             _subFamiliaRepository.ClearAllAsync, _subFamiliaRepository.SaveAllAsync, 
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
+    private async Task SyncLineasDeRiegoAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
+    {
+        await SyncCatalogAsync("LineasDeRiego", _apiService.GetLineasDeRiegoAsync,
+            _lineaDeRiegoRepository.ClearAllAsync, _lineaDeRiegoRepository.SaveAllAsync,
+            progress, syncStatuses, currentCatalog, totalCatalogs);
+    }
 
     private async Task SyncArticulosAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
     {
@@ -168,13 +174,6 @@ public class SyncService
     {
         await SyncCatalogAsync("Maquinarias", _apiService.GetMaquinariasAsync, 
             _maquinariaRepository.ClearAllAsync, _maquinariaRepository.SaveAllAsync, 
-            progress, syncStatuses, currentCatalog, totalCatalogs);
-    }
-
-    private async Task SyncLineasDeRiegoAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
-    {
-        await SyncCatalogAsync("LineasDeRiego", _apiService.GetLineasDeRiegoAsync,
-            _lineaDeRiegoRepository.ClearAllAsync, _lineaDeRiegoRepository.SaveAllAsync,
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
 
