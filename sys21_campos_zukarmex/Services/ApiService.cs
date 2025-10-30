@@ -1412,9 +1412,9 @@ public class ApiService : IDisposable
         return await GetCatalogAsync<Almacen>(AppConfigService.AlmacenesEndpoint);
     }
 
-    public async Task<List<Almacen>> GetLineasDeRiegoAsync()
+    public async Task<List<LineaDeRiego>> GetLineasDeRiegoAsync()
     {
-        return await GetCatalogAsync<Almacen>(AppConfigService.AlmacenesEndpoint);
+        return await GetCatalogAsync<LineaDeRiego>(AppConfigService.LineasDeRiegoEndpoint);
     }
 
     public async Task<List<Articulo>> GetArticulosAsync()

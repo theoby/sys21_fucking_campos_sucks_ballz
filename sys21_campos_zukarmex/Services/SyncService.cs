@@ -115,6 +115,13 @@ public class SyncService
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
 
+    private async Task SyncLineasDeRiegoAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
+    {
+        await SyncCatalogAsync("LineasDeRiego", _apiService.GetLineasDeRiegoAsync,
+            _lineaDeRiegoRepository.ClearAllAsync, _lineaDeRiegoRepository.SaveAllAsync,
+            progress, syncStatuses, currentCatalog, totalCatalogs);
+    }
+
     private async Task SyncInspectoresAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
     {
         await SyncCatalogAsync("Inspectores", _apiService.GetInspectoresAsync, 
@@ -154,12 +161,6 @@ public class SyncService
     {
         await SyncCatalogAsync("SubFamilias", _apiService.GetSubFamiliasAsync, 
             _subFamiliaRepository.ClearAllAsync, _subFamiliaRepository.SaveAllAsync, 
-            progress, syncStatuses, currentCatalog, totalCatalogs);
-    }
-    private async Task SyncLineasDeRiegoAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
-    {
-        await SyncCatalogAsync("LineasDeRiego", _apiService.GetLineasDeRiegoAsync,
-            _lineaDeRiegoRepository.ClearAllAsync, _lineaDeRiegoRepository.SaveAllAsync,
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
 
