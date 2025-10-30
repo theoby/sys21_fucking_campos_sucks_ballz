@@ -72,7 +72,8 @@
                                        Keyboard="Text"
                                        FontSize="16"
                                        BackgroundColor="Transparent"
-                                       PlaceholderColor="{StaticResource Gray600}" />
+                                       PlaceholderColor="{StaticResource Gray600}" 
+                                       IsReadOnly="True"/>
                             </Frame>
                         </StackLayout>
 

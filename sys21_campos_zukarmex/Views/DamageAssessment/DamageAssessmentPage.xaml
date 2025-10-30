@@ -90,7 +90,8 @@
                                        FontSize="16"
                                        HorizontalTextAlignment="Center"
                                        BackgroundColor="Transparent"
-                                       PlaceholderColor="{StaticResource Gray600}">
+                                       PlaceholderColor="{StaticResource Gray600}"
+                                       IsReadOnly="True">
                                     <Entry.Behaviors>
                                         <behaviors:NumericValidationBehavior />
                                     </Entry.Behaviors>

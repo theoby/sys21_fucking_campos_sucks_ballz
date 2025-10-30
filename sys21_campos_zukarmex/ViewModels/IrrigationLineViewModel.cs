@@ -23,6 +23,8 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty] private string observacion = string.Empty;
         public DateTime MinDate { get; } = DateTime.Today.AddDays(-1);
 
+        private int maxEquiposOperando = 0;
+
         public IrrigationLineViewModel(DatabaseService databaseService, SessionService sessionService)
         {
             _databaseService = databaseService;
@@ -60,12 +62,39 @@ namespace sys21_campos_zukarmex.ViewModels
             finally { SetBusy(false); }
         }
 
+        partial void OnSelectedLineaDeRiegoChanged(LineaDeRiego? value)
+        {
+            if (value != null)
+            {
+                EquipoDeBombeo = value.CantidadEquiposBombeo.ToString();
+                maxEquiposOperando = value.CantidadEquiposBombeo;
+            }
+            else
+            {
+                EquipoDeBombeo = string.Empty;
+                maxEquiposOperando = 0;
+            }
+            EquiposDeBombeoOperando = string.Empty;
+        }
+
         [RelayCommand]
         private async Task AddIrrigationEntryAsync()
         {
             if (SelectedPredio == null || SelectedLineaDeRiego == null)
             {
                 await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, seleccione un Predio y una Línea de Riego.", "OK");
+                return;
+            }
+
+            if (!int.TryParse(EquiposDeBombeoOperando, out int operando) || operando <= 0)
+            {
+                await Shell.Current.DisplayAlert("Dato Inválido", "Debe ingresar un número válido y mayor a 0 para los 'Equipos de bombeo operando'.", "OK");
+                return;
+            }
+
+            if (operando > maxEquiposOperando)
+            {
+                await Shell.Current.DisplayAlert("Dato Inválido", $"El número de equipos operando ({operando}) no puede ser mayor al total de equipos de bombeo ({maxEquiposOperando}).", "OK");
                 return;
             }
 
@@ -112,11 +141,13 @@ namespace sys21_campos_zukarmex.ViewModels
 
         private void ClearForm()
         {
+            SelectedPredio = null; 
             SelectedLineaDeRiego = null;
-            Fecha = DateTime.Now;
+            Fecha = DateTime.Today;
             EquipoDeBombeo = string.Empty;
             EquiposDeBombeoOperando = string.Empty;
             Observacion = string.Empty;
+            maxEquiposOperando = 0; 
         }
     }
 }
