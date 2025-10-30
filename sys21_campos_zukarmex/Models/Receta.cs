@@ -16,7 +16,7 @@ namespace sys21_campos_zukarmex.Models
         public int IdCampo { get; set; }
 
         /// <summary>
-        /// ID del almacén desde la API
+        /// ID del almacï¿½n desde la API
         /// </summary>
         public int IdAlmacen { get; set; }
         
@@ -31,11 +31,11 @@ namespace sys21_campos_zukarmex.Models
         public int TipoReceta { get; set; }
         
         /// <summary>
-        /// ID único de la receta desde la API (usado para relacionar con RecetaArticulo)
+        /// ID ï¿½nico de la receta desde la API (usado para relacionar con RecetaArticulo)
         /// </summary>
         public int IdReceta { get; set; }
         
-        // Propiedades de navegación (no se guardan en BD)
+        // Propiedades de navegaciï¿½n (no se guardan en BD)
         [Ignore]
         public List<RecetaArticulo> Articulos { get; set; } = new();
 
@@ -45,11 +45,11 @@ namespace sys21_campos_zukarmex.Models
         [JsonIgnore]
         public string CampoNombre { get; set; } = string.Empty;
         
-        // Propiedad calculada para obtener cantidad de artículos
+        // Propiedad calculada para obtener cantidad de artï¿½culos
         [Ignore]
         public int ArticulosCount => Articulos?.Count ?? 0;
         
-        // Método para agregar un artículo a la receta (usa IdReceta para relacionar)
+        // Mï¿½todo para agregar un artï¿½culo a la receta (usa IdReceta para relacionar)
         public void AgregarArticulo(RecetaArticulo articulo)
         {
             articulo.IdReceta = this.IdReceta; // Usar IdReceta en lugar de Id
@@ -57,7 +57,7 @@ namespace sys21_campos_zukarmex.Models
             Articulos.Add(articulo);
         }
         
-        // Método para remover un artículo de la receta
+        // Mï¿½todo para remover un artï¿½culo de la receta
         public bool RemoverArticulo(int idArticulo)
         {
             if (Articulos == null) return false;

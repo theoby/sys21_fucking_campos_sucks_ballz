@@ -107,6 +107,21 @@ public class CicloRepository : BaseRepository<Ciclo>, ICicloRepository
     }
 }
 
+public interface ILineaDeRiegoRepository : IRepository<LineaDeRiego>
+{
+    Task<LineaDeRiego?> GetByNameAsync(string nombre);
+}
+
+public class LineaDeRiegoRepository : BaseRepository<LineaDeRiego>, ILineaDeRiegoRepository
+{
+    public LineaDeRiegoRepository(DatabaseService databaseService) : base(databaseService) { }
+
+    public async Task<LineaDeRiego?> GetByNameAsync(string nombre)
+    {
+        return await _databaseService.GetLineaDeRiegoByNameAsync(nombre);
+    }
+}
+
 
 public interface IEmpresaRepository : IRepository<Empresa>
 {

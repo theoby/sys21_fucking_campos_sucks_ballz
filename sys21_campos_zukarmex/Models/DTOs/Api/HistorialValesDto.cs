@@ -37,7 +37,7 @@ namespace sys21_campos_zukarmex.Models.DTOs.Api
         public string EstatusTexto => Estatus ? "Activo" : "Cancelado";
         
         /// <summary>
-        /// Texto descriptivo de autorización para mostrar en la UI
+        /// Texto descriptivo de autorizaciï¿½n para mostrar en la UI
         /// Si Autorizado es false, es "pendiente por autorizar", si es true, es "Autorizado"
         /// </summary>
         public string AutorizadoTexto => Autorizado ? "Autorizado" : "Pendiente por autorizar";
@@ -48,7 +48,7 @@ namespace sys21_campos_zukarmex.Models.DTOs.Api
         public string EstatusColor => Estatus ? "Green" : "Orange";
         
         /// <summary>
-        /// Color para la autorización basado en el estado
+        /// Color para la autorizaciï¿½n basado en el estado
         /// </summary>
         public string AutorizadoColor => Autorizado ? "Green" : "Red";
         

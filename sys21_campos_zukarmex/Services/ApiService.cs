@@ -1160,6 +1160,8 @@ public class ApiService : IDisposable
             return new List<SalidaPrecipitacion>();
         }
     }
+
+
     #endregion
 
     #region DAMAGE Operations (CON TOKEN BEARER)
@@ -1406,6 +1408,11 @@ public class ApiService : IDisposable
     }
 
     public async Task<List<Almacen>> GetAlmacenesAsync()
+    {
+        return await GetCatalogAsync<Almacen>(AppConfigService.AlmacenesEndpoint);
+    }
+
+    public async Task<List<Almacen>> GetLineasDeRiegoAsync()
     {
         return await GetCatalogAsync<Almacen>(AppConfigService.AlmacenesEndpoint);
     }

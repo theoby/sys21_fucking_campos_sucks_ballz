@@ -83,42 +83,42 @@ public partial class HomeViewModel : BaseViewModel
 
     public override async Task InitializeAsync()
     {
-        System.Diagnostics.Debug.WriteLine("?? === INICIANDO INICIALIZACIÓN DE HOMEVIEWMODEL (MODO PERMISIVO) ===");
+        System.Diagnostics.Debug.WriteLine("?? === INICIANDO INICIALIZACIï¿½N DE HOMEVIEWMODEL (MODO PERMISIVO) ===");
         System.Diagnostics.Debug.WriteLine($"?? Tiempo actual: {DateTime.Now}");
         
         try
         {
-            // Verificación menos agresiva - solo verificar que hay una sesión
-            System.Diagnostics.Debug.WriteLine("?? Verificando disponibilidad de sesión...");
+            // Verificaciï¿½n menos agresiva - solo verificar que hay una sesiï¿½n
+            System.Diagnostics.Debug.WriteLine("?? Verificando disponibilidad de sesiï¿½n...");
             var currentSession = await _sessionService.GetCurrentSessionAsync();
             
             if (currentSession == null)
             {
-                System.Diagnostics.Debug.WriteLine("?? No hay sesión disponible en HomePage");
-                // No redirigir automáticamente, puede ser un problema temporal
-                WelcomeMessage = "Sesión no disponible";
+                System.Diagnostics.Debug.WriteLine("?? No hay sesiï¿½n disponible en HomePage");
+                // No redirigir automï¿½ticamente, puede ser un problema temporal
+                WelcomeMessage = "Sesiï¿½n no disponible";
                 UserName = "Usuario";
                 UserRole = "Desconocido";
                 CompanyName = "No disponible";
                 return;
             }
             
-            System.Diagnostics.Debug.WriteLine("? Sesión encontrada en HomePage:");
+            System.Diagnostics.Debug.WriteLine("? Sesiï¿½n encontrada en HomePage:");
             System.Diagnostics.Debug.WriteLine($"   - Usuario: {currentSession.Username} ({currentSession.NombreCompleto})");
             System.Diagnostics.Debug.WriteLine($"   - Empresa ID: {currentSession.IdEmpresa}");
-            System.Diagnostics.Debug.WriteLine($"   - Token presente: {(!string.IsNullOrEmpty(currentSession.Token) ? "SÍ" : "NO")}");
+            System.Diagnostics.Debug.WriteLine($"   - Token presente: {(!string.IsNullOrEmpty(currentSession.Token) ? "Sï¿½" : "NO")}");
             System.Diagnostics.Debug.WriteLine($"   - Expira: {currentSession.ExpirationDate}");
             System.Diagnostics.Debug.WriteLine($"   - IsActive: {currentSession.IsActive}");
             
-            // Configurar token en ApiService si está disponible
+            // Configurar token en ApiService si estï¿½ disponible
             if (!string.IsNullOrEmpty(currentSession.Token))
             {
                 _apiService.SetAuthToken(currentSession.Token);
                 System.Diagnostics.Debug.WriteLine("?? Token configurado en ApiService");
             }
             
-            // Continuar con la inicialización normal sin verificaciones estrictas
-            System.Diagnostics.Debug.WriteLine("?? Procediendo con inicialización normal...");
+            // Continuar con la inicializaciï¿½n normal sin verificaciones estrictas
+            System.Diagnostics.Debug.WriteLine("?? Procediendo con inicializaciï¿½n normal...");
             
             await LoadUserInfoAsync();
             await LoadStatisticsAsync();
@@ -129,16 +129,16 @@ public partial class HomeViewModel : BaseViewModel
                 await GetPendingValesCountAsync();
             }
             
-            System.Diagnostics.Debug.WriteLine("? === INICIALIZACIÓN DE HOMEVIEWMODEL COMPLETADA EXITOSAMENTE ===");
+            System.Diagnostics.Debug.WriteLine("? === INICIALIZACIï¿½N DE HOMEVIEWMODEL COMPLETADA EXITOSAMENTE ===");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? === ERROR EN INICIALIZACIÓN DE HOMEVIEWMODEL ===");
+            System.Diagnostics.Debug.WriteLine($"? === ERROR EN INICIALIZACIï¿½N DE HOMEVIEWMODEL ===");
             System.Diagnostics.Debug.WriteLine($"? Error: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"? StackTrace: {ex.StackTrace}");
             
             // En caso de error, mostrar valores por defecto en lugar de redirigir
-            WelcomeMessage = "Error cargando información";
+            WelcomeMessage = "Error cargando informaciï¿½n";
             UserName = "Usuario";
             UserRole = "Desconocido";
             CompanyName = "Error";
@@ -147,7 +147,7 @@ public partial class HomeViewModel : BaseViewModel
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await Shell.Current.DisplayAlert("Advertencia", 
-                    "Hubo un problema cargando la información. Algunos datos pueden no estar disponibles.", "OK");
+                    "Hubo un problema cargando la informaciï¿½n. Algunos datos pueden no estar disponibles.", "OK");
             });
         }
     }
@@ -167,24 +167,24 @@ public partial class HomeViewModel : BaseViewModel
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === INICIANDO CARGA DE INFORMACIÓN DE USUARIO (MODO TOLERANTE) ===");
+            System.Diagnostics.Debug.WriteLine("?? === INICIANDO CARGA DE INFORMACIï¿½N DE USUARIO (MODO TOLERANTE) ===");
             
-            // Obtener sesión de forma segura
+            // Obtener sesiï¿½n de forma segura
             var session = await _sessionService.GetCurrentSessionAsync();
             
             if (session == null)
             {
-                System.Diagnostics.Debug.WriteLine("?? No hay sesión disponible - usando valores por defecto");
-                WelcomeMessage = "Sesión no disponible";
+                System.Diagnostics.Debug.WriteLine("?? No hay sesiï¿½n disponible - usando valores por defecto");
+                WelcomeMessage = "Sesiï¿½n no disponible";
                 UserName = "Usuario";
                 UserRole = "Desconocido";
                 CompanyName = "No disponible";
-                return; // Retornar sin lanzar excepción
+                return; // Retornar sin lanzar excepciï¿½n
             }
             
-            System.Diagnostics.Debug.WriteLine($"? Sesión encontrada - Usuario: {session.Username}, Empresa ID: {session.IdEmpresa}");
+            System.Diagnostics.Debug.WriteLine($"? Sesiï¿½n encontrada - Usuario: {session.Username}, Empresa ID: {session.IdEmpresa}");
             
-            // Obtener información de usuario de forma segura
+            // Obtener informaciï¿½n de usuario de forma segura
             try
             {
                 UserName = await _sessionService.GetCurrentUserNameAsync() ?? "Usuario";
@@ -205,10 +205,10 @@ public partial class HomeViewModel : BaseViewModel
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"?? Error obteniendo rol de usuario: {ex.Message}");
-                UserRole = "Usuario estándar";
+                UserRole = "Usuario estï¿½ndar";
             }
             
-            // Obtener información de empresa de forma segura
+            // Obtener informaciï¿½n de empresa de forma segura
             try
             {
                 var empresas = await _databaseService.GetAllAsync<Empresa>();
@@ -224,7 +224,7 @@ public partial class HomeViewModel : BaseViewModel
                     else
                     {
                         CompanyName = $"Empresa ID: {session.IdEmpresa}";
-                        System.Diagnostics.Debug.WriteLine($"?? No se encontró empresa con ID {session.IdEmpresa}");
+                        System.Diagnostics.Debug.WriteLine($"?? No se encontrï¿½ empresa con ID {session.IdEmpresa}");
                     }
                 }
                 else
@@ -235,7 +235,7 @@ public partial class HomeViewModel : BaseViewModel
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"?? Error obteniendo información de empresa: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"?? Error obteniendo informaciï¿½n de empresa: {ex.Message}");
                 CompanyName = $"Empresa ID: {session.IdEmpresa}";
             }
             
@@ -245,20 +245,20 @@ public partial class HomeViewModel : BaseViewModel
                 : $"Bienvenido, {UserName}";
             
             System.Diagnostics.Debug.WriteLine($"?? Mensaje de bienvenida: '{WelcomeMessage}'");
-            System.Diagnostics.Debug.WriteLine("? === CARGA DE INFORMACIÓN DE USUARIO COMPLETADA (MODO TOLERANTE) ===");
+            System.Diagnostics.Debug.WriteLine("? === CARGA DE INFORMACIï¿½N DE USUARIO COMPLETADA (MODO TOLERANTE) ===");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? === ERROR GENERAL EN CARGA DE INFORMACIÓN DE USUARIO ===");
+            System.Diagnostics.Debug.WriteLine($"? === ERROR GENERAL EN CARGA DE INFORMACIï¿½N DE USUARIO ===");
             System.Diagnostics.Debug.WriteLine($"? Error: {ex.Message}");
             
-            // Valores por defecto seguros - NO relanzar excepción
-            WelcomeMessage = "Error cargando información";
+            // Valores por defecto seguros - NO relanzar excepciï¿½n
+            WelcomeMessage = "Error cargando informaciï¿½n";
             UserName = "Usuario";
             UserRole = "Desconocido";
             CompanyName = "Error";
             
-            System.Diagnostics.Debug.WriteLine("??? Valores por defecto aplicados - continuando sin interrumpir la aplicación");
+            System.Diagnostics.Debug.WriteLine("??? Valores por defecto aplicados - continuando sin interrumpir la aplicaciï¿½n");
         }
     }
 
@@ -266,7 +266,7 @@ public partial class HomeViewModel : BaseViewModel
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === INICIANDO CARGA DE ESTADÍSTICAS ===");
+            System.Diagnostics.Debug.WriteLine("?? === INICIANDO CARGA DE ESTADï¿½STICAS ===");
             
             System.Diagnostics.Debug.WriteLine("?? Obteniendo todas las salidas de la base de datos...");
             var salidas = await _databaseService.GetAllAsync<Salida>();
@@ -277,7 +277,7 @@ public partial class HomeViewModel : BaseViewModel
                 PendingVales = salidas.Count(s => !s.Status);
                 SyncedVales = salidas.Count(s => s.Status);
                 
-                System.Diagnostics.Debug.WriteLine($"?? Estadísticas calculadas:");
+                System.Diagnostics.Debug.WriteLine($"?? Estadï¿½sticas calculadas:");
                 System.Diagnostics.Debug.WriteLine($"   - Total vales: {TotalVales}");
                 System.Diagnostics.Debug.WriteLine($"   - Vales pendientes: {PendingVales}");
                 System.Diagnostics.Debug.WriteLine($"   - Vales sincronizados: {SyncedVales}");
@@ -288,18 +288,18 @@ public partial class HomeViewModel : BaseViewModel
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("?? La consulta de salidas devolvió null");
+                System.Diagnostics.Debug.WriteLine("?? La consulta de salidas devolviï¿½ null");
                 TotalVales = 0;
                 PendingVales = 0;
                 SyncedVales = 0;
                 HasPendingValesOffline = false;
             }
             
-            System.Diagnostics.Debug.WriteLine("? === CARGA DE ESTADÍSTICAS COMPLETADA ===");
+            System.Diagnostics.Debug.WriteLine("? === CARGA DE ESTADï¿½STICAS COMPLETADA ===");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"? === ERROR EN CARGA DE ESTADÍSTICAS ===");
+            System.Diagnostics.Debug.WriteLine($"? === ERROR EN CARGA DE ESTADï¿½STICAS ===");
             System.Diagnostics.Debug.WriteLine($"? Error: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"? StackTrace: {ex.StackTrace}");
             
@@ -309,7 +309,7 @@ public partial class HomeViewModel : BaseViewModel
             SyncedVales = 0;
             HasPendingValesOffline = false;
             
-            // No re-lanzar la excepción para que no falle toda la inicialización
+            // No re-lanzar la excepciï¿½n para que no falle toda la inicializaciï¿½n
             // Solo registrar el error
         }
     }
@@ -617,7 +617,7 @@ public partial class HomeViewModel : BaseViewModel
             var configuraciones = await _databaseService.GetAllAsync<Configuracion>();
             var info = new StringBuilder();
             
-            info.AppendLine("=== INFORMACIÓN DE CONFIGURACIONES ===");
+            info.AppendLine("=== INFORMACIï¿½N DE CONFIGURACIONES ===");
             info.AppendLine($"Total configuraciones: {configuraciones?.Count ?? 0}");
             info.AppendLine($"Fecha consulta: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
             info.AppendLine();
@@ -626,11 +626,11 @@ public partial class HomeViewModel : BaseViewModel
             {
                 foreach (var config in configuraciones.OrderByDescending(c => c.Fecha))
                 {
-                    info.AppendLine($"?? CONFIGURACIÓN ID: {config.Id}");
+                    info.AppendLine($"?? CONFIGURACIï¿½N ID: {config.Id}");
                     info.AppendLine($"   Dispositivo: {config.Dispositivo}");
                     info.AppendLine($"   Ruta: {config.Ruta}");
                     info.AppendLine($"   Fecha: {config.Fecha:dd/MM/yyyy HH:mm:ss}");
-                    info.AppendLine($"   Token presente: {(!string.IsNullOrEmpty(config.Token) ? "SÍ" : "NO")}");
+                    info.AppendLine($"   Token presente: {(!string.IsNullOrEmpty(config.Token) ? "Sï¿½" : "NO")}");
                     
                     if (!string.IsNullOrEmpty(config.Token))
                     {
@@ -643,7 +643,7 @@ public partial class HomeViewModel : BaseViewModel
                         info.AppendLine($"   Token expira: {config.TokenExpiration:dd/MM/yyyy HH:mm:ss}");
                         var timeRemaining = config.TokenExpiration.Value - DateTime.Now;
                         info.AppendLine($"   Tiempo restante: {timeRemaining.TotalMinutes:F1} minutos");
-                        info.AppendLine($"   ¿Expirado?: {(config.TokenExpiration <= DateTime.Now ? "SÍ" : "NO")}");
+                        info.AppendLine($"   ï¿½Expirado?: {(config.TokenExpiration <= DateTime.Now ? "Sï¿½" : "NO")}");
                     }
                     else
                     {
@@ -654,7 +654,7 @@ public partial class HomeViewModel : BaseViewModel
                     info.AppendLine();
                 }
                 
-                // Mostrar configuración activa
+                // Mostrar configuraciï¿½n activa
                 var activeConfig = configuraciones
                     .Where(c => !string.IsNullOrEmpty(c.Token))
                     .OrderByDescending(c => c.Fecha)
@@ -662,14 +662,14 @@ public partial class HomeViewModel : BaseViewModel
                     
                 if (activeConfig != null)
                 {
-                    info.AppendLine("?? CONFIGURACIÓN ACTIVA DETECTADA:");
+                    info.AppendLine("?? CONFIGURACIï¿½N ACTIVA DETECTADA:");
                     info.AppendLine($"   ID: {activeConfig.Id}");
                     info.AppendLine($"   Dispositivo: {activeConfig.Dispositivo}");
-                    info.AppendLine($"   Token válido: {activeConfig.HasValidToken}");
+                    info.AppendLine($"   Token vï¿½lido: {activeConfig.HasValidToken}");
                 }
                 else
                 {
-                    info.AppendLine("? NO HAY CONFIGURACIÓN ACTIVA CON TOKEN");
+                    info.AppendLine("? NO HAY CONFIGURACIï¿½N ACTIVA CON TOKEN");
                 }
             }
             else
@@ -677,11 +677,11 @@ public partial class HomeViewModel : BaseViewModel
                 info.AppendLine("? NO HAY CONFIGURACIONES EN LA BASE DE DATOS");
             }
             
-            await Shell.Current.DisplayAlert("Información de Configuraciones", info.ToString(), "OK");
+            await Shell.Current.DisplayAlert("Informaciï¿½n de Configuraciones", info.ToString(), "OK");
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", $"Error obteniendo información de configuración: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlert("Error", $"Error obteniendo informaciï¿½n de configuraciï¿½n: {ex.Message}", "OK");
         }
     }
 
@@ -693,7 +693,7 @@ public partial class HomeViewModel : BaseViewModel
             var sessions = await _databaseService.GetAllAsync<Session>();
             var info = new StringBuilder();
             
-            info.AppendLine("=== INFORMACIÓN DE SESSIONS ===");
+            info.AppendLine("=== INFORMACIï¿½N DE SESSIONS ===");
             info.AppendLine($"Total sessions: {sessions?.Count ?? 0}");
             info.AppendLine($"Fecha consulta: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
             info.AppendLine();
@@ -716,9 +716,9 @@ public partial class HomeViewModel : BaseViewModel
                     
                     var timeRemaining = session.ExpirationDate - DateTime.Now;
                     info.AppendLine($"   Tiempo restante: {timeRemaining.TotalMinutes:F1} minutos");
-                    info.AppendLine($"   ¿Expirada?: {(session.ExpirationDate <= DateTime.Now ? "SÍ" : "NO")}");
+                    info.AppendLine($"   ï¿½Expirada?: {(session.ExpirationDate <= DateTime.Now ? "Sï¿½" : "NO")}");
                     
-                    info.AppendLine($"   Token presente: {(!string.IsNullOrEmpty(session.Token) ? "SÍ" : "NO")}");
+                    info.AppendLine($"   Token presente: {(!string.IsNullOrEmpty(session.Token) ? "Sï¿½" : "NO")}");
                     
                     if (!string.IsNullOrEmpty(session.Token))
                     {
@@ -726,11 +726,11 @@ public partial class HomeViewModel : BaseViewModel
                         info.AppendLine($"   Token preview: {session.Token.Substring(0, Math.Min(20, session.Token.Length))}...");
                     }
                     
-                    // Verificar si cumple todos los criterios para ser válida
+                    // Verificar si cumple todos los criterios para ser vï¿½lida
                     bool isValidSession = !string.IsNullOrEmpty(session.Token) && 
                                          session.ExpirationDate > DateTime.Now && 
                                          session.IsActive;
-                    info.AppendLine($"   ¿Session válida?: {(isValidSession ? "SÍ" : "NO")}");
+                    info.AppendLine($"   ï¿½Session vï¿½lida?: {(isValidSession ? "Sï¿½" : "NO")}");
                     info.AppendLine();
                 }
                 
@@ -749,7 +749,7 @@ public partial class HomeViewModel : BaseViewModel
                 }
                 else
                 {
-                    info.AppendLine("? NO HAY SESSION ACTIVA VÁLIDA");
+                    info.AppendLine("? NO HAY SESSION ACTIVA Vï¿½LIDA");
                 }
             }
             else
@@ -757,11 +757,11 @@ public partial class HomeViewModel : BaseViewModel
                 info.AppendLine("? NO HAY SESSIONS EN LA BASE DE DATOS");
             }
             
-            await Shell.Current.DisplayAlert("Información de Sessions", info.ToString(), "OK");
+            await Shell.Current.DisplayAlert("Informaciï¿½n de Sessions", info.ToString(), "OK");
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", $"Error obteniendo información de session: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlert("Error", $"Error obteniendo informaciï¿½n de session: {ex.Message}", "OK");
         }
     }
 
@@ -770,25 +770,25 @@ public partial class HomeViewModel : BaseViewModel
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === GENERANDO DIAGNÓSTICO DE NAVEGACIÓN MEJORADO ===");
+            System.Diagnostics.Debug.WriteLine("?? === GENERANDO DIAGNï¿½STICO DE NAVEGACIï¿½N MEJORADO ===");
             
-            // Usar el NavigationService para obtener diagnóstico más completo
+            // Usar el NavigationService para obtener diagnï¿½stico mï¿½s completo
             var navigationDiagnostic = await _navigationService.GetNavigationDiagnosticAsync();
             
-            // También obtener diagnóstico del SessionService
+            // Tambiï¿½n obtener diagnï¿½stico del SessionService
             var sessionDiagnostic = await _sessionService.GetNavigationDiagnosticAsync();
             
             var fullDiagnostic = $"{navigationDiagnostic}\n\n{sessionDiagnostic}";
             
-            System.Diagnostics.Debug.WriteLine("?? === DIAGNÓSTICO COMPLETO ===");
+            System.Diagnostics.Debug.WriteLine("?? === DIAGNï¿½STICO COMPLETO ===");
             System.Diagnostics.Debug.WriteLine(fullDiagnostic);
-            System.Diagnostics.Debug.WriteLine("?? === FIN DIAGNÓSTICO ===");
+            System.Diagnostics.Debug.WriteLine("?? === FIN DIAGNï¿½STICO ===");
             
-            await Shell.Current.DisplayAlert("Diagnóstico Completo", fullDiagnostic, "OK");
+            await Shell.Current.DisplayAlert("Diagnï¿½stico Completo", fullDiagnostic, "OK");
         }
         catch (Exception ex)
         {
-            var errorMsg = $"Error generando diagnóstico: {ex.Message}";
+            var errorMsg = $"Error generando diagnï¿½stico: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"? {errorMsg}");
             await Shell.Current.DisplayAlert("Error", errorMsg, "OK");
         }
@@ -799,13 +799,13 @@ public partial class HomeViewModel : BaseViewModel
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === TEST DE NAVEGACIÓN DESDE HOMEPAGE ===");
+            System.Diagnostics.Debug.WriteLine("?? === TEST DE NAVEGACIï¿½N DESDE HOMEPAGE ===");
             
             // Verificar estado actual
             var currentSession = await _sessionService.GetCurrentSessionAsync();
             if (currentSession != null)
             {
-                System.Diagnostics.Debug.WriteLine($"?? Sesión actual: ID {currentSession.Id}, Usuario: {currentSession.Username}");
+                System.Diagnostics.Debug.WriteLine($"?? Sesiï¿½n actual: ID {currentSession.Id}, Usuario: {currentSession.Username}");
                 System.Diagnostics.Debug.WriteLine($"?? Token presente: {!string.IsNullOrEmpty(currentSession.Token)}");
                 System.Diagnostics.Debug.WriteLine($"?? Expira: {currentSession.ExpirationDate}");
                 System.Diagnostics.Debug.WriteLine($"?? IsActive: {currentSession.IsActive}");
@@ -815,22 +815,22 @@ public partial class HomeViewModel : BaseViewModel
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("?? NO HAY SESIÓN ACTUAL");
+                System.Diagnostics.Debug.WriteLine("?? NO HAY SESIï¿½N ACTUAL");
             }
             
-            // Usar NavigationService para diagnóstico
+            // Usar NavigationService para diagnï¿½stico
             var navigationDiagnostic = await _navigationService.GetNavigationDiagnosticAsync();
             
-            await Shell.Current.DisplayAlert("Test de Navegación", 
-                $"Estado actual: {(currentSession != null ? "SESIÓN ENCONTRADA" : "SIN SESIÓN")}\n\n" +
-                $"Debería estar en HOME: {(currentSession != null && !string.IsNullOrEmpty(currentSession.Token) && currentSession.ExpirationDate > DateTime.Now)}\n\n" +
+            await Shell.Current.DisplayAlert("Test de Navegaciï¿½n", 
+                $"Estado actual: {(currentSession != null ? "SESIï¿½N ENCONTRADA" : "SIN SESIï¿½N")}\n\n" +
+                $"Deberï¿½a estar en HOME: {(currentSession != null && !string.IsNullOrEmpty(currentSession.Token) && currentSession.ExpirationDate > DateTime.Now)}\n\n" +
                 "Ver logs para detalles completos.", "OK");
                 
-            System.Diagnostics.Debug.WriteLine("?? === FIN TEST DE NAVEGACIÓN ===");
+            System.Diagnostics.Debug.WriteLine("?? === FIN TEST DE NAVEGACIï¿½N ===");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"?? ? Error en test de navegación: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"?? ? Error en test de navegaciï¿½n: {ex.Message}");
             await Shell.Current.DisplayAlert("Error", $"Error en test: {ex.Message}", "OK");
         }
     }

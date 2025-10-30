@@ -50,14 +50,10 @@ namespace sys21_campos_zukarmex.ViewModels
                 Predios.Clear();
                 foreach (var campo in filteredCampos.OrderBy(c => c.Nombre)) Predios.Add(campo);
 
-                var lineasPredefinidas = new List<LineaDeRiego>
-                {
-                    new LineaDeRiego { Id = 1, Nombre = "Principal Norte" },
-                    new LineaDeRiego { Id = 2, Nombre = "Secundaria A-1" }
-                   
-                };
+                var lineasFromDb = await _databaseService.GetAllAsync<LineaDeRiego>();
+
                 LineasDeRiego.Clear();
-                foreach (var linea in lineasPredefinidas.OrderBy(l => l.Nombre)) LineasDeRiego.Add(linea);
+                foreach (var linea in lineasFromDb.OrderBy(l => l.Nombre)) LineasDeRiego.Add(linea);
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar catálogos: {ex.Message}", "OK"); }
             finally { SetBusy(false); }

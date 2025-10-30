@@ -34,7 +34,7 @@
 6. **Inspector** - Inspectores de campos
 7. **Lote** - Lotes de cultivo por campo
 8. **Maquinaria** - Equipos y maquinaria
-9. **Receta** - Recetas de artículos (con lista de RecetaArticulos)
+9. **Receta** - Recetas de artï¿½culos (con lista de RecetaArticulos)
 10. **Salida** - Vales de salida (principal)
 11. **SalidaDetalle** - Detalles de vales
 12. **SubFamilia** - Subfamilias de articulos
@@ -69,7 +69,7 @@
 - `GET /inspectores` - Sincronizar inspectores
 - `GET /lotes` - Sincronizar lotes
 - `GET /maquinarias` - Sincronizar maquinarias
-- `GET /recetas` - Sincronizar recetas (incluye artículos de recetas)
+- `GET /recetas` - Sincronizar recetas (incluye artï¿½culos de recetas)
 - `GET /subfamilias` - Sincronizar subfamilias
 
 ## Configuracion
@@ -135,10 +135,10 @@ Para soporte tecnico o consultas sobre la aplicacion, contactar al equipo de des
 **Plataforma objetivo**: Android (.NET 9)
 ### Dispositivo
 - Android 5.0 (API 21) o superior
-- Espacio libre: 50 MB mínimo
-- Conexión a internet (para sincronización)
+- Espacio libre: 50 MB mï¿½nimo
+- Conexiï¿½n a internet (para sincronizaciï¿½n)
 
-## Instalación y Compilación
+## Instalaciï¿½n y Compilaciï¿½n
 
 1. Clonar el repositorio
 2. Abrir `sys21_campos_zukarmex.sln` en Visual Studio
@@ -150,26 +150,26 @@ Para soporte tecnico o consultas sobre la aplicacion, contactar al equipo de des
 
 - [ ] Notificaciones push
 - [ ] Reportes en PDF
-- [ ] Sincronización en segundo plano
+- [ ] Sincronizaciï¿½n en segundo plano
 - [ ] Modo completamente offline
 - [ ] Soporte para iOS
-- [ ] Dashboard analítico avanzado
+- [ ] Dashboard analï¿½tico avanzado
 
-## Tecnologías Utilizadas
+## Tecnologï¿½as Utilizadas
 
 - **.NET MAUI 9.0** - Framework multiplataforma
 - **SQLite** - Base de datos local
 - **CommunityToolkit.Mvvm** - MVVM helpers
-- **Newtonsoft.Json** - Serialización JSON
+- **Newtonsoft.Json** - Serializaciï¿½n JSON
 - **System.IdentityModel.Tokens.Jwt** - Manejo de JWT
 - **CommunityToolkit.Maui** - Controles adicionales
 
 ## Contacto
 
-Para soporte técnico o consultas sobre la aplicación, contactar al equipo de desarrollo.
+Para soporte tï¿½cnico o consultas sobre la aplicaciï¿½n, contactar al equipo de desarrollo.
 
 ---
 
-**Versión**: 1.0  
-**Última actualización**: 2024  
+**Versiï¿½n**: 1.0  
+**ï¿½ltima actualizaciï¿½n**: 2024  
 **Plataforma objetivo**: Android (.NET 9)**Plataforma objetivo**: Android (.NET 9)**Plataforma objetivo**: Android (.NET 9)**Plataforma objetivo**: Android (.NET 9)

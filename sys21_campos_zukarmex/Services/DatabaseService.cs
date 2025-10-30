@@ -339,6 +339,12 @@ public class DatabaseService
         return await GetFirstOrDefaultAsync<Ciclo>(c => c.Nombre == nombre);
     }
 
+    //Linea De Riego
+    public async Task<LineaDeRiego?> GetLineaDeRiegoByNameAsync(string nombre)
+    {
+        return await GetFirstOrDefaultAsync<LineaDeRiego>(c => c.Nombre == nombre);
+    }
+
     // Campo
     public async Task<List<Campo>> GetCamposByInspectorAsync(int idInspector)
     {

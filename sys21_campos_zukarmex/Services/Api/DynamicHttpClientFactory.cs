@@ -4,7 +4,7 @@ using sys21_campos_zukarmex.Models;
 namespace sys21_campos_zukarmex.Services.Api;
 
 /// <summary>
-/// Factory para crear HttpClient con BaseAddress dinámico basado en la configuración de BD
+/// Factory para crear HttpClient con BaseAddress dinï¿½mico basado en la configuraciï¿½n de BD
 /// </summary>
 public interface IDynamicHttpClientFactory
 {
@@ -28,7 +28,7 @@ public class DynamicHttpClientFactory : IDynamicHttpClientFactory
     }
 
     /// <summary>
-    /// Crea un HttpClient básico sin configurar BaseAddress (para casos especiales)
+    /// Crea un HttpClient bï¿½sico sin configurar BaseAddress (para casos especiales)
     /// </summary>
     public async Task<HttpClient> CreateHttpClientAsync()
     {
@@ -39,7 +39,7 @@ public class DynamicHttpClientFactory : IDynamicHttpClientFactory
 
     /// <summary>
     /// Crea un HttpClient con BaseAddress configurado desde la BD
-    /// Usa caché para evitar consultas innecesarias a la BD
+    /// Usa cachï¿½ para evitar consultas innecesarias a la BD
     /// </summary>
     public async Task<HttpClient> CreateHttpClientWithConfigAsync()
     {
@@ -74,13 +74,13 @@ public class DynamicHttpClientFactory : IDynamicHttpClientFactory
     }
 
     /// <summary>
-    /// Invalida el caché para forzar la recreación del cliente con nueva configuración
+    /// Invalida el cachï¿½ para forzar la recreaciï¿½n del cliente con nueva configuraciï¿½n
     /// </summary>
     public void InvalidateCache()
     {
         lock (_lock)
         {
-            System.Diagnostics.Debug.WriteLine("[DynamicHttpClientFactory] Invalidando caché de cliente HTTP");
+            System.Diagnostics.Debug.WriteLine("[DynamicHttpClientFactory] Invalidando cachï¿½ de cliente HTTP");
             _cachedClient?.Dispose();
             _cachedClient = null;
             _cachedBaseUrl = null;

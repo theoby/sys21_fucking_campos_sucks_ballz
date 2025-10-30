@@ -18,7 +18,7 @@ public class LoginResponse
 }
 
 /// <summary>
-/// DTO para mapear la respuesta de la API de empresas con nombres específicos
+/// DTO para mapear la respuesta de la API de empresas con nombres especï¿½ficos
 /// </summary>
 public class EmpresaApiDto
 {
@@ -55,12 +55,12 @@ public class EmpresaApiDto
 }
 
 /// <summary>
-/// Estructura de respuesta estándar de la API
+/// Estructura de respuesta estï¿½ndar de la API
 /// </summary>
 public class StandardApiResponse<T>
 {
     /// <summary>
-    /// Estado de la respuesta (código de estado)
+    /// Estado de la respuesta (cï¿½digo de estado)
     /// </summary>
     public int Estado { get; set; }
     
@@ -80,7 +80,7 @@ public class StandardApiResponse<T>
     public string Mensaje { get; set; } = string.Empty;
     
     /// <summary>
-    /// Indica si la operación fue exitosa (estado 200)
+    /// Indica si la operaciï¿½n fue exitosa (estado 200)
     /// </summary>
     public bool Success => Estado == 200;
     
@@ -189,7 +189,7 @@ public class BulkOperationResponse
     public List<string> Errors { get; set; } = new();
 }
 
-// Este archivo ha sido reorganizado en múltiples archivos especializados:
+// Este archivo ha sido reorganizado en mï¿½ltiples archivos especializados:
 // - Models/DTOs/Authentication/AuthenticationDtos.cs
 // - Models/DTOs/Api/ApiResponseDtos.cs  
 // - Models/DTOs/Catalog/CatalogDtos.cs
@@ -198,4 +198,4 @@ public class BulkOperationResponse
 // - Models/DTOs/Validation/ValidationDtos.cs
 // - Models/DTOs/Bulk/BulkOperationDtos.cs
 
-// Archivo mantenido para compatibilidad, las clases ahora están en namespaces específicos
+// Archivo mantenido para compatibilidad, las clases ahora estï¿½n en namespaces especï¿½ficos

@@ -23,6 +23,7 @@ public class SyncService
     private readonly IZafraRepository _zafraRepository;
     private readonly IPluviometroRepository _pluviometroRepository;
     private readonly ICicloRepository _cicloRepository;
+    private readonly ILineaDeRiegoRepository _lineaDeRiegoRepository;
 
     public SyncService(
         ApiService apiService, 
@@ -39,7 +40,8 @@ public class SyncService
         IRecetaRepository recetaRepository,
         IZafraRepository zafraRepository,
         ISubFamiliaRepository subFamiliaRepository,
-        IPluviometroRepository pluviometroRepository)
+        IPluviometroRepository pluviometroRepository,
+        ILineaDeRiegoRepository lineaDeRiegoRepository)
     {
         _apiService = apiService;
         _databaseService = databaseService;
@@ -56,17 +58,17 @@ public class SyncService
         _recetaRepository = recetaRepository;
         _subFamiliaRepository = subFamiliaRepository;
         _pluviometroRepository = pluviometroRepository;
+        _lineaDeRiegoRepository = lineaDeRiegoRepository;
     }
 
     public async Task<List<SyncStatus>> SyncAllCatalogsAsync(IProgress<SyncStatus>? progress = null)
     {
         var syncStatuses = new List<SyncStatus>();
-        var totalCatalogs = 13; // Incrementado para incluir Recetas
+        var totalCatalogs = 14; // Incrementado para incluir Recetas
         var currentCatalog = 0;
 
         // Sync Empresas first (needed for login)
         await SyncEmpresasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
-
         // Sync other catalogs
         await SyncCamposAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncInspectoresAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
@@ -80,7 +82,8 @@ public class SyncService
         await SyncArticulosAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncMaquinariasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
         await SyncRecetasAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
-        
+        await SyncLineasDeRiegoAsync(progress, syncStatuses, ++currentCatalog, totalCatalogs);
+
         return syncStatuses;
     }
 
@@ -111,7 +114,6 @@ public class SyncService
             _pluviometroRepository.ClearAllAsync, _pluviometroRepository.SaveAllAsync,
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
-
 
     private async Task SyncInspectoresAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
     {
@@ -166,6 +168,13 @@ public class SyncService
     {
         await SyncCatalogAsync("Maquinarias", _apiService.GetMaquinariasAsync, 
             _maquinariaRepository.ClearAllAsync, _maquinariaRepository.SaveAllAsync, 
+            progress, syncStatuses, currentCatalog, totalCatalogs);
+    }
+
+    private async Task SyncLineasDeRiegoAsync(IProgress<SyncStatus>? progress, List<SyncStatus> syncStatuses, int currentCatalog, int totalCatalogs)
+    {
+        await SyncCatalogAsync("LineasDeRiego", _apiService.GetLineasDeRiegoAsync,
+            _lineaDeRiegoRepository.ClearAllAsync, _lineaDeRiegoRepository.SaveAllAsync,
             progress, syncStatuses, currentCatalog, totalCatalogs);
     }
 
@@ -453,6 +462,7 @@ public class SyncService
                 "Ciclos" => await _cicloRepository.CountAsync(),
                 "Recetas" => await _recetaRepository.CountAsync(),
                 "Pluviometros" => await _pluviometroRepository.CountAsync(),
+                "lineasDeRiego" => await _lineaDeRiegoRepository.CountAsync(),
                 _ => 0
             };
             
@@ -501,6 +511,7 @@ public class SyncService
                         "ciclos" => await _cicloRepository.CountAsync(),
                         "subfamilias" => await _subFamiliaRepository.CountAsync(),
                         "pluviometros" => await _pluviometroRepository.CountAsync(),
+                        "lineasDeRiego" => await _lineaDeRiegoRepository.CountAsync(),
                         _ => 0
                     };
                 }

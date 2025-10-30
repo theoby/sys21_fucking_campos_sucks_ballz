@@ -57,6 +57,8 @@ public static class ServiceRegistration
         services.AddSingleton<IZafraRepository, ZafraRepository>();
         services.AddSingleton<IPluviometroRepository, PluviometroRepository>();
         services.AddSingleton<ICicloRepository, CicloRepository>();
+        services.AddSingleton<ILineaDeRiegoRepository, LineaDeRiegoRepository>();
+
 
         // 1. ViewModels y Pages de Autenticación, Configuración y Navegación Base
         services.AddTransient<LoginViewModel>();
