@@ -112,6 +112,21 @@ namespace sys21_campos_zukarmex.ViewModels
             }
         }
 
+        partial void OnSelectedLoteChanged(Lote? value)
+        {
+            if (value != null)
+            {
+               
+                Superficie = value.Hectareas.ToString("F2");
+            }
+            else
+            {
+                Superficie = string.Empty;
+            }
+        }
+
+
+
         [RelayCommand]
         private async Task AddAssessmentAsync()
         {

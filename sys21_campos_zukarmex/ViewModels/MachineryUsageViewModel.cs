@@ -17,10 +17,11 @@ namespace sys21_campos_zukarmex.ViewModels
         public ConnectivityService ConnectivitySvc => _connectivityService;
         private bool isInitialized = false;
 
-        [ObservableProperty] private ObservableCollection<Lote> campos = new();
+        [ObservableProperty] private ObservableCollection<Campo> campos;
+        [ObservableProperty] private ObservableCollection<Lote> lotes;
         [ObservableProperty] private ObservableCollection<Maquinaria> equipos = new();
 
-        [ObservableProperty] private Lote? selectedCampo;
+        [ObservableProperty] private Lote? selectedLote;
         [ObservableProperty] private Maquinaria? selectedEquipo;
         [ObservableProperty] private DateTime fecha = DateTime.Now;
 
@@ -35,6 +36,8 @@ namespace sys21_campos_zukarmex.ViewModels
             _sessionService = sessionService;
             _connectivityService = connectivityService;
             Title = "Uso de Maquinaria";
+            campos = new ObservableCollection<Campo>();
+            lotes = new ObservableCollection<Lote>();
         }
 
         public async Task InitializeAsync()
@@ -57,9 +60,39 @@ namespace sys21_campos_zukarmex.ViewModels
                 Equipos.Clear();
                 foreach (var item in equipoList.OrderBy(e => e.Nombre)) Equipos.Add(item);
 
-                var lotesList = await _databaseService.GetAllAsync<Lote>();
-                Campos.Clear();
-                foreach (var lote in lotesList.OrderBy(l => l.Nombre)) Campos.Add(lote);
+                var allLotesFromDb = await _databaseService.GetAllAsync<Lote>();
+                var allCamposFromDb = await _databaseService.GetAllAsync<Campo>();
+
+                List<Lote> filteredLotes;
+
+                if (session.TipoUsuario == 1) 
+                {
+                    // 2. El Admin ve TODOS los lotes
+                    filteredLotes = allLotesFromDb;
+                    System.Diagnostics.Debug.WriteLine($"Usuario Admin: Cargando {filteredLotes.Count} lotes totales.");
+                }
+
+                else 
+                {
+                    var inspectorId = session.IdInspector;
+
+                    var misCamposIds = allCamposFromDb
+                        .Where(c => c.IdInspector == inspectorId)
+                        .Select(c => c.Id)
+                        .ToHashSet();
+
+                    filteredLotes = allLotesFromDb
+                        .Where(lote => misCamposIds.Contains(lote.IdCampo))
+                        .ToList();
+
+                    System.Diagnostics.Debug.WriteLine($"Usuario Inspector ({inspectorId}): Encontró {misCamposIds.Count} campos. Cargando {filteredLotes.Count} lotes filtrados.");
+                }
+
+                Lotes.Clear();
+                foreach (var lote in filteredLotes.OrderBy(l => l.Nombre))
+                {
+                    Lotes.Add(lote);
+                }
             }
             catch (Exception ex) { /* ... error ... */ }
             finally { SetBusy(false); }
@@ -93,7 +126,7 @@ namespace sys21_campos_zukarmex.ViewModels
         private async Task SaveAsync()
         {
             // Validaciones
-            if (SelectedCampo == null || SelectedEquipo == null ||
+            if (selectedLote == null || SelectedEquipo == null ||
                 (string.IsNullOrWhiteSpace(HorasTrabajadas) && string.IsNullOrWhiteSpace(KilometrajeOdometro)) ||
                 (!decimal.TryParse(HorasTrabajadas, out var h) && !decimal.TryParse(KilometrajeOdometro, out var k)))
             {
@@ -110,7 +143,7 @@ namespace sys21_campos_zukarmex.ViewModels
                 var newUsage = new SalidaMaquinaria
                 {
                     IdMaquinaria = SelectedEquipo.IdPk,
-                    IdCampo = SelectedCampo.Id,
+                    IdCampo = selectedLote.Id,
                     Fecha = this.Fecha,
                     HorasTrabajadas = (int)(decimal.TryParse(HorasTrabajadas, out var hDecimal) ? hDecimal : 0m),
                     KilometrajeOdometro = (int)(decimal.TryParse(KilometrajeOdometro, out var kDecimal) ? kDecimal : 0m),
@@ -171,7 +204,7 @@ namespace sys21_campos_zukarmex.ViewModels
         }
         private void ClearForm()
         {
-            SelectedCampo = null;
+            selectedLote = null;
             SelectedEquipo = null;
             Fecha = DateTime.Now;
             HorasTrabajadas = string.Empty;
