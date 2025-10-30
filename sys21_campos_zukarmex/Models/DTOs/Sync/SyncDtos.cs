@@ -56,6 +56,7 @@ public class SyncStatistics
     public int ZafrasCount { get; set; }
     public int PluviometrosCount { get; set; }
     public int CiclosCount { get; set; }
+    public int LineasCount { get; set; }
     public int TotalRecords { get; set; }
     public DateTime LastSyncDate { get; set; }
     public string? ErrorMessage { get; set; }

@@ -462,7 +462,7 @@ public class SyncService
                 "Ciclos" => await _cicloRepository.CountAsync(),
                 "Recetas" => await _recetaRepository.CountAsync(),
                 "Pluviometros" => await _pluviometroRepository.CountAsync(),
-                "lineasDeRiego" => await _lineaDeRiegoRepository.CountAsync(),
+                "LineasDeRiego" => await _lineaDeRiegoRepository.CountAsync(),
                 _ => 0
             };
             
@@ -556,6 +556,7 @@ public class SyncService
                 "ciclos" => await _apiService.GetCiclosAsync() as List<T>,
                 "zafras" => await _apiService.GetZafrasAsync() as List<T>,
                 "pluviometros" => await _apiService.GetPluviometrosAsync() as List<T>,
+                "lineasDeRiego" => await _apiService.GetLineasDeRiegoAsync() as List<T>,
                 _ => new List<T>()
             };
 
@@ -634,6 +635,7 @@ public class SyncService
                     "subfamilias" => await _subFamiliaRepository.CountAsync(),
                     "zafras" => await _zafraRepository.CountAsync(),
                     "pluviometros" => await _pluviometroRepository.CountAsync(),
+                    "lineasDeRiego" => await _lineaDeRiegoRepository.CountAsync(),
                     _ => 0
                 };
                 
@@ -689,6 +691,7 @@ public class SyncService
                 ("zafras", "Zafras"),
                 ("pluviometros", "Pluviometros"),
                 ("ciclos", "Ciclos"),
+                ("lineasDeRiego", "LineasDeRiego"),
             };
 
             var totalCatalogs = catalogsToSync.Length;
@@ -724,6 +727,7 @@ public class SyncService
                         "recetas" => await SyncRecetasSpecialAsync(catalogKey),
                         "zafras" => await SyncCatalogAsync<Zafra>(catalogKey),
                         "ciclos" => await SyncCatalogAsync<Ciclo>(catalogKey),
+                        "lineasDeRiego" => await SyncCatalogAsync<LineaDeRiego>(catalogKey),
                         _ => new SyncResult { Success = false, Message = $"Catalogo {catalogKey} no reconocido" }
                     };
 
@@ -806,7 +810,8 @@ public class SyncService
                 { "Zafras", () => _zafraRepository.CountAsync() },
                 { "Pluviometros", () => _pluviometroRepository.CountAsync()},
                 { "Ciclos", () => _cicloRepository.CountAsync()},
-    
+                { "LineasDeRiego", () => _lineaDeRiegoRepository.CountAsync()},
+
             };
 
             foreach (var (catalogName, countFunc) in catalogChecks)
@@ -926,6 +931,7 @@ public class SyncService
             stats.ZafrasCount = await _zafraRepository.CountAsync();
             stats.PluviometrosCount = await _pluviometroRepository.CountAsync();
             stats.CiclosCount = await _cicloRepository.CountAsync();
+            stats.LineasCount = await _lineaDeRiegoRepository.CountAsync();
 
             stats.TotalRecords = stats.AlmacenesCount + stats.ArticulosCount + stats.CamposCount +
                                stats.EmpresasCount + stats.FamiliasCount +
