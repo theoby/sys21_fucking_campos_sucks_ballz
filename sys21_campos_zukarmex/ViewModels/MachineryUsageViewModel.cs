@@ -69,9 +69,8 @@ namespace sys21_campos_zukarmex.ViewModels
                 Debug.WriteLine($"- IdInspector (específico): {appPerms.IdInspector}");
                 Debug.WriteLine("==================================================");
 
-
-                var session = await _sessionService.GetCurrentSessionAsync();
-                if (session == null) { /* ... error ... */ return; }
+                var tipoUsuario = appPerms.TipoUsuario;
+                var inspectorId = appPerms.IdInspector;
 
                 var equipoList = await _databaseService.GetAllAsync<Maquinaria>();
                 Equipos.Clear();
@@ -86,17 +85,14 @@ namespace sys21_campos_zukarmex.ViewModels
 
                 List<Lote> filteredLotes;
 
-                if (session.TipoUsuario == 1) 
+                if (tipoUsuario == 1)
                 {
-                    // 2. El Admin ve TODOS los lotes
                     filteredLotes = allLotesFromDb;
-                    System.Diagnostics.Debug.WriteLine($"Usuario Admin: Cargando {filteredLotes.Count} lotes totales.");
+                    System.Diagnostics.Debug.WriteLine($"Usuario Admin (desde permisos): Cargando {filteredLotes.Count} lotes totales.");
                 }
 
                 else 
                 {
-                    var inspectorId = session.IdInspector;
-
                     var misCamposIds = allCamposFromDb
                         .Where(c => c.IdInspector == inspectorId)
                         .Select(c => c.Id)

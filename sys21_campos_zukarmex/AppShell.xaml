@@ -23,7 +23,7 @@
 
     <!-- FlyoutContent: Expander "GENERAL" -->
     <Shell.FlyoutContent>
-        <ScrollView>
+        <ScrollView BackgroundColor="WhiteSmoke">
             <VerticalStackLayout Padding="10"
                                  Spacing="0">
 

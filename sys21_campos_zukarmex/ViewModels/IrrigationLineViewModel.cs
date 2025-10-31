@@ -58,18 +58,38 @@ namespace sys21_campos_zukarmex.ViewModels
                 Debug.WriteLine($"- IdInspector (específico): {appPerms.IdInspector}");
                 Debug.WriteLine("==================================================");
 
-                var session = await _sessionService.GetCurrentSessionAsync();
-                if (session == null) { await Shell.Current.DisplayAlert("Error", "No se pudo obtener la sesión.", "OK"); return; }
+                if (!appPerms.TienePermiso)
+                {
+                    await Shell.Current.DisplayAlert("Acceso Denegado", "No tiene permiso para este módulo.", "OK");
+                    SetBusy(false);
+                    return;
+                }
+
+                var tipoUsuario = appPerms.TipoUsuario;
+                var inspectorId = appPerms.IdInspector;
 
                 var allCamposFromDb = await _databaseService.GetAllAsync<Campo>();
-                var filteredCampos = session.TipoUsuario == 1 ? allCamposFromDb : allCamposFromDb.Where(c => c.IdInspector == session.IdInspector).ToList();
-                Predios.Clear();
-                foreach (var campo in filteredCampos.OrderBy(c => c.Nombre)) Predios.Add(campo);
+                var filteredCampos = (tipoUsuario == 1) // 1 = Admin
+                    ? allCamposFromDb
+                    : allCamposFromDb.Where(c => c.IdInspector == inspectorId).ToList();
 
                 var lineasFromDb = await _databaseService.GetAllAsync<LineaDeRiego>();
 
-                LineasDeRiego.Clear();
-                foreach (var linea in lineasFromDb.OrderBy(l => l.Nombre)) LineasDeRiego.Add(linea);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Predios.Clear();
+                    foreach (var campo in filteredCampos.OrderBy(c => c.Nombre))
+                    {
+                        Predios.Add(campo);
+                    }
+
+                    LineasDeRiego.Clear();
+                    foreach (var linea in lineasFromDb.OrderBy(l => l.Nombre))
+                    {
+                        LineasDeRiego.Add(linea);
+                    }
+                });
+
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar catálogos: {ex.Message}", "OK"); }
             finally { SetBusy(false); }

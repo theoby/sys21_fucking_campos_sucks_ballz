@@ -58,21 +58,25 @@ namespace sys21_campos_zukarmex.ViewModels
                 Debug.WriteLine($"- IdInspector (específico): {appPerms.IdInspector}");
                 Debug.WriteLine("==================================================");
 
-
-                var session = await _sessionService.GetCurrentSessionAsync();
-                if (session == null)
+                if (!appPerms.TienePermiso)
                 {
-                    await Shell.Current.DisplayAlert("Error de Sesión", "No se pudo obtener la sesión del usuario.", "OK");
+                    await Shell.Current.DisplayAlert("Acceso Denegado", "No tiene permiso para este módulo.", "OK");
+                    SetBusy(false);
                     return;
                 }
 
-                // Cargar catálogos desde la base de datos local
+                var tipoUsuario = appPerms.TipoUsuario;
+                var inspectorId = appPerms.IdInspector;
+
                 var zafraList = await _databaseService.GetAllAsync<Zafra>();
                 Zafras.Clear();
                 foreach (var zafra in zafraList.OrderBy(z => z.Nombre)) Zafras.Add(zafra);
 
                 var allCamposFromDb = await _databaseService.GetAllAsync<Campo>();
-                var filteredCampos = session.TipoUsuario == 1 ? allCamposFromDb : allCamposFromDb.Where(c => c.IdInspector == session.IdInspector).ToList();
+                var filteredCampos = (tipoUsuario == 1) // 1 = Admin
+                    ? allCamposFromDb
+                    : allCamposFromDb.Where(c => c.IdInspector == inspectorId).ToList();
+
                 Campos.Clear();
                 foreach (var campo in filteredCampos.OrderBy(c => c.Nombre)) Campos.Add(campo);
             }

@@ -70,30 +70,57 @@ namespace sys21_campos_zukarmex.ViewModels
                 Debug.WriteLine($"- IdInspector (específico): {appPerms.IdInspector}");
                 Debug.WriteLine("==================================================");
 
+                if (!appPerms.TienePermiso)
+                {
+                    await Shell.Current.DisplayAlert("Acceso Denegado", "No tiene permiso para este módulo.", "OK");
+                    SetBusy(false);
+                    return;
+                }
+
                 var tipoUsuario = appPerms.TipoUsuario;
                 var inspectorId = appPerms.IdInspector;
 
-                SetBusy(true);
-                var session = await _sessionService.GetCurrentSessionAsync();
-                if (session == null) { /* ... manejo de error ... */ return; }
-
-                var allCampos = await _databaseService.GetAllAsync<Campo>();
-                var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
-                Campos.Clear();
-                foreach (var campo in filteredCampos.OrderBy(c => c.Nombre)) Campos.Add(campo);
-
-
+                var allCamposFromDb = await _databaseService.GetAllAsync<Campo>();
+                var allLotesFromDb = await _databaseService.GetAllAsync<Lote>();
                 var zafraList = await _databaseService.GetAllAsync<Zafra>();
-                Zafras.Clear();
-                foreach (var zafra in zafraList.OrderBy(z => z.Nombre)) Zafras.Add(zafra);
-
-                var lotesList = await _databaseService.GetAllAsync<Lote>();
-                Lotes.Clear();
-                foreach (var lote in lotesList.OrderBy(l => l.Nombre)) Lotes.Add(lote);
-
                 var cicloList = await _databaseService.GetAllAsync<Ciclo>();
-                Ciclos.Clear();
-                foreach (var ciclo in cicloList.OrderBy(c => c.Nombre)) Ciclos.Add(ciclo);
+
+                var filteredCampos = (tipoUsuario == 1) // 1 = Admin
+            ? allCamposFromDb
+            : allCamposFromDb.Where(c => c.IdInspector == inspectorId).ToList();
+
+                var misCamposIds = filteredCampos.Select(c => c.Id).ToHashSet();
+                var filteredLotes = allLotesFromDb
+                    .Where(lote => misCamposIds.Contains(lote.IdCampo))
+                    .ToList();
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Campos.Clear();
+                    foreach (var campo in filteredCampos.OrderBy(c => c.Nombre))
+                    {
+                        Campos.Add(campo);
+                    }
+
+                    Lotes.Clear();
+                    foreach (var lote in filteredLotes.OrderBy(l => l.Nombre))
+                    {
+                        Lotes.Add(lote);
+                    }
+
+                    Zafras.Clear();
+                    foreach (var zafra in zafraList.OrderBy(z => z.Nombre))
+                    {
+                        Zafras.Add(zafra);
+                    }
+
+                    Ciclos.Clear();
+                    foreach (var ciclo in cicloList.OrderBy(c => c.Nombre))
+                    {
+                        Ciclos.Add(ciclo);
+                    }
+                });
+
             }
             catch (Exception ex)
             {
