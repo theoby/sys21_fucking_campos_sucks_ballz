@@ -12,113 +12,48 @@ public partial class AppShell : Shell
         InitializeComponent();
         _sessionService = sessionService;
 
-        this.Navigating += OnShellNavigating;
+        this.Navigating += OnShellNavigating; 
         this.Navigated += AppShell_Navigated;
+        RegisterRoutes();
+        ConfigureFlyoutBehavior();
+    }
 
-        _ = ApplyPermissionsAsync();
-
-        // Register routes for navigation
+    private void RegisterRoutes()
+    {
         Routing.RegisterRoute("loading", typeof(LoadingPage));
         Routing.RegisterRoute("login", typeof(LoginPage));
         Routing.RegisterRoute("adminconfig", typeof(AdminConfigPage));
         Routing.RegisterRoute("sync", typeof(SyncPage));
         Routing.RegisterRoute("home", typeof(HomePage));
-
-        Routing.RegisterRoute(nameof(Views.Rainfall.RainfallPage), typeof(Views.Rainfall.RainfallPage));
-        Routing.RegisterRoute(nameof(Views.MachineryUsage.MachineryUsagePage), typeof(Views.MachineryUsage.MachineryUsagePage));
-        Routing.RegisterRoute(nameof(Views.RatTrapping.RatTrappingPage), typeof(Views.RatTrapping.RatTrappingPage));
-        Routing.RegisterRoute(nameof(Views.RodenticideConsumption.RodenticideConsumptionPage), typeof(Views.RodenticideConsumption.RodenticideConsumptionPage)); Routing.RegisterRoute(nameof(Views.DamageAssessment.DamageAssessmentPage), typeof(Views.DamageAssessment.DamageAssessmentPage));
-        Routing.RegisterRoute(nameof(Views.IrrigationLine.IrrigationLinePage), typeof(Views.IrrigationLine.IrrigationLinePage));
         Routing.RegisterRoute("navigationdemo", typeof(NavigationDemoPage));
 
-        // Configure flyout behavior
-        ConfigureFlyoutBehavior();
+        Routing.RegisterRoute(nameof(Views.Rainfall.RainfallPage), typeof(Views.Rainfall.RainfallPage));
+        Routing.RegisterRoute(nameof(Views.Rainfall.RainfallPendingPage), typeof(Views.Rainfall.RainfallPendingPage));
+        Routing.RegisterRoute(nameof(Views.Rainfall.RainfallHistoryPage), typeof(Views.Rainfall.RainfallHistoryPage));
+
+        Routing.RegisterRoute(nameof(Views.MachineryUsage.MachineryUsagePage), typeof(Views.MachineryUsage.MachineryUsagePage));
+        Routing.RegisterRoute(nameof(Views.MachineryUsage.MachineryUsagePendingPage), typeof(Views.MachineryUsage.MachineryUsagePendingPage));
+        Routing.RegisterRoute(nameof(Views.MachineryUsage.MachineryUsageHistoryPage), typeof(Views.MachineryUsage.MachineryUsageHistoryPage));
+
+        Routing.RegisterRoute(nameof(Views.RatTrapping.RatTrappingPage), typeof(Views.RatTrapping.RatTrappingPage));
+        Routing.RegisterRoute(nameof(Views.RatTrapping.RatTrappingPendingPage), typeof(Views.RatTrapping.RatTrappingPendingPage));
+        Routing.RegisterRoute(nameof(Views.RatTrapping.RatTrappingHistoryPage), typeof(Views.RatTrapping.RatTrappingHistoryPage));
+
+        Routing.RegisterRoute(nameof(Views.RodenticideConsumption.RodenticideConsumptionPage), typeof(Views.RodenticideConsumption.RodenticideConsumptionPage));
+        Routing.RegisterRoute(nameof(Views.RodenticideConsumption.RodenticideConsumptionPendingPage), typeof(Views.RodenticideConsumption.RodenticideConsumptionPendingPage));
+        Routing.RegisterRoute(nameof(Views.RodenticideConsumption.RodenticideConsumptionHistoryPage), typeof(Views.RodenticideConsumption.RodenticideConsumptionHistoryPage));
+
+        Routing.RegisterRoute(nameof(Views.DamageAssessment.DamageAssessmentPage), typeof(Views.DamageAssessment.DamageAssessmentPage));
+        Routing.RegisterRoute(nameof(Views.DamageAssessment.DamageAssessmentPendingPage), typeof(Views.DamageAssessment.DamageAssessmentPendingPage));
+        Routing.RegisterRoute(nameof(Views.DamageAssessment.DamageAssessmentHistoryPage), typeof(Views.DamageAssessment.DamageAssessmentHistoryPage));
+
+        Routing.RegisterRoute(nameof(Views.IrrigationLine.IrrigationLinePage), typeof(Views.IrrigationLine.IrrigationLinePage));
+        Routing.RegisterRoute(nameof(Views.IrrigationLine.IrrigationLinePendingPage), typeof(Views.IrrigationLine.IrrigationLinePendingPage));
+        Routing.RegisterRoute(nameof(Views.IrrigationLine.IrrigationLineHistoryPage), typeof(Views.IrrigationLine.IrrigationLineHistoryPage));
+
+        Routing.RegisterRoute("oneClickSync", typeof(OneClickSyncPage));
+        Routing.RegisterRoute("oneClickUpload", typeof(OneClickUploadPage));
     }
-
-    private void AppShell_Navigated(object? sender, ShellNavigatedEventArgs e)
-    {
-        // No bloqueamos la navegación, sólo actualizamos la UI asíncronamente
-        MainThread.BeginInvokeOnMainThread(async () => await ApplyPermissionsAsync());
-    }
-
-    private async Task ApplyPermissionsAsync()
-    {
-        try
-        {
-            // Mapa controlName -> route (ruta que checkea SessionService)
-            var controlsToRoute = new Dictionary<string, string>
-            {
-                // General
-                { "btnHome", "//home" },
-
-                // Maquinaria
-                { "expMachinery", "//machineryUsage" },
-                { "btnMachineryCapture", "//machineryUsage" },
-                { "btnMachineryPending", "//machineryUsagePending" },
-                { "btnMachineryHistory", "//machineryUsageHistory" },
-
-                // Precipitación
-                { "expRainfall", "//rainfall" },
-                { "btnRainfallCapture", "//rainfall" },
-                { "btnRainfallPending", "//rainfallPending" },
-                { "btnRainfallHistory", "//rainfallHistory" },
-
-                // Trampeo de rata
-                { "expRat", "//ratTrapping" },
-                { "btnRatCapture", "//ratTrapping" },
-                { "btnRatPending", "//ratTrappingPending" },
-                { "btnRatHistory", "//ratTrappingHistory" },
-
-                // Rodenticida
-                { "expRodenticide", "//rodenticideConsumption" },
-                { "btnRodenticideCapture", "//rodenticideConsumption" },
-                { "btnRodenticidePending", "//rodenticidePending" },
-                { "btnRodenticideHistory", "//rodenticideHistory" },
-
-                // Muestreo de daño
-                { "expDamage", "//damageAssessment" },
-                { "btnDamageCapture", "//damageAssessment" },
-                { "btnDamagePending", "//damageAssessmentPending" },
-                { "btnDamageHistory", "//damageAssessmentHistory" },
-
-                // Irrigación
-                { "expIrrigation", "//irrigationLine" },
-                { "btnIrrigationCapture", "//irrigationLine" },
-                { "btnIrrigationPending", "//irrigationLinePending" },
-                { "btnIrrigationHistory", "//irrigationLineHistory" },
-
-                // Sync
-                { "expSync", "//oneClickSync" },
-                { "btnOneClickSync", "//oneClickSync" },
-                { "btnOneClickUpload", "//oneClickUpload" }
-            };
-
-            foreach (var kv in controlsToRoute)
-            {
-                var controlName = kv.Key;
-                var route = kv.Value;
-
-                bool hasPermission = await _sessionService.CheckPermissionForRouteAsync(route);
-
-                var found = this.FindByName<object>(controlName);
-
-                if (found is VisualElement ve)
-                {
-                    // Si el permiso es false, ocultamos; si true mostramos
-                    ve.IsVisible = hasPermission;
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"ApplyPermissionsAsync: control no encontrado: {controlName}");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"ApplyPermissionsAsync error: {ex.Message}");
-        }
-    }
-
 
     private async void OnShellNavigating(object sender, ShellNavigatingEventArgs e)
     {
@@ -131,18 +66,61 @@ public partial class AppShell : Shell
             return;
         }
 
+        // Comprueba el permiso para la ruta de destino
         bool hasPermission = await _sessionService.CheckPermissionForRouteAsync(e.Target.Location.OriginalString);
 
         if (!hasPermission)
         {
             e.Cancel();
-
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await Shell.Current.DisplayAlert("Acceso Denegado", "No tiene permiso para acceder a esta sección.", "OK");
             });
         }
     }
+
+    private void AppShell_Navigated(object? sender, ShellNavigatedEventArgs e)
+    {
+        // No bloqueamos la navegación, sólo actualizamos la UI asíncronamente
+        MainThread.BeginInvokeOnMainThread(async () => await ApplyPermissionsAsync());
+    }
+
+    private async Task ApplyPermissionsAsync()
+    {
+        try
+        {
+            var controlsToRoute = new Dictionary<string, string>
+            {
+                { "btnHome", "//home" },
+                { "expMachinery", "//machineryUsage" },
+                { "expRainfall", "//rainfall" },
+                { "expRat", "//ratTrapping" },
+                { "expRodenticide", "//rodenticideConsumption" },
+                { "expDamage", "//damageAssessment" },
+                { "expIrrigation", "//irrigationLine" } 
+               
+            };
+
+            foreach (var kv in controlsToRoute)
+            {
+                var controlName = kv.Key;
+                var route = kv.Value;
+
+                bool hasPermission = await _sessionService.CheckPermissionForRouteAsync(route);
+
+                // Busca el control por su nombre
+                if (this.FindByName<object>(controlName) is VisualElement ve)
+                {
+                    ve.IsVisible = hasPermission;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"ApplyPermissionsAsync error: {ex.Message}");
+        }
+    }
+
 
     private void ConfigureFlyoutBehavior()
     {

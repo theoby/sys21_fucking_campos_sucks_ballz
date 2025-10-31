@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace sys21_campos_zukarmex.ViewModels
@@ -10,8 +11,9 @@ namespace sys21_campos_zukarmex.ViewModels
     public partial class RainfallViewModel : BaseViewModel
     {
         private readonly DatabaseService _databaseService;
-        private readonly ApiService _apiService; // Lo mantenemos para cargar el catálogo
+        private readonly ApiService _apiService;
         private readonly ConnectivityService _connectivityService;
+        private readonly SessionService _sessionService;
         public ConnectivityService ConnectivitySvc => _connectivityService;
 
         private bool isInitialized = false;
@@ -21,11 +23,12 @@ namespace sys21_campos_zukarmex.ViewModels
         [ObservableProperty] private DateTime fecha = DateTime.Now.AddDays(-1);
         [ObservableProperty] private string precipitacion = string.Empty;
 
-        public RainfallViewModel(DatabaseService databaseService, ApiService apiService, ConnectivityService connectivityService)
+        public RainfallViewModel(DatabaseService databaseService, ApiService apiService, ConnectivityService connectivityService, SessionService sessionService)
         {
             _databaseService = databaseService;
             _apiService = apiService;
             _connectivityService = connectivityService;
+            _sessionService = sessionService;
             Title = "Precipitación Pluvial";
         }
 
@@ -41,6 +44,19 @@ namespace sys21_campos_zukarmex.ViewModels
             if (IsBusy) return;
             try
             {
+
+                var appPerms = await _sessionService.GetAppPermissionAsync("Precipitación Pluvial");
+
+                // --- BLOQUE DE DEBUG ---
+                Debug.WriteLine("==================================================");
+                Debug.WriteLine("PERMISOS PARA: Precipitación Pluvial");
+                Debug.WriteLine($"Mira, estos son los datos del usuario para esta pagina:");
+                Debug.WriteLine($"- ¿Tiene Permiso?: {appPerms.TienePermiso}");
+                Debug.WriteLine($"- TipoUsuario (específico): {appPerms.TipoUsuario}");
+                Debug.WriteLine($"- IdInspector (específico): {appPerms.IdInspector}");
+                Debug.WriteLine("==================================================");
+             
+
 
                 if (ConnectivitySvc.IsConnected)
                 {

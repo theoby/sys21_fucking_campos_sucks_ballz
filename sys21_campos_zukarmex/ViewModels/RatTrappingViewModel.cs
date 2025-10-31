@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,7 +44,21 @@ namespace sys21_campos_zukarmex.ViewModels
             if (IsBusy) return;
             try
             {
+
                 SetBusy(true);
+
+                var appPerms = await _sessionService.GetAppPermissionAsync("Trampeo de Rata");
+
+                // --- PEGA EL BLOQUE DE DEBUG AQUÍ ---
+                Debug.WriteLine("==================================================");
+                Debug.WriteLine("PERMISOS PARA: Trampeo de Rata");
+                Debug.WriteLine($"Mira, estos son los datos del usuario para esta pagina:");
+                Debug.WriteLine($"- ¿Tiene Permiso?: {appPerms.TienePermiso}");
+                Debug.WriteLine($"- TipoUsuario (específico): {appPerms.TipoUsuario}");
+                Debug.WriteLine($"- IdInspector (específico): {appPerms.IdInspector}");
+                Debug.WriteLine("==================================================");
+
+
                 var session = await _sessionService.GetCurrentSessionAsync();
                 if (session == null)
                 {

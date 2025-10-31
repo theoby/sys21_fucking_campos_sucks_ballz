@@ -5,6 +5,7 @@ using sys21_campos_zukarmex.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace sys21_campos_zukarmex.ViewModels
@@ -48,6 +49,17 @@ namespace sys21_campos_zukarmex.ViewModels
             try
             {
                 SetBusy(true);
+
+                var appPerms = await _sessionService.GetAppPermissionAsync("Consumo de Rodenticida");
+
+                Debug.WriteLine("==================================================");
+                Debug.WriteLine("PERMISOS PARA: Consumo de Rodenticida");
+                Debug.WriteLine($"Mira, estos son los datos del usuario para esta pagina:");
+                Debug.WriteLine($"- ¿Tiene Permiso?: {appPerms.TienePermiso}");
+                Debug.WriteLine($"- TipoUsuario (específico): {appPerms.TipoUsuario}");
+                Debug.WriteLine($"- IdInspector (específico): {appPerms.IdInspector}");
+                Debug.WriteLine("==================================================");
+
                 var session = await _sessionService.GetCurrentSessionAsync();
                 if (session == null) { await Shell.Current.DisplayAlert("Error", "No se pudo obtener la sesión.", "OK"); return; }
 

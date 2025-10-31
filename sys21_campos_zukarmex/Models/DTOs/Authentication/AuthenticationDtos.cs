@@ -94,6 +94,7 @@ public class UserData
             Token = token,
             ExpirationDate = expiration,
             CreatedAt = DateTime.Now,
+            ExpiresAt = expiration,
             IsActive = true,
             PermisosJson = JsonConvert.SerializeObject(this.Permisos ?? new List<Permiso>())
         };
@@ -105,6 +106,14 @@ public class UserData
 
         [JsonProperty("nombreApp")]
         public string NombreApp { get; set; }
+
+        // --- AÑADIDO ---
+        [JsonProperty("tipoUsuario")]
+        public int TipoUsuario { get; set; }
+
+        // --- AÑADIDO ---
+        [JsonProperty("idInspector")]
+        public int IdInspector { get; set; }
 
         [JsonProperty("permiso")]
         public bool TienePermiso { get; set; }

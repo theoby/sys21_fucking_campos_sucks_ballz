@@ -29,40 +29,44 @@ public class SessionService
     }
 
     private readonly Dictionary<string, string> _routePermissionMap = new Dictionary<string, string>
-        {
-            // App de Campo
-            { "home", "App de Campo" },
+    {
+        // App de Campo
+        { "home", "App de Campo" },
 
-            // Uso de Maquinaria
-            { "machineryusage", "Uso de Maquinaria" },
-            { "machineryusagepending", "Uso de Maquinaria" },
-            { "machineryusagehistory", "Uso de Maquinaria" },
+        // Uso de Maquinaria
+        { "machineryusage", "Uso de Maquinaria" },
+        { "machineryusagepending", "Uso de Maquinaria" },
+        { "machineryusagehistory", "Uso de Maquinaria" },
 
-            // Precipitación Pluvial
-            { "rainfall", "Precipitación Pluvial" },
-            { "rainfallpending", "Precipitación Pluvial" },
-            { "rainfallhistory", "Precipitación Pluvial" },
+        // Precipitación Pluvial
+        { "rainfall", "Precipitación Pluvial" },
+        { "rainfallpending", "Precipitación Pluvial" },
+        { "rainfallhistory", "Precipitación Pluvial" },
 
-            // Trampeo de Rata
-            { "rattrapping", "Trampeo de Rata" },
-            { "rattrappingpending", "Trampeo de Rata" },
-            { "rattrappinghistory", "Trampeo de Rata" },
+        // Trampeo de Rata
+        { "rattrapping", "Trampeo de Rata" },
+        { "rattrappingpending", "Trampeo de Rata" },
+        { "rattrappinghistory", "Trampeo de Rata" },
 
-            // Consumo de Rodenticida
-            { "rodenticideconsumption", "Consumo de Rodenticida" },
-            { "rodenticidepending", "Consumo de Rodenticida" },
-            { "rodenticidehistory", "Consumo de Rodenticida" },
+        // Consumo de Rodenticida
+        { "rodenticideconsumption", "Consumo de Rodenticida" },
+        { "rodenticidepending", "Consumo de Rodenticida" },
+        { "rodenticidehistory", "Consumo de Rodenticida" },
 
-            // Muestreo de Daño
-            { "damageassessment", "Muestreo de Daño" },
-            { "damageassessmentpending", "Muestreo de Daño" },
-            { "damageassessmenthistory", "Muestreo de Daño" },
+        // Muestreo de Daño
+        { "damageassessment", "Muestreo de Daño" },
+        { "damageassessmentpending", "Muestreo de Daño" },
+        { "damageassessmenthistory", "Muestreo de Daño" },
 
-            // Captura de Linea de Riego
-            { "irrigationline", "Captura de Linea de Riego" },
-            { "irrigationlinepending", "Captura de Linea de Riego" },
-            { "irrigationlinehistory", "Captura de Linea de Riego" }
-        };
+        // Captura de Linea de Riego
+        { "irrigationline", "Captura de Linea de Riego" },
+        { "irrigationlinepending", "Captura de Linea de Riego" },
+        { "irrigationlinehistory", "Captura de Linea de Riego" },
+    
+        // Páginas de Sincronización (las protegemos con "App de Campo")
+        { "oneclicksync", "App de Campo" },
+        { "oneclickupload", "App de Campo" }
+    };
 
     public async Task<bool> CheckPermissionForRouteAsync(string route)
     {
@@ -107,6 +111,35 @@ public class SessionService
             return false;
         }
     }
+
+    public async Task<UserData.Permiso> GetAppPermissionAsync(string appName)
+    {
+        try
+        {
+            var session = await GetCurrentSessionAsync();
+
+            if (string.IsNullOrWhiteSpace(session.PermisosJson))
+            {
+                throw new Exception("No hay permisos guardados en la sesión.");
+            }
+
+            var permisos = JsonConvert.DeserializeObject<List<UserData.Permiso>>(session.PermisosJson);
+            var appPermiso = permisos.FirstOrDefault(p => p.NombreApp.Equals(appName, StringComparison.OrdinalIgnoreCase));
+
+            if (appPermiso == null)
+            {
+                throw new Exception($"No se encontró configuración de permiso para '{appName}'.");
+            }
+
+            return appPermiso;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error en GetAppPermissionAsync: {ex.Message}");
+            return new UserData.Permiso { NombreApp = appName, TienePermiso = false };
+        }
+    }
+
 
     /// <summary>
     /// Verifica si hay un token v�lido considerando tanto Session como Configuraci�n
