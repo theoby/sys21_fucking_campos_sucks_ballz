@@ -11,6 +11,7 @@ namespace sys21_campos_zukarmex.ViewModels
 {
     public partial class MachineryUsageViewModel : BaseViewModel
     {
+
         private readonly DatabaseService _databaseService;
         private readonly ApiService _apiService;
         private readonly SessionService _sessionService;
@@ -28,6 +29,8 @@ namespace sys21_campos_zukarmex.ViewModels
 
         [ObservableProperty] private string horasTrabajadas = string.Empty;
         [ObservableProperty] private string kilometrajeOdometro = string.Empty;
+        public bool IsHorasTrabajadasEnabled => SelectedEquipo != null && SelectedEquipo.RequiereHorometro;
+        public bool IsKilometrajeOdometroEnabled => SelectedEquipo != null && !SelectedEquipo.RequiereHorometro;
 
 
         public MachineryUsageViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService, ConnectivityService connectivityService)
@@ -72,7 +75,11 @@ namespace sys21_campos_zukarmex.ViewModels
 
                 var equipoList = await _databaseService.GetAllAsync<Maquinaria>();
                 Equipos.Clear();
-                foreach (var item in equipoList.OrderBy(e => e.Nombre)) Equipos.Add(item);
+                foreach (var item in equipoList.OrderBy(e => e.Nombre))
+                {
+                    if (item.RequiereUso)
+                    { Equipos.Add(item); }
+                }
 
                 var allLotesFromDb = await _databaseService.GetAllAsync<Lote>();
                 var allCamposFromDb = await _databaseService.GetAllAsync<Campo>();
@@ -132,6 +139,28 @@ namespace sys21_campos_zukarmex.ViewModels
                     HorasTrabajadas = "0";
                 }
             }
+        }
+
+        partial void OnSelectedEquipoChanged(Maquinaria? oldValue, Maquinaria? newValue)
+        {
+            if (newValue == null)
+            {
+                HorasTrabajadas = string.Empty;
+                KilometrajeOdometro = string.Empty;
+                return;
+            }
+            if (newValue.RequiereHorometro)
+            {
+  
+                KilometrajeOdometro = string.Empty;
+            }
+            else
+            {
+                HorasTrabajadas = string.Empty;
+            }
+
+            OnPropertyChanged(nameof(IsHorasTrabajadasEnabled));
+            OnPropertyChanged(nameof(IsKilometrajeOdometroEnabled));
         }
 
         [RelayCommand]

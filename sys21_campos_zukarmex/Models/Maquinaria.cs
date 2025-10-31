@@ -11,4 +11,6 @@ public class Maquinaria
     public string Nombre { get; set; } = string.Empty;
     public int IdGrupo { get; set; }
     public string NombreGrupo { get; set; } = string.Empty;
+    public bool RequiereHorometro { get; set; } 
+    public bool RequiereUso { get; set; }
 }

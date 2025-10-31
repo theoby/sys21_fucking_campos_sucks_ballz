@@ -65,7 +65,7 @@
                             <StackLayout Grid.Column="0">
                                 <Label Text="Horas Trabajadas" FontSize="14" TextColor="{StaticResource Gray600}" />
                                 <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                    <Entry PlaceholderColor="{StaticResource Gray600}" BackgroundColor="Transparent" Text="{Binding HorasTrabajadas}" Placeholder="0" Keyboard="Numeric" FontSize="16" HorizontalTextAlignment="Center"
+                                    <Entry PlaceholderColor="{StaticResource Gray600}" BackgroundColor="Transparent" Text="{Binding HorasTrabajadas}" Placeholder="0" Keyboard="Numeric" FontSize="16" HorizontalTextAlignment="Center" IsEnabled="{Binding IsHorasTrabajadasEnabled}"
                                      >
                                         <Entry.Behaviors>
                                             <behaviors:NumericValidationBehavior />
@@ -77,7 +77,14 @@
                             <StackLayout Grid.Column="1">
                                 <Label Text="Kilometraje" FontSize="14" TextColor="{StaticResource Gray600}" />
                                 <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
-                                    <Entry PlaceholderColor="{StaticResource Gray600}" BackgroundColor="Transparent" Text="{Binding KilometrajeOdometro}" Placeholder="0" Keyboard="Numeric" FontSize="16" HorizontalTextAlignment="Center"
+                                    <Entry PlaceholderColor="{StaticResource Gray600}"
+                                           BackgroundColor="Transparent"
+                                           Text="{Binding KilometrajeOdometro}"
+                                           Placeholder="0"
+                                           Keyboard="Numeric"
+                                           FontSize="16"
+                                           HorizontalTextAlignment="Center"
+                                           IsEnabled="{Binding IsKilometrajeOdometroEnabled}"
                                       >
                                         <Entry.Behaviors>
                                             <behaviors:NumericValidationBehavior />
