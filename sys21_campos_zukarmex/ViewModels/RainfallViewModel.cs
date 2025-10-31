@@ -19,9 +19,12 @@ namespace sys21_campos_zukarmex.ViewModels
         private bool isInitialized = false;
 
         [ObservableProperty] private ObservableCollection<Pluviometro> pluviometros = new();
+
         [ObservableProperty] private Pluviometro? selectedPluviometro;
+        [ObservableProperty] private bool hasPluviometros = false;
         [ObservableProperty] private DateTime fecha = DateTime.Now.AddDays(-1);
         [ObservableProperty] private string precipitacion = string.Empty;
+
 
         public RainfallViewModel(DatabaseService databaseService, ApiService apiService, ConnectivityService connectivityService, SessionService sessionService)
         {
@@ -55,18 +58,36 @@ namespace sys21_campos_zukarmex.ViewModels
                 Debug.WriteLine($"- TipoUsuario (específico): {appPerms.TipoUsuario}");
                 Debug.WriteLine($"- IdInspector (específico): {appPerms.IdInspector}");
                 Debug.WriteLine("==================================================");
-             
 
+                var hoy = DateTime.Today;
 
-                if (ConnectivitySvc.IsConnected)
-                {
-                    var pluviometrosFromApi = await _apiService.GetPluviometrosAsync();
+                    var pluviometros = await _databaseService.GetAllAsync<Pluviometro>();
                     Pluviometros.Clear();
-                    foreach (var pluviometro in pluviometrosFromApi) Pluviometros.Add(pluviometro);
+                    foreach (var pluviometro in pluviometros) {
+                        if (pluviometro.FechaInicio <= hoy &&
+                        (pluviometro.FechaBaja == null || pluviometro.FechaBaja > hoy))
+                        {
+                            Pluviometros.Add(pluviometro);
+                        }
+                    }
+                if (Pluviometros.Count == 0)
+                {
+                    var placeholder = new Pluviometro
+                    {
+                        Id = -1,
+                        Nombre = "No hay pluviómetros disponibles"
+                    };
+
+                    Pluviometros.Add(placeholder);
+
+                    HasPluviometros = false;
+
+                    SelectedPluviometro = placeholder;
                 }
                 else
                 {
-                    await Shell.Current.DisplayAlert("Sin Conexión", "Se necesita conexión para cargar el catálogo de pluviómetros.", "OK");
+                    HasPluviometros = true;
+                    SelectedPluviometro = null;
                 }
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar catálogos: {ex.Message}", "OK"); }
