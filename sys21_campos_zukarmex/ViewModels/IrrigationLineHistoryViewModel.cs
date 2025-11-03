@@ -66,14 +66,7 @@ namespace sys21_campos_zukarmex.ViewModels
                 var allCampos = await _databaseService.GetAllAsync<Campo>();
                 var filteredCampos = session.TipoUsuario == 1 ? allCampos : allCampos.Where(c => c.IdInspector == session.IdInspector).ToList();
 
-                var lineasPredefinidas = new List<LineaDeRiego>
-                {
-                    new LineaDeRiego { Id = 1, Nombre = "Principal Norte" },
-                    new LineaDeRiego { Id = 2, Nombre = "Secundaria A-1" },
-                    new LineaDeRiego { Id = 3, Nombre = "Secundaria A-2" },
-                    new LineaDeRiego { Id = 4, Nombre = "Principal Sur" },
-                    new LineaDeRiego { Id = 5, Nombre = "Terciaria B-3 (Goteo)" }
-                };
+                var lineasPredefinidas = await _databaseService.GetAllAsync<LineaDeRiego>();
 
                 var listFromApi = await _apiService.GetIrrigationLineHistoryAsync();
 
