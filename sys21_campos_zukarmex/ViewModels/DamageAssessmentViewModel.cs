@@ -4,6 +4,7 @@ using sys21_campos_zukarmex.Models;
 using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -158,8 +159,8 @@ namespace sys21_campos_zukarmex.ViewModels
         {
             if (value != null)
             {
-               
-                Superficie = value.Hectareas.ToString("F2");
+                Debug.WriteLine("Hectareas: " + value.Hectareas);
+                Superficie = value.Hectareas.ToString("F2", CultureInfo.InvariantCulture);
             }
             else
             {
