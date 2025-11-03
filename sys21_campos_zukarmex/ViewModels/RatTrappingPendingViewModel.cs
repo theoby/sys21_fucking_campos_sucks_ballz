@@ -6,6 +6,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using CommunityToolkit.Mvvm.Messaging;
+using System.Diagnostics;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
@@ -25,6 +28,8 @@ namespace sys21_campos_zukarmex.ViewModels
         public int PendingCount => PendingCaptures?.Count ?? 0;
         public bool HasPendingItems => PendingCaptures?.Any() ?? false;
 
+
+
         public RatTrappingPendingViewModel(DatabaseService databaseService, ApiService apiService, SessionService sessionService)
         {
             _databaseService = databaseService;
@@ -32,6 +37,18 @@ namespace sys21_campos_zukarmex.ViewModels
             _sessionService = sessionService;
             PendingCaptures = new ObservableCollection<SalidaTrampeoRatas>();
             Title = "Trampeos Pendientes";
+
+            if (!WeakReferenceMessenger.Default.IsRegistered<ValueChangedMessage<int>>(this))
+            {
+                WeakReferenceMessenger.Default.Register<ValueChangedMessage<int>>(this, (r, m) =>
+                {
+                    // m.Value contiene el Id enviado
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await LoadPendingCapturesAsync();
+                    });
+                });
+            }
         }
 
         [RelayCommand]
@@ -164,6 +181,24 @@ namespace sys21_campos_zukarmex.ViewModels
             {
                 SetBusy(false);
             }
+        }
+
+
+
+        [RelayCommand]
+        public async Task EditCaptureAsync(SalidaTrampeoRatas capture)
+        {
+            if (capture == null)
+            {
+                Debug.WriteLine("[Pending] EditCaptureAsync called with null capture!");
+                return;
+            }
+
+            Debug.WriteLine($"[Pending] EditCaptureAsync called with capture.Id = {capture.Id}");
+
+            var route = $"RatTrappingPage?recordId={capture.Id}";
+            Debug.WriteLine($"[Pending] Navigating to route: {route}");
+            await Shell.Current.GoToAsync(route);
         }
 
         [RelayCommand]

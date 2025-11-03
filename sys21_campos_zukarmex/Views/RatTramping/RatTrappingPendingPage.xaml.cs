@@ -11,6 +11,8 @@ namespace sys21_campos_zukarmex.Views.RatTrapping
             InitializeComponent();
             _viewModel = viewModel;
             BindingContext = _viewModel;
+
+
         }
 
         protected override async void OnAppearing()
