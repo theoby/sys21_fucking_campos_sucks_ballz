@@ -5,6 +5,8 @@ using sys21_campos_zukarmex.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Linq;
+using System;
 
 namespace sys21_campos_zukarmex.ViewModels
 {
@@ -19,11 +21,15 @@ namespace sys21_campos_zukarmex.ViewModels
         private bool isInitialized = false;
 
         [ObservableProperty] private ObservableCollection<Pluviometro> pluviometros = new();
-
-        [ObservableProperty] private Pluviometro? selectedPluviometro;
+        [ObservableProperty]
+        private Pluviometro? selectedPluviometro;
         [ObservableProperty] private bool hasPluviometros = false;
         [ObservableProperty] private DateTime fecha = DateTime.Now.AddDays(-1);
         [ObservableProperty] private string precipitacion = string.Empty;
+        [ObservableProperty]
+        private DateTime minDate = DateTime.Now.AddYears(-5);
+        [ObservableProperty]
+        private DateTime maxDate = DateTime.Today;
 
 
         public RainfallViewModel(DatabaseService databaseService, ApiService apiService, ConnectivityService connectivityService, SessionService sessionService)
@@ -47,6 +53,8 @@ namespace sys21_campos_zukarmex.ViewModels
             if (IsBusy) return;
             try
             {
+                var session = await _sessionService.GetCurrentSessionAsync();
+                if (session == null) { await Shell.Current.DisplayAlert("Error", "No se pudo obtener la sesión.", "OK"); return; }
 
                 var appPerms = await _sessionService.GetAppPermissionAsync("Precipitación Pluvial");
 
@@ -61,15 +69,13 @@ namespace sys21_campos_zukarmex.ViewModels
 
                 var hoy = DateTime.Today;
 
-                    var pluviometros = await _databaseService.GetAllAsync<Pluviometro>();
-                    Pluviometros.Clear();
-                    foreach (var pluviometro in pluviometros) {
-                        if (pluviometro.FechaInicio <= hoy &&
-                        (pluviometro.FechaBaja == null || pluviometro.FechaBaja > hoy))
-                        {
-                            Pluviometros.Add(pluviometro);
-                        }
-                    }
+                var pluviometrosFromApi = await _apiService.GetPluviometrosAsync();
+                Pluviometros.Clear();
+
+                foreach (var pluviometro in pluviometrosFromApi.OrderBy(p => p.Nombre))
+                {
+                    Pluviometros.Add(pluviometro);
+                }
                 if (Pluviometros.Count == 0)
                 {
                     var placeholder = new Pluviometro
@@ -94,12 +100,41 @@ namespace sys21_campos_zukarmex.ViewModels
             finally { SetBusy(false); }
         }
 
+        partial void OnSelectedPluviometroChanged(Pluviometro? value)
+        {
+            if (value != null && value.Id != -1)
+            {
+           
+                MinDate = value.FechaInicio;
+                MaxDate = value.FechaBaja ?? DateTime.Today; 
+
+                if (Fecha > MaxDate) Fecha = MaxDate;
+                if (Fecha < MinDate) Fecha = MinDate;
+            }
+            else
+            {
+                MinDate = DateTime.Now.AddYears(-5);
+                MaxDate = DateTime.Today;
+            }
+        }
+
         [RelayCommand]
         private async Task AddRainfallAsync()
         {
             if (SelectedPluviometro == null || string.IsNullOrWhiteSpace(Precipitacion))
             {
                 await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, complete todos los campos.", "OK");
+                return;
+            }
+
+            if (Fecha.Date < SelectedPluviometro.FechaInicio.Date)
+            {
+                await Shell.Current.DisplayAlert("Fecha Inválida", $"La fecha de captura ({Fecha:dd/MM/yy}) no puede ser anterior a la fecha de inicio del pluviómetro ({SelectedPluviometro.FechaInicio:dd/MM/yy}).", "OK");
+                return;
+            }
+            if (SelectedPluviometro.FechaBaja != null && Fecha.Date > SelectedPluviometro.FechaBaja.Value.Date)
+            {
+                await Shell.Current.DisplayAlert("Fecha Inválida", $"La fecha de captura ({Fecha:dd/MM/yy}) no puede ser posterior a la fecha de baja del pluviómetro ({SelectedPluviometro.FechaBaja:dd/MM/yy}).", "OK");
                 return;
             }
 
