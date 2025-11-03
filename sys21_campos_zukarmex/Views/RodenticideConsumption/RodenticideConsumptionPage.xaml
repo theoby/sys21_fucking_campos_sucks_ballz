@@ -108,7 +108,7 @@
                                 <Frame BackgroundColor="{StaticResource Gray500}" CornerRadius="10" Padding="10" HasShadow="False" VerticalOptions="FillAndExpand">
                                     <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
                                         <Label Text="% de Consumo" TextColor="White" FontAttributes="Bold" FontSize="18" HorizontalOptions="Center" />
-                                        <Label Text="{Binding PorcentajeConsumo, StringFormat='{0:P1}'}" TextColor="White" FontAttributes="Bold" FontSize="24" HorizontalOptions="Center" />
+                                        <Label Text="{Binding PorcentajeConsumo, StringFormat='{0:P2}'}" TextColor="White" FontAttributes="Bold" FontSize="24" HorizontalOptions="Center" />
                                     </StackLayout>
                                 </Frame>
                             </StackLayout>
