@@ -47,18 +47,6 @@
             <CollectionView ItemsSource="{Binding HistorialEntries}"
                             SelectionMode="None">
 
-                <CollectionView.EmptyView>
-                    <StackLayout VerticalOptions="CenterAndExpand"
-                                 Padding="30">
-                        <Label Text="No se encontraron registros de Línea de Riego en el historial."
-                               IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               TextColor="{StaticResource Gray500}"
-                               FontSize="16" />
-                    </StackLayout>
-                </CollectionView.EmptyView>
-
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:SalidaLineaDeRiego">
                         <Frame BackgroundColor="White"
