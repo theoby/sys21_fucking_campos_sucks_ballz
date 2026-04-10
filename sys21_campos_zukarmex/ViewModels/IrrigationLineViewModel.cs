@@ -26,6 +26,8 @@ namespace sys21_campos_zukarmex.ViewModels
 
         private int maxEquiposOperando = 0;
 
+        private List<LineaDeRiego> _todasLasLineas = new();
+
         public IrrigationLineViewModel(DatabaseService databaseService, SessionService sessionService)
         {
             _databaseService = databaseService;
@@ -39,6 +41,7 @@ namespace sys21_campos_zukarmex.ViewModels
             await LoadCatalogsAsync();
             isInitialized = true;
         }
+
 
         private async Task LoadCatalogsAsync()
         {
@@ -73,7 +76,7 @@ namespace sys21_campos_zukarmex.ViewModels
                     ? allCamposFromDb
                     : allCamposFromDb.Where(c => c.IdInspector == inspectorId).ToList();
 
-                var lineasFromDb = await _databaseService.GetAllAsync<LineaDeRiego>();
+                _todasLasLineas = await _databaseService.GetAllAsync<LineaDeRiego>();
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
@@ -84,15 +87,32 @@ namespace sys21_campos_zukarmex.ViewModels
                     }
 
                     LineasDeRiego.Clear();
-                    foreach (var linea in lineasFromDb.OrderBy(l => l.Nombre))
-                    {
-                        LineasDeRiego.Add(linea);
-                    }
                 });
 
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar catálogos: {ex.Message}", "OK"); }
             finally { SetBusy(false); }
+        }
+
+        partial void OnSelectedPredioChanged(Campo? value)
+        {
+            SelectedLineaDeRiego = null;
+            LineasDeRiego.Clear();
+
+            if (value == null) return;
+
+            Debug.WriteLine($"=== OnSelectedPredioChanged ===");
+            Debug.WriteLine($"Predio seleccionado: {value.Nombre} | Id: {value.Id}");
+            Debug.WriteLine($"Total lineas en _todasLasLineas: {_todasLasLineas.Count}");
+
+            foreach (var l in _todasLasLineas)
+                Debug.WriteLine($"  Linea: {l.Nombre} | IdCampo: {l.IdCampo}");
+
+            var filtradas = _todasLasLineas.Where(l => l.IdCampo == value.Id).ToList();
+            Debug.WriteLine($"Lineas filtradas para IdCampo={value.Id}: {filtradas.Count}");
+
+            foreach (var linea in filtradas.OrderBy(l => l.Nombre))
+                LineasDeRiego.Add(linea);
         }
 
         partial void OnSelectedLineaDeRiegoChanged(LineaDeRiego? value)

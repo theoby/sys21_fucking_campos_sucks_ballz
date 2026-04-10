@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using sys21_campos_zukarmex.Models;
+using System.Diagnostics;
 
 namespace sys21_campos_zukarmex.Models.DTOs.Catalog;
 
@@ -390,31 +391,42 @@ public class LoteApiDto
 
 public class LineaDeRiegoApiDto
 {
-    [JsonProperty("id")] 
+    [JsonProperty("id")]
     public int Id { get; set; }
 
-    [JsonProperty("nombre")] 
+    [JsonProperty("nombre")]
     public string Nombre { get; set; } = string.Empty;
 
     [JsonProperty("cantidadEquiposBombeo")]
     public int CantidadEquiposBombeo { get; set; } = 0;
 
     [JsonProperty("cantidadLaminaRiego")]
-    public decimal CantidadLaminaRiego { get; set; } = 0; // Cambiado a decimal
+    public decimal CantidadLaminaRiego { get; set; } = 0;
 
     [JsonProperty("campo")]
-    public object Campo { get; set; }
+    public CampoRefDto? Campo { get; set; }
 
     public LineaDeRiego ToLineaDeRiego()
     {
+        Debug.WriteLine($"[DTO] Id={Id} | Nombre={Nombre} | Campo es null={Campo == null} | Campo.Id={Campo?.Id ?? -1}");
+
         return new LineaDeRiego
         {
             Id = Id,
             Nombre = Nombre,
             CantidadEquiposBombeo = CantidadEquiposBombeo,
-            CantidadLaminaRiego = CantidadLaminaRiego
+            CantidadLaminaRiego = CantidadLaminaRiego,
+            IdCampo = Campo?.Id ?? 0
         };
     }
+}
+public class CampoRefDto
+{
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
+    [JsonProperty("nombre")]
+    public string Nombre { get; set; } = string.Empty;
 }
 
 #endregion

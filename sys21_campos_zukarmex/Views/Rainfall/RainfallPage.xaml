@@ -58,9 +58,6 @@
                                        HorizontalTextAlignment="Center"
                                        BackgroundColor="Transparent"
                                        PlaceholderColor="{StaticResource Gray600}">
-                                    <Entry.Behaviors>
-                                        <behaviors:NumericValidationBehavior />
-                                    </Entry.Behaviors>
                                 </Entry>
                             </Frame>
                         </StackLayout>

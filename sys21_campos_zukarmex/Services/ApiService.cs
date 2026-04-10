@@ -1416,7 +1416,8 @@ public class ApiService : IDisposable
 
     public async Task<List<LineaDeRiego>> GetLineasDeRiegoAsync()
     {
-        return await GetCatalogAsync<LineaDeRiego>(AppConfigService.LineasDeRiegoEndpoint);
+        var dtos = await GetCatalogAsync<LineaDeRiegoApiDto>(AppConfigService.LineasDeRiegoEndpoint);
+        return dtos.Select(dto => dto.ToLineaDeRiego()).ToList();
     }
 
     public async Task<List<Articulo>> GetArticulosAsync()
