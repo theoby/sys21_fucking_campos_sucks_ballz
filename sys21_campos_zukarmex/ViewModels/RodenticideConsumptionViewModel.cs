@@ -157,7 +157,7 @@ namespace sys21_campos_zukarmex.ViewModels
             TotalCebo = comederos * pastillas;
 
             // Si por alguna razón (reducción de comederos/pastillas) el consumo actual queda > total, ajustamos.
-            if (TotalCebo >= 0 && consumoActual > TotalCebo)
+            if (TotalCebo > 0 && consumoActual > TotalCebo)
             {
                 // Ajuste automático: no permitimos que el consumo quede > total disponible.
                 // Mostramos alerta informativa y corregimos el Entry al tope.
@@ -234,12 +234,16 @@ namespace sys21_campos_zukarmex.ViewModels
 
         private void ClearForm()
         {
-            SelectedZafra = null;
-            SelectedCampo = null;
-            Fecha = DateTime.Now;
+            _previousConsumo = 0;
+
+            Consumo = string.Empty;
             CantidadComederos = string.Empty;
             CantidadPastillas = string.Empty;
-            Consumo = string.Empty;
+
+            SelectedZafra = null;
+            SelectedCampo = null;
+
+            Fecha = DateTime.Now;
         }
     }
 }

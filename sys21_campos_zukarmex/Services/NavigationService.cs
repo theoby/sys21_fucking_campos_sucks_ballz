@@ -1,4 +1,5 @@
 using sys21_campos_zukarmex.Models;
+using System.Diagnostics;
 using System.Text;
 
 namespace sys21_campos_zukarmex.Services;
@@ -372,11 +373,25 @@ public class NavigationService
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine("?? === NAVEGACI�N SIMPLE Y DIRECTA ===");
+            System.Diagnostics.Debug.WriteLine("?? === NAVEGACION SIMPLE Y DIRECTA ===");
             
             // Verificar base de datos
             await _databaseService.InitializeAsync();
-            
+
+            // Prevension de congelacion de pantalla - N 
+            int attempts = 0;
+            while (Shell.Current == null && attempts < 10)
+            {
+                await Task.Delay(200);
+                attempts++;
+            }
+
+            if (Shell.Current == null)
+            {
+                Debug.WriteLine("Shell.Current no disponible después de esperar");
+                return;
+            }
+
             // Obtener sesiones
             var sessions = await _databaseService.GetAllAsync<Session>();
             

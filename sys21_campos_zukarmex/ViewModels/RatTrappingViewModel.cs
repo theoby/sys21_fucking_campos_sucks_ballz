@@ -232,24 +232,6 @@ namespace sys21_campos_zukarmex.ViewModels
             }
         }
 
-        partial void OnMachosCapturadosChanged(string value)
-        {
-            // Si el usuario está escribiendo machos, limpiamos hembras
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                HembrasCapturadas = string.Empty;
-            }
-        }
-
-        partial void OnHembrasCapturadasChanged(string value)
-        {
-            // Si el usuario está escribiendo hembras, limpiamos machos
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                MachosCapturados = string.Empty;
-            }
-        }
-
         private void ClearForm()
         {
             SelectedCampo = null;

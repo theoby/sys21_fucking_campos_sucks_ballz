@@ -297,10 +297,10 @@
 
             <StackLayout Grid.Column="0"
                          Orientation="Vertical">
-                <Label Text="Version 1.0.0"
+                <Label Text="Version 1.2"
                        FontSize="15"
                        TextColor="{DynamicResource Gray600}" />
-                <Label Text="(c) 2024 Zucarmex"
+                <Label Text="(c) 2026 Zucarmex"
                        FontSize="15"
                        TextColor="{DynamicResource Gray500}" />
             </StackLayout>

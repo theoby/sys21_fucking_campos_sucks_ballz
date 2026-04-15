@@ -197,7 +197,7 @@ public partial class LoginViewModel : BaseViewModel
                 Usuario = Usuario,
                 Password = Password,
                 IdEmpresa = SelectedEmpresa.Id,
-                IdApp = 1
+                IdApp = 3
             };
 
             var response = await _apiService.LoginAsync(loginRequest);

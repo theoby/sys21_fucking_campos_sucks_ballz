@@ -114,12 +114,23 @@ namespace sys21_campos_zukarmex.ViewModels
         [RelayCommand]
         public async Task SendAllAsync()
         {
-            if (IsBusy || !HasPendingItems || !_connectivityService.IsConnected ||
-                !await Shell.Current.DisplayAlert("Confirmar Envío", $"Se enviarán {TotalPendingCount} registros. ¿Desea continuar?", "Sí, Enviar", "Cancelar"))
+            //Modificacion de verificacion de wifi/datos - N
+            var networkAccess = Connectivity.Current.NetworkAccess;
+            bool hasNetwork = networkAccess == NetworkAccess.Internet ||
+                              networkAccess == NetworkAccess.ConstrainedInternet;
+            
+            if (IsBusy || !HasPendingItems)
+                return;
+
+            if (!hasNetwork)
             {
-                if (!_connectivityService.IsConnected) await Shell.Current.DisplayAlert("Sin Conexión", "Se necesita internet para enviar.", "OK");
+                await Shell.Current.DisplayAlert("Sin Conexión", "Se necesita internet para enviar.", "OK");
                 return;
             }
+
+            if (!await Shell.Current.DisplayAlert("Confirmar Envío",
+        $"Se enviarán {TotalPendingCount} registros. ¿Desea continuar?", "Sí, Enviar", "Cancelar"))
+                return;
 
             SetBusy(true);
             SyncMessage = "Iniciando envío...";

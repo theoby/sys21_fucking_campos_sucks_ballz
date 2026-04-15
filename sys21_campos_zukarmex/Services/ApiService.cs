@@ -297,6 +297,14 @@ public class ApiService : IDisposable
 
             var apiResponse = JsonConvert.DeserializeObject<LoginApiResponse>(cleanedResponseContent);
 
+            //Debug para solucion de server -N
+            System.Diagnostics.Debug.WriteLine($"=== RESPUESTA LOGIN ===");
+            System.Diagnostics.Debug.WriteLine($"Estado: {apiResponse?.Estado}");
+            System.Diagnostics.Debug.WriteLine($"Mensaje: {apiResponse?.Mensaje}");
+            System.Diagnostics.Debug.WriteLine($"Datos null: {apiResponse?.Datos == null}");
+            System.Diagnostics.Debug.WriteLine($"Raw response: {cleanedResponseContent}");
+            System.Diagnostics.Debug.WriteLine($"======================");
+
             if (apiResponse?.Estado == 200 && apiResponse.Datos != null)
             {
                 // TRADUCCION: Mapea los datos de la estructura nueva a la estructura vieja

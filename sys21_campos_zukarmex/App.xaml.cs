@@ -75,7 +75,7 @@ public partial class App : Application
             System.Diagnostics.Debug.WriteLine($"🕐 Tiempo actual: {DateTime.Now}");
             
             // Esperar un momento para que todos los servicios estén listos
-            await Task.Delay(150);
+            await Task.Delay(800);
             System.Diagnostics.Debug.WriteLine("⏱️ Delay de inicialización completado");
             
             var navigationService = _serviceProvider.GetService<NavigationService>();

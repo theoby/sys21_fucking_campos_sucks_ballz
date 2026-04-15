@@ -74,7 +74,7 @@
 
                 <!-- Footer -->
                 <StackLayout Grid.Row="4" VerticalOptions="End" HorizontalOptions="Center">
-                    <Label Text="2025 Campo v1.0 - SYS21 Mexico" 
+                    <Label Text="2026 Campo v1.2 - SYS21 Mexico" 
                        FontSize="12" 
                        TextColor="White"
                        Opacity="0.7" />

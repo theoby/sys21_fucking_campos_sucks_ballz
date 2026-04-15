@@ -121,7 +121,7 @@ namespace sys21_campos_zukarmex.ViewModels
         [RelayCommand]
         private async Task AddRainfallAsync()
         {
-            if (SelectedPluviometro == null || string.IsNullOrWhiteSpace(Precipitacion))
+            if (SelectedPluviometro == null || SelectedPluviometro.Id == -1 || string.IsNullOrWhiteSpace(Precipitacion))
             {
                 await Shell.Current.DisplayAlert("Campos Requeridos", "Por favor, complete todos los campos.", "OK");
                 return;
