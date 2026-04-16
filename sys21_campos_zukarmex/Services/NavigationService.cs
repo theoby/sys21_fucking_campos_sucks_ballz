@@ -1,4 +1,5 @@
 using sys21_campos_zukarmex.Models;
+using sys21_campos_zukarmex.Models.DTOs.Authentication;
 using System.Diagnostics;
 using System.Text;
 
@@ -401,29 +402,52 @@ public class NavigationService
                 await Shell.Current.GoToAsync("//login");
                 return;
             }
-            
+
             // Buscar sesi�n m�s reciente con token
-            var recentSessionWithToken = sessions
-                .Where(s => !string.IsNullOrEmpty(s.Token))
-                .OrderByDescending(s => s.CreatedAt)
-                .FirstOrDefault();
-            
-            if (recentSessionWithToken != null)
+            var recentSession = sessions
+            .Where(s => !string.IsNullOrEmpty(s.Token))
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefault();
+
+            if (recentSession == null)
             {
-                System.Diagnostics.Debug.WriteLine($"?? Sesi�n con token encontrada: {recentSessionWithToken.Username}");
-                System.Diagnostics.Debug.WriteLine($"?? Token length: {recentSessionWithToken.Token.Length}");
-                System.Diagnostics.Debug.WriteLine($"?? Expira: {recentSessionWithToken.ExpirationDate}");
-                System.Diagnostics.Debug.WriteLine($"?? Expirada: {recentSessionWithToken.ExpirationDate <= DateTime.Now}");
-                
-                // Ir al home SIN importar si est� expirada (para test)
-                System.Diagnostics.Debug.WriteLine("?? ? NAVEGANDO A HOME");
-                await Shell.Current.GoToAsync("//home");
+                Debug.WriteLine("Sin sesiones con token -> LOGIN");
+                await Shell.Current.GoToAsync("//login");
+                return;
+            }
+
+            if (recentSession.ExpirationDate <= DateTime.Now)
+            {
+                Debug.WriteLine("Token expirado -> LOGIN");
+                await Shell.Current.GoToAsync("//login");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(recentSession.PermisosJson))
+            {
+                var permisos = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserData.Permiso>>(recentSession.PermisosJson);
+                var tienePermiso = permisos?.Any(p =>
+                    p.NombreApp.Equals("App de Campo", StringComparison.OrdinalIgnoreCase) &&
+                    p.TienePermiso) ?? false;
+
+                if (!tienePermiso)
+                {
+                    Debug.WriteLine("Sin permiso de App de Campo -> LOGIN");
+                    await Shell.Current.GoToAsync("//login");
+                    return;
+                }
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("?? Sin sesiones con token ? LOGIN");
+                // Sin permisos guardados -> LOGIN por seguridad
+                Debug.WriteLine("Sin permisos guardados -> LOGIN");
                 await Shell.Current.GoToAsync("//login");
+                return;
             }
+
+            Debug.WriteLine("Sesión válida con permiso -> HOME");
+            await Shell.Current.GoToAsync("//home");
+
         }
         catch (Exception ex)
         {

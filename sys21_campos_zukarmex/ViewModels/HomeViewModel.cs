@@ -37,7 +37,7 @@ public partial class HomeViewModel : BaseViewModel
     }
 
     [ObservableProperty]
-    private string welcomeMessage = "Bienvenido a sys21_campos_zukarmex";
+    private string welcomeMessage = "Bienvenido a sys21_campos_zucarmex";
 
     [ObservableProperty]
     private string userName = string.Empty;

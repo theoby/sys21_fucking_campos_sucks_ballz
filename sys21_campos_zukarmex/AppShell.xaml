@@ -297,7 +297,7 @@
 
             <StackLayout Grid.Column="0"
                          Orientation="Vertical">
-                <Label Text="Version 1.2"
+                <Label Text="Version 1.2.1"
                        FontSize="15"
                        TextColor="{DynamicResource Gray600}" />
                 <Label Text="(c) 2026 Zucarmex"

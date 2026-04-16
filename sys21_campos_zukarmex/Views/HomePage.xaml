@@ -243,7 +243,7 @@
                                FontSize="16" 
                                FontAttributes="Bold"
                                TextColor="{DynamicResource Gray700}" />
-                        <Label Text="Versión de la App: 1.2" FontSize="14" TextColor="{DynamicResource Gray600}" />
+                        <Label Text="Versión de la App: 1.2.1" FontSize="14" TextColor="{DynamicResource Gray600}" />
                         <Label Text="Compilación: 2026.04.14" FontSize="14" TextColor="{DynamicResource Gray600}" />
                         <Label Text="Framework: .NET MAUI 9.0" FontSize="14" TextColor="{DynamicResource Gray600}" />
                     </StackLayout>

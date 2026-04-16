@@ -34,7 +34,7 @@
                    HorizontalOptions="Center" />
             
             <!-- Subtitle -->
-            <Label Text="Zukarmex" 
+            <Label Text="Zucarmex" 
                    FontSize="14" 
                    TextColor="White" 
                    Opacity="0.8"

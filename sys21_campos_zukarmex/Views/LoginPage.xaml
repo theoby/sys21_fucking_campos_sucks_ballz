@@ -176,7 +176,7 @@
 
             <!-- Footer -->
             <StackLayout Grid.Row="2" VerticalOptions="End" HorizontalOptions="Center">
-                <Label Text="© 2026 Administracion de Modulos de Campo - SYS21 - 1.2 " 
+                <Label Text="© 2026 Administracion de Modulos de Campo - SYS21 - 1.2.1 " 
                        FontSize="12" 
                        TextColor="White"
                        Opacity="0.7"

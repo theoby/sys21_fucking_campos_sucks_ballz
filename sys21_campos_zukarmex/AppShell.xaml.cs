@@ -61,7 +61,8 @@ public partial class AppShell : Shell
         if (targetRoute == "//login" ||
             targetRoute == "//sync" ||
             targetRoute == "//loading" ||
-            targetRoute == "//adminconfig")
+            targetRoute == "//adminconfig"
+            )
         {
             return;
         }
